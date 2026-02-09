@@ -1,5 +1,6 @@
 import { useRef } from "react";
-
+import { GrLike } from "react-icons/gr";
+import { FaCopy } from "react-icons/fa";
 interface UploadButtonsProps {
   onFileSelect: (file: File | null) => void;
   selectedFileName?: string;
@@ -29,14 +30,16 @@ export const UploadButtons = ({
           type="button"
           className="bg-orange-800/80 text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-orange-700/80"
         >
-          📋 ჩასვი
+          <FaCopy />
+          ჩასვი
         </button>
         <button
           type="button"
           onClick={handleFileClick}
           className="bg-purple-700 text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-purple-600"
         >
-          👍 ატვირთე
+          <GrLike />
+          ატვირთე
         </button>
         <input
           ref={fileInputRef}

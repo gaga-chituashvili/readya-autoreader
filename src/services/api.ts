@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://readya-backend.onrender.com";
 
 export const generateAudioFromText = async (text: string, email: string) => {
   try {

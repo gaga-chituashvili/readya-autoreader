@@ -1,3 +1,4 @@
+import { MdInsertPageBreak } from "react-icons/md";
 export const UploadHeader = () => {
   return (
     <>
@@ -5,7 +6,8 @@ export const UploadHeader = () => {
         რისი მოსმენა გინდა?
       </h2>
       <p className="text-gray-400 mb-8">
-        ატვირთე ნებისმიერი PDF, Word ფაილი ან 📄 ჩასვი ტექსტი.
+        ატვირთე ნებისმიერი PDF, Word ფაილი ან{" "}
+        <MdInsertPageBreak className="inline-block" /> ჩასვი ტექსტი.
       </p>
     </>
   );
