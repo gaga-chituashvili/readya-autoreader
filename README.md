@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+📁 Project Structure
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+├── README.md                # Project documentation and setup instructions
+├── eslint.config.js         # ESLint configuration (code quality rules)
+├── index.html               # Main HTML entry file (Vite)
+├── package-lock.json        # Locked versions of dependencies
+├── package.json             # Project dependencies and npm scripts
+├── postcss.config.js        # PostCSS configuration (used by Tailwind CSS)
+├── public                   # Static public assets
+│   └── vite.svg             # Default Vite asset
+├── src                      # Main application source code
+│   ├── App.css              # Styles for the root App component
+│   ├── App.tsx              # Root React component
+│   ├── assets               # Images and static assets
+│   │   ├── Readyalogo.png
+│   │   └── listenicon.png
+│   ├── component            # Reusable UI components
+│   │   ├── ListenSection.tsx # Audio listening section component
+│   │   ├── footer
+│   │   │   └── Footer.tsx   # Application footer
+│   │   ├── header
+│   │   │   └── Header.tsx   # Application header / navigation
+│   │   └── upload           # Upload-related components
+│   │       ├── Upload.tsx
+│   │       ├── UploadButtons.tsx
+│   │       ├── UploadHeader.tsx
+│   │       ├── UploadInfo.tsx
+│   │       └── UploadTextarea.tsx
+│   ├── index.css            # Global styles
+│   ├── layout
+│   │   └── MainLayout.tsx   # Shared layout (Header + Footer)
+│   ├── main.tsx             # Application entry point
+│   ├── pages
+│   │   └── Home.tsx         # Page-level component
+│   ├── routes
+│   │   ├── Routes.tsx       # React Router configuration
+│   │   └── paths.ts         # Centralized route paths
+│   └── services
+│       └── api.ts           # Backend API service layer
+├── tailwind.config.js       # Tailwind CSS configuration
+├── tsconfig.app.json        # TypeScript config for the app
+├── tsconfig.json            # Base TypeScript configuration
+├── tsconfig.node.json       # TypeScript config for Node.js
+└── vite.config.ts           # Vite configuration
 ```
