@@ -11,13 +11,14 @@ export const Header = () => {
       />
 
       <div className="flex gap-4 items-center ml-auto z-10">
-        <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-red-300">
+        <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-400">
           დარეგისტრირდი
         </button>
-        <div className="flex gap-2 items-center">
+
+        <button className="text-gray-700 hover:text-white transition flex items-center gap-2 border border-solid rounded-full p-2">
           <FaMicrophoneAlt />
-          <span className="text-gray-700">აუდიობლოგი</span>
-        </div>
+          აუდიობლოგი
+        </button>
       </div>
     </header>
   );
