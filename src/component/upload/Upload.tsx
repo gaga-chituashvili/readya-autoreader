@@ -10,6 +10,7 @@ import {
   generateAudioFromFile,
   getAudioStreamUrl,
 } from "../../services/api";
+import { MdCancel } from "react-icons/md";
 
 const AUDIO_STORAGE_KEY = "readya_audio_url";
 
@@ -19,7 +20,7 @@ export const Upload = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [audioUrl, setAudioUrl] = useState("");
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export const Upload = () => {
   };
 
   return (
-    <section className="bg-gradient-to-b from-black via-gray-900 to-black sm:min-h-screen py-10 px-4 sm:py-16 sm:px-8">
+    <section className="relative bg-gradient-to-b from-black via-gray-900 to-black sm:min-h-screen py-10 px-4 sm:py-16 sm:px-8">
       <div className="max-w-4xl mx-auto">
         <UploadHeader />
         <UploadInfo />
@@ -122,7 +123,14 @@ export const Upload = () => {
         </button>
 
         {audioUrl && (
-          <div className="p-4 sm:p-6 bg-gray-800/50 rounded-2xl border border-gray-700">
+          <div className="relative p-4 sm:p-6 bg-gray-800/50 rounded-2xl border border-gray-700">
+            <MdCancel
+              className="absolute top-0 right-0 text-white text-2xl mb-4"
+              onClick={() => {
+                localStorage.removeItem(AUDIO_STORAGE_KEY);
+                setAudioUrl(null);
+              }}
+            />
             <div className="flex items-center gap-3 mb-4">
               <FaHeadphones className="text-purple-500 text-xl sm:text-2xl" />
               <h3 className="text-white text-base sm:text-lg font-bold">
