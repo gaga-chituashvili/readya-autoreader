@@ -30,7 +30,7 @@ export const UploadButtons = ({
         <input
           ref={ref}
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept=".pdf,.doc,.docx,image/*"
           onChange={(e) => onFileSelect(e.target.files?.[0] ?? null)}
           className="hidden"
         />

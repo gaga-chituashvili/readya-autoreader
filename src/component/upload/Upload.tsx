@@ -10,7 +10,7 @@ import {
   generateAudioFromFile,
   getAudioStreamUrl,
 } from "../../services/api";
-import { MdCancel } from "react-icons/md";
+import { MdCancel, MdDone } from "react-icons/md";
 
 const AUDIO_STORAGE_KEY = "readya_audio_url";
 
@@ -108,7 +108,8 @@ export const Upload = () => {
         {success && (
           <div className="mb-4 p-4 bg-green-500/20 border border-green-500 rounded-lg">
             <p className="text-green-400 text-sm">
-              ✓ აუდიო წარმატებით დაგენერირდა!
+              <MdDone className="inline-block mr-2" />
+              აუდიო წარმატებით დაგენერირდა!
             </p>
           </div>
         )}
@@ -125,7 +126,7 @@ export const Upload = () => {
         {audioUrl && (
           <div className="relative p-4 sm:p-6 bg-gray-800/50 rounded-2xl border border-gray-700">
             <MdCancel
-              className="absolute top-0 right-0 text-white text-2xl mb-4"
+              className="absolute top-3 right-3 text-white text-3xl mb-4 cursor-pointer hover:text-4xl hover:text-red-700 hover:scale-105 hover:shadow-lg active:scale-95"
               onClick={() => {
                 localStorage.removeItem(AUDIO_STORAGE_KEY);
                 setAudioUrl(null);
