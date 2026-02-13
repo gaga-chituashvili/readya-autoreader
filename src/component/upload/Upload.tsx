@@ -107,9 +107,9 @@ export const Upload = () => {
 
         {success && (
           <div className="mb-4 p-4 bg-green-500/20 border border-green-500 rounded-lg">
-            <p className="text-green-400 text-sm">
+            <p className="text-green-400 text-sm text-center md:text-left">
               <MdDone className="inline-block mr-2" />
-              აუდიო წარმატებით დაგენერირდა!
+              აუდიო გაიგზავნა ელ-ფოსტაზე. გთხოვთ შეამოწმოთ Inbox ან Spam.
             </p>
           </div>
         )}
