@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { GrLike } from "react-icons/gr";
 import { FaCopy } from "react-icons/fa";
+import { MdDone } from "react-icons/md";
 
 interface UploadButtonsProps {
   onFileSelect: (file: File | null) => void;
@@ -37,7 +38,9 @@ export const UploadButtons = ({
       </div>
 
       {selectedFileName && (
-        <p className="text-green-400 text-sm">✓ არჩეულია: {selectedFileName}</p>
+        <p className="text-green-400 text-sm">
+          <MdDone className="inline-block" /> არჩეულია: {selectedFileName}
+        </p>
       )}
     </div>
   );
