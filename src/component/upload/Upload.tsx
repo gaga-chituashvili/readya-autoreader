@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { FaDownload, FaHeadphones } from "react-icons/fa";
+import { MdCancel, MdDone } from "react-icons/md";
 import { UploadHeader } from "./UploadHeader";
 import { UploadInfo } from "./UploadInfo";
 import { UploadButtons } from "./UploadButtons";
@@ -10,7 +11,6 @@ import {
   generateAudioFromFile,
   getAudioStreamUrl,
 } from "../../services/api";
-import { MdCancel, MdDone } from "react-icons/md";
 import { createPayment } from "../../services/pay";
 import { useSearchParams } from "react-router-dom";
 
@@ -25,9 +25,9 @@ export const Upload = () => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // 🔥 NEW: payment logic
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
+
   const [isPaid, setIsPaid] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
 
@@ -36,7 +36,6 @@ export const Upload = () => {
     if (savedAudioUrl) setAudioUrl(savedAudioUrl);
   }, []);
 
-  // 🔥 NEW: check payment after redirect
   useEffect(() => {
     if (!orderId) return;
 
@@ -47,14 +46,13 @@ export const Upload = () => {
         const res = await fetch(
           `https://readya-backend.onrender.com/payment/status/${orderId}/`
         );
-
         const data = await res.json();
 
         if (data.payment_status === "paid") {
           setIsPaid(true);
         }
-      } catch (error) {
-        console.error("Payment check failed", error);
+      } catch (err) {
+        console.error("Payment check failed", err);
       } finally {
         setCheckingPayment(false);
       }
@@ -177,12 +175,14 @@ export const Upload = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <button
             onClick={handleGenerate}
-            disabled={loading || !isPaid}
+            disabled={loading || !isPaid || checkingPayment}
             className="bg-gray-800 text-gray-300 px-8 py-3 rounded-full flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-gray-700 transition"
           >
             <IoChatboxEllipsesOutline />
             {loading
               ? "გენერირდება..."
+              : checkingPayment
+              ? "მოწმდება გადახდა..."
               : !isPaid
               ? "ჯერ გადაიხადეთ"
               : "დააგენერირე"}
