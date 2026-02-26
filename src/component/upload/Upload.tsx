@@ -11,6 +11,8 @@ import {
   getAudioStreamUrl,
 } from "../../services/api";
 import { MdCancel, MdDone } from "react-icons/md";
+import { createPayment } from "../../services/pay";
+import { useSearchParams } from "react-router-dom";
 
 const AUDIO_STORAGE_KEY = "readya_audio_url";
 
@@ -23,12 +25,50 @@ export const Upload = () => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // 🔥 NEW: payment logic
+  const [searchParams] = useSearchParams();
+  const orderId = searchParams.get("order_id");
+  const [isPaid, setIsPaid] = useState(false);
+  const [checkingPayment, setCheckingPayment] = useState(false);
+
   useEffect(() => {
     const savedAudioUrl = localStorage.getItem(AUDIO_STORAGE_KEY);
     if (savedAudioUrl) setAudioUrl(savedAudioUrl);
   }, []);
 
+  // 🔥 NEW: check payment after redirect
+  useEffect(() => {
+    if (!orderId) return;
+
+    const checkPayment = async () => {
+      setCheckingPayment(true);
+
+      try {
+        const res = await fetch(
+          `https://readya-backend.onrender.com/payment/status/${orderId}/`
+        );
+
+        const data = await res.json();
+
+        if (data.payment_status === "paid") {
+          setIsPaid(true);
+        }
+      } catch (error) {
+        console.error("Payment check failed", error);
+      } finally {
+        setCheckingPayment(false);
+      }
+    };
+
+    checkPayment();
+  }, [orderId]);
+
   const handleGenerate = async () => {
+    if (!isPaid) {
+      setError("გთხოვთ ჯერ გადაიხადოთ");
+      return;
+    }
+
     if (!email.trim()) {
       setError("გთხოვთ შეიყვანოთ ელ-ფოსტა");
       return;
@@ -59,7 +99,7 @@ export const Upload = () => {
       setError(
         err instanceof Error
           ? err.message
-          : "დაფიქსირდა შეცდომა. გთხოვთ სცადოთ ხელახლა.",
+          : "დაფიქსირდა შეცდომა. გთხოვთ სცადოთ ხელახლა."
       );
     } finally {
       setLoading(false);
@@ -81,6 +121,27 @@ export const Upload = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handlePayment = async () => {
+    if (!email.trim()) {
+      setError("გთხოვთ შეიყვანოთ ელ-ფოსტა");
+      return;
+    }
+
+    setError("");
+
+    try {
+      const data = await createPayment(email);
+
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+      } else {
+        setError("გადახდის შექმნა ვერ მოხერხდა");
+      }
+    } catch {
+      setError("გადახდის პროცესში მოხდა შეცდომა");
+    }
+  };
+
   return (
     <section className="relative bg-gradient-to-b from-black via-gray-900 to-black sm:min-h-screen py-10 px-4 sm:py-16 sm:px-8">
       <div className="max-w-4xl mx-auto">
@@ -96,7 +157,6 @@ export const Upload = () => {
         />
 
         <UploadButtons onFileSelect={setFile} selectedFileName={file?.name} />
-
         <UploadTextarea text={text} setText={setText} />
 
         {error && (
@@ -114,14 +174,27 @@ export const Upload = () => {
           </div>
         )}
 
-        <button
-          onClick={handleGenerate}
-          disabled={loading}
-          className="bg-gray-800 text-gray-300 px-8 py-3 rounded-full flex items-center gap-2 mb-6 disabled:opacity-50"
-        >
-          <IoChatboxEllipsesOutline />
-          {loading ? "გენერირდება..." : "დააგენერირე"}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !isPaid}
+            className="bg-gray-800 text-gray-300 px-8 py-3 rounded-full flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-gray-700 transition"
+          >
+            <IoChatboxEllipsesOutline />
+            {loading
+              ? "გენერირდება..."
+              : !isPaid
+              ? "ჯერ გადაიხადეთ"
+              : "დააგენერირე"}
+          </button>
+
+          <button
+            onClick={handlePayment}
+            className="bg-purple-700 text-white px-8 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-purple-600 transition shadow-lg hover:scale-105 active:scale-95"
+          >
+            💳 გადაიხადე
+          </button>
+        </div>
 
         {audioUrl && (
           <div className="relative p-4 sm:p-6 bg-gray-800/50 rounded-2xl border border-gray-700">

@@ -1,3 +1,4 @@
 export const ROUTES = {
-  home: '/',
-} as const
+  home: "/",
+  paymentSuccess: "/payment-success",
+} as const;
