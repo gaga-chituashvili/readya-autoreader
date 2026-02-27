@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { verifyPayment } from "../services/pay";
+import { checkPaymentStatus } from "../services/pay";
 import {
   MdCheckCircle,
   MdHourglassEmpty,
@@ -26,16 +26,17 @@ const PaymentSuccess = () => {
 
     const checkPayment = async () => {
       try {
-        const data = await verifyPayment(orderId);
+        const data = await checkPaymentStatus(orderId);
 
-        if (data?.status === "paid") {
+        if (data?.payment_status === "paid") {
           setStatus("paid");
-        } else if (data?.status === "pending") {
+        } else if (data?.payment_status === "pending") {
           setStatus("pending");
         } else {
           setStatus("error");
         }
       } catch (error) {
+        console.error("Payment check error:", error);
         setStatus("error");
       }
     };
@@ -60,7 +61,9 @@ const PaymentSuccess = () => {
           </p>
 
           <button
-            onClick={() => navigate("/")}
+            onClick={() =>
+              navigate(`/?order_id=${searchParams.get("order_id")}`)
+            }
             className="bg-purple-700 hover:bg-purple-600 px-6 py-3 rounded-full transition"
           >
             მთავარ გვერდზე დაბრუნება

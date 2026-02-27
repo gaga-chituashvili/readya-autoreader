@@ -1,11 +1,10 @@
-const API_URL = "http://127.0.0.1:8000";
 
-// --------------------
-// CREATE PAYMENT
-// --------------------
+const API_URL = "https://readya-backend.onrender.com";
+
+
 export const createPayment = async (email: string) => {
   try {
-    const response = await fetch(`${API_URL}/create-payment/`, {
+    const response = await fetch(`${API_URL}/payment/create/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -14,8 +13,9 @@ export const createPayment = async (email: string) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Payment creation failed");
+      const errorText = await response.text();
+      console.error("Payment API error:", response.status, errorText);
+      throw new Error(errorText || "Payment creation failed");
     }
 
     return await response.json();
@@ -25,23 +25,23 @@ export const createPayment = async (email: string) => {
   }
 };
 
-// --------------------
-// VERIFY PAYMENT
-// --------------------
-export const verifyPayment = async (orderId: string) => {
+
+
+export const checkPaymentStatus = async (orderId: string) => {
   try {
     const response = await fetch(
-      `${API_URL}/verify-payment/?order_id=${orderId}`,
+      `${API_URL}/payment/status/${orderId}/`
     );
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Payment verification failed");
+      const errorText = await response.text();
+      console.error("Payment status error:", response.status, errorText);
+      throw new Error(errorText || "Payment status check failed");
     }
 
     return await response.json();
   } catch (error) {
-    console.error("Error verifying payment:", error);
+    console.error("Error checking payment status:", error);
     throw error;
   }
 };
