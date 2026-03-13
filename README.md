@@ -44,3 +44,16 @@
 ├── tsconfig.node.json       # TypeScript config for Node.js
 └── vite.config.ts           # Vite configuration
 ```
+## Tech Stack
+
+### Frontend
+
+- React  
+- React DOM  
+- Vite  
+- TypeScript  
+- TailwindCSS  
+- React Router DOM  
+- TanStack React Query  
+- React Hook Form  
+- React Icons  
