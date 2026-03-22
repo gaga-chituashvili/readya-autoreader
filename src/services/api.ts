@@ -1,19 +1,14 @@
 const API_URL = "https://readya-backend.onrender.com";
 
 export const generateAudioFromText = async (
-  text: string,
-  email: string,
-  document_id: string,
+  _text: string,
+  _email: string,
+  orderId: string,
 ) => {
   try {
-    const formData = new FormData();
-    formData.append("text", text);
-    formData.append("email", email);
-    formData.append("document_id", document_id);
-
-    const response = await fetch(`${API_URL}/upload/`, {
+    // POST to /voice/{orderId}/ endpoint
+    const response = await fetch(`${API_URL}/voice/${orderId}/`, {
       method: "POST",
-      body: formData,
     });
 
     if (!response.ok) {
@@ -21,27 +16,30 @@ export const generateAudioFromText = async (
       throw new Error(errorData.error || "Failed to generate audio");
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    console.log("📦 API Response:", data);
+    console.log("📝 Words:", data.words);
+
+    return {
+      stream_url: data.stream_url,
+      words: data.words || [],
+    };
   } catch (error) {
-    console.error("Error generating audio:", error);
+    console.error("❌ Error generating audio:", error);
     throw error;
   }
 };
 
 export const generateAudioFromFile = async (
-  file: File,
-  email: string,
-  document_id: string,
+  _file: File,
+  _email: string,
+  orderId: string,
 ) => {
   try {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("email", email);
-    formData.append("document_id", document_id);
-
-    const response = await fetch(`${API_URL}/upload/`, {
+    // POST to /voice/{orderId}/ endpoint
+    const response = await fetch(`${API_URL}/voice/${orderId}/`, {
       method: "POST",
-      body: formData,
     });
 
     if (!response.ok) {
@@ -49,9 +47,17 @@ export const generateAudioFromFile = async (
       throw new Error(errorData.error || "Failed to generate audio");
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    console.log("📦 API Response:", data);
+    console.log("📝 Words:", data.words);
+
+    return {
+      stream_url: data.stream_url,
+      words: data.words || [],
+    };
   } catch (error) {
-    console.error("Error generating audio:", error);
+    console.error("❌ Error generating audio:", error);
     throw error;
   }
 };
