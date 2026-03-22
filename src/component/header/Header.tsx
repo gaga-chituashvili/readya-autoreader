@@ -12,8 +12,13 @@ export const Header = () => {
   };
 
   return (
-    <header className="flex justify-between items-center p-4">
-      <img src={readyalogo} alt="Readya Logo" onClick={reloadPage} />
+    <header className="flex items-center justify-between px-6 py-3   shadow-sm">
+      <img
+        className="h-10 cursor-pointer"
+        src={readyalogo}
+        alt="Readya Logo"
+        onClick={reloadPage}
+      />
 
       <nav>
         <ul className="flex space-x-4">
@@ -22,11 +27,15 @@ export const Header = () => {
           <Link to="/">{t("pay")}</Link>
         </ul>
       </nav>
-      <div>
-        <button>{t("enter")}</button>
-        <ThemeToggle />
-      </div>
-      <LanguageSwitcher />
+      <article className="flex space-x-10">
+        <div className="flex items-center space-x-4">
+          <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition">
+            {t("enter")}
+          </button>
+          <ThemeToggle />
+        </div>
+        <LanguageSwitcher />
+      </article>
     </header>
   );
 };
