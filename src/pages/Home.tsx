@@ -1,11 +1,9 @@
-import ListenSection from "../component/ListenSection";
-import { Upload } from "../component/upload/Upload";
+import { Hero } from "../component/Hero";
 
 export const Home = () => {
   return (
     <>
-      <ListenSection />
-      <Upload />
+      <Hero />
     </>
   );
 };
