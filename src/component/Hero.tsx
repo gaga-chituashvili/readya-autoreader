@@ -2,7 +2,7 @@ import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export const Hero = () => {
-  const { t } = useTranslation("hero");
+  const { t } = useTranslation("home");
 
   return (
     <section className="w-full py-24 px-6 bg-gray-100 dark:bg-black">

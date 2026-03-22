@@ -21,7 +21,7 @@ export const LanguageSwitcher = () => {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-28 bg-white shadow-lg rounded-lg border">
+        <div className="absolute right-0 mt-2 w-28 bg-white dark:bg-gray-800 shadow-lg rounded-lg border">
           <button
             onClick={() => changeLang("en")}
             className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
@@ -33,7 +33,7 @@ export const LanguageSwitcher = () => {
 
           <button
             onClick={() => changeLang("ka")}
-            className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
+            className={`w-full text-left px-4 py-2 hover:bg-gray-100  ${
               i18n.language === "ka" ? "font-semibold" : ""
             }`}
           >

@@ -10,8 +10,6 @@ import enHero from "./locales/en/home.json";
 import kaHeader from "./locales/ka/header.json";
 import kaHero from "./locales/ka/home.json";
 
-
-
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -26,11 +24,11 @@ i18n
     resources: {
       en: {
         header: enHeader,
-        hero: enHero,
+        home: enHero,
       },
       ka: {
         header: kaHeader,
-        hero: kaHero,
+        home: kaHero,
       },
     },
     detection: {

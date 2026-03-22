@@ -4,5 +4,12 @@
   "try_free": "Try Free",
   "watch_video": "Watch Video",
   "learn_more": "Learn More",
-  "try_readya": "Try Readya"
+  "try_readya": "Try Readya",
+  "textarea_placeholder": "Enter your text here...",
+  "generate": "Generate",
+  "language_georgian": "Georgian",
+  "language_english": "English",
+  "characters": "{{count}} / 2000",
+  "text_mode": "Text to Speech",
+  "file_mode": "File to Speech"
 }
