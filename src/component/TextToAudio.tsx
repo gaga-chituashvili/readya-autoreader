@@ -2,10 +2,22 @@ import { Settings } from "lucide-react";
 import { ModeSwitcher } from "./common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../store/useAppStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const TextToAudio = () => {
-  const { t } = useTranslation("home");
+  const { t, i18n } = useTranslation("home");
+
   const { text, setText, activeTab, setTab } = useAppStore();
+
+  const handleChange = (value: string) => {
+    i18n.changeLanguage(value);
+  };
 
   return (
     <section className="relative w-full py-24 flex justify-center bg-gray-100 dark:bg-black overflow-hidden">
@@ -64,10 +76,16 @@ export const TextToAudio = () => {
         </div>
 
         <div className="flex items-center justify-between mt-4">
-          <select className="px-4 py-2 rounded-full border border-purple-400 bg-transparent text-sm">
-            <option>{t("language_georgian")}</option>
-            <option>{t("language_english")}</option>
-          </select>
+          <Select onValueChange={handleChange}>
+            <SelectTrigger className="w-[180px] rounded-full border-purple-400">
+              <SelectValue placeholder={t("language_georgian")} />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="ka">{t("language_georgian")}</SelectItem>
+              <SelectItem value="en">{t("language_english")}</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Settings className="text-gray-500 cursor-pointer" size={18} />
         </div>
