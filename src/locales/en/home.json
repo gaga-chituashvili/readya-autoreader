@@ -28,5 +28,16 @@
   "feature_download_desc": "Save audio files for offline listening. Listen without internet connection",
 
   "feature_lang_title": "For Language Learners",
-  "feature_lang_desc": "Georgian and English"
+  "feature_lang_desc": "Georgian and English",
+
+  "testimonial_title": "What our users say",
+
+  "testimonial_1_name": "Natia, Teacher",
+  "testimonial_1_text": "Working with large volumes of study materials has become much easier with Readya. Listening to text allows me to manage my time more efficiently.",
+
+  "testimonial_2_name": "Otari, Professional",
+  "testimonial_2_text": "In my workflow, I often need to go through a large number of documents. Readya helps make this process more flexible and efficient.",
+
+  "testimonial_3_name": "Luka, Student",
+  "testimonial_3_text": "Managing time effectively is important during exam preparation. Readya allows me to listen to study materials anytime."
 }
