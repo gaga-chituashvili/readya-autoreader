@@ -1,3 +1,4 @@
+import { type Feature } from "../types/features";
 import {
   Sparkles,
   Settings,
@@ -7,7 +8,7 @@ import {
   Languages,
 } from "lucide-react";
 
-export const features = [
+export const features: Feature[] = [
   {
     icon: Sparkles,
     title: "feature_ai_title",

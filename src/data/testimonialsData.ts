@@ -1,8 +1,9 @@
+import type { Testimonial } from "../types/testimonials";
 import natia from "../assets/natiaPhoto.png";
 import otari from "../assets/otarPhoto.png";
 import luka from "../assets/lukaPhoto.png";
 
-export const testimonials = [
+export const testimonials: Testimonial[] = [
   {
     name: "testimonial_1_name",
     text: "testimonial_1_text",
