@@ -22,24 +22,6 @@ export const TextToAudio = () => {
   return (
     <section className="relative w-full py-24 flex justify-center bg-gray-100 dark:bg-black overflow-hidden">
       <svg
-        className="absolute top-0 left-0 w-full h-[200px]"
-        viewBox="0 0 1440 200"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0,80 C400,20 1040,20 1440,80 L1440,0 L0,0 Z"
-          fill="url(#topGradient)"
-          fillOpacity="0.4"
-        />
-        <defs>
-          <linearGradient id="topGradient" x1="0" x2="1">
-            <stop offset="0%" stopColor="#f3e8ff" />
-            <stop offset="100%" stopColor="#e0e7ff" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <svg
         className="absolute top-0 left-0 w-full h-[250px]"
         viewBox="0 0 1440 250"
         preserveAspectRatio="none"
@@ -49,9 +31,10 @@ export const TextToAudio = () => {
           fill="url(#bottomGradient)"
         />
         <defs>
-          <linearGradient id="bottomGradient" x1="0" x2="1">
-            <stop offset="0%" stopColor="#c084fc" />
-            <stop offset="100%" stopColor="#818cf8" />
+          <linearGradient id="bottomGradient" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stopColor="#d8b4fe" />
+            <stop offset="50%" stopColor="#c4b5fd" />
+            <stop offset="100%" stopColor="#a5b4fc" />
           </linearGradient>
         </defs>
       </svg>

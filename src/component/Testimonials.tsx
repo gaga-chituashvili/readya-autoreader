@@ -5,16 +5,17 @@ export const Testimonials = () => {
   const { t } = useTranslation("home");
 
   return (
-    <section className="py-20 px-6 bg-gray-100 dark:bg-black">
-      <h2 className="text-center text-2xl md:text-4xl font-bold mb-12 text-gray-900 dark:text-white">
+    <section className="relative overflow-hidden py-20 px-6 bg-gray-100 dark:bg-black">
+      <div className="pointer-events-none absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70" />
+      <h2 className="relative text-center text-2xl md:text-4xl font-bold mb-12 text-gray-900 dark:text-white">
         {t("testimonial_title")}
       </h2>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="relative grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {testimonials.map((item, index) => (
           <article
             key={index}
-            className="bg-white dark:bg-zinc-900 rounded-2xl p-8 text-center shadow-md"
+            className="bg-white dark:bg-zinc-900 rounded-2xl p-8 text-center shadow-md hover:shadow-xl transition"
           >
             <img
               src={item.image}
