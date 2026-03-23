@@ -6,7 +6,7 @@ export const Testimonials = () => {
 
   return (
     <section className="relative overflow-hidden py-20 px-6 bg-gray-100 dark:bg-black">
-      <div className="pointer-events-none absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70" />
+      <div className="pointer-events-none absolute -top-0 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70" />
       <h2 className="relative text-center text-2xl md:text-4xl font-bold mb-12 text-gray-900 dark:text-white">
         {t("testimonial_title")}
       </h2>
