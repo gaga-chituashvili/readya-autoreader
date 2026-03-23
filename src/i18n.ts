@@ -5,10 +5,12 @@ import LanguageDetector from "i18next-browser-languagedetector";
 // --- English language files import ---
 import enHeader from "./locales/en/header.json";
 import enHero from "./locales/en/home.json";
+import enfooter from "./locales/en/footer.json";
 
 // --- Georgian language files import ---
 import kaHeader from "./locales/ka/header.json";
 import kaHero from "./locales/ka/home.json";
+import kafooter from "./locales/ka/footer.json";
 
 i18n
   .use(LanguageDetector)
@@ -25,10 +27,12 @@ i18n
       en: {
         header: enHeader,
         home: enHero,
+        footer: enfooter,
       },
       ka: {
         header: kaHeader,
         home: kaHero,
+        footer: kafooter,
       },
     },
     detection: {

@@ -8,8 +8,9 @@ export const footerData: FooterData = {
 
   sections: [
     {
-      title: "footer_product",
+      title: "conditions",
       links: [
+        { label: "terms_and_policy", to: "/" },
         { label: "footer_terms", to: "/" },
         { label: "footer_privacy", to: "/" },
       ],
@@ -17,16 +18,16 @@ export const footerData: FooterData = {
     {
       title: "footer_features",
       links: [
-        { label: "footer_reader", to: "/" },
-        { label: "footer_ai", to: "/" },
-        { label: "footer_voice", to: "/" },
+        { label: "about_readya", to: "/" },
+        { label: "our_team", to: "/" },
+        { label: "contact", to: "/" },
       ],
     },
     {
-      title: "footer_support",
+      title: "service_user",
       links: [
-        { label: "footer_help", to: "/" },
-        { label: "footer_contact", to: "/" },
+        { label: "service", to: "/" },
+        { label: "support", to: "/" },
       ],
     },
   ],
