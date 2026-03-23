@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { footerData } from "../../data/footerData";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import {
   Instagram,
   Facebook,

@@ -1,5 +1,5 @@
 import readyalogo from "../../assets/readyalogo.png";
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 import { LanguageSwitcher } from "../common/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "../common/ToggleButton";

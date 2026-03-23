@@ -1,18 +1,9 @@
 import "./App.css";
-import MainLayout from "./layout/MainLayout";
-import { RoutesConfig } from "./routes/Routes";
-import { Routes, Route } from "react-router-dom";
+import { RouterProvider } from "@tanstack/react-router";
+import { router } from "./router";
 
 function App() {
-  return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        {RoutesConfig.map(({ path, element }) => (
-          <Route key={path} path={path} element={element} />
-        ))}
-      </Route>
-    </Routes>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
