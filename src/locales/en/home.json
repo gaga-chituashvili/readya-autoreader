@@ -5,11 +5,28 @@
   "watch_video": "Watch Video",
   "learn_more": "Learn More",
   "try_readya": "Try Readya",
+
   "textarea_placeholder": "Enter your text here...",
   "generate": "Generate",
   "language_georgian": "Georgian",
   "language_english": "English",
   "characters": "{{count}} / 2000",
   "text_mode": "Text to Speech",
-  "file_mode": "File to Speech"
+  "file_mode": "File to Speech",
+
+  "features_title": "What are Readya's features?",
+
+  "feature_ai_title": "AI Summarization",
+  "feature_ai_desc": "Short, clear summaries. Only the essential information with quick access to key ideas",
+
+  "feature_voice_desc": "Adjust reading speed, choose voice tone, and highlight text while listening",
+
+  "feature_save_desc": "Access information on the go, use bookmarks and mark important sections",
+
+  "feature_listen_desc": "Short, clear summaries. Only the essential information with quick access to key ideas",
+
+  "feature_download_desc": "Save audio files for offline listening. Listen without internet connection",
+
+  "feature_lang_title": "For Language Learners",
+  "feature_lang_desc": "Georgian and English"
 }
