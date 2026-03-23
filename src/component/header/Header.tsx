@@ -3,16 +3,22 @@ import { Link } from "@tanstack/react-router";
 import { LanguageSwitcher } from "../common/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "../common/ToggleButton";
+import { useScrollDirection } from "../../hook/useScrollDirection";
 
 export const Header = () => {
   const { t } = useTranslation("header");
+  const isVisible = useScrollDirection();
 
   const reloadPage = () => {
     window.location.reload();
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 dark:bg-black  shadow-sm">
+    <header
+      className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-3 bg-white dark:bg-black shadow-sm transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <img
         className="h-10 cursor-pointer"
         src={readyalogo}

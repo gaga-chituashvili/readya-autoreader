@@ -16,7 +16,7 @@ export const footerData: FooterData = {
       ],
     },
     {
-      title: "footer_features",
+      title: "about_our",
       links: [
         { label: "about_readya", to: "/" },
         { label: "our_team", to: "/" },
