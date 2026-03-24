@@ -14,7 +14,7 @@ export const FAQ = () => {
 
   return (
     <section className="relative py-20 px-4 md:px-6 bg-gray-100 dark:bg-black overflow-hidden">
-      <div className="pointer-events-none absolute -top-0 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70 dark:opacity-40" />
+      <div className="pointer-events-none absolute bottom-20 -left-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70 dark:opacity-40" />
 
       <article className="relative max-w-3xl mx-auto">
         <h2 className="text-center text-2xl md:text-4xl font-bold mb-12 text-gray-900 dark:text-white">
