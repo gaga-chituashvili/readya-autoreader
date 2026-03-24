@@ -1,13 +1,24 @@
+"use client";
+
 import readyalogo from "../../assets/readyalogo.png";
 import { Link } from "@tanstack/react-router";
 import { LanguageSwitcher } from "../common/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "../common/ToggleButton";
 import { useScrollDirection } from "../../hook/useScrollDirection";
+import { Menu } from "lucide-react";
+import { useState } from "react";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export const Header = () => {
   const { t } = useTranslation("header");
   const isVisible = useScrollDirection();
+  const [open, setOpen] = useState(false);
 
   const reloadPage = () => {
     window.location.reload();
@@ -26,14 +37,15 @@ export const Header = () => {
         onClick={reloadPage}
       />
 
-      <nav>
+      <nav className="hidden md:block">
         <ul className="flex space-x-4">
           <Link to="/">{t("about_our_company")}</Link>
           <Link to="/">{t("text_to_speech")}</Link>
           <Link to="/">{t("pay")}</Link>
         </ul>
       </nav>
-      <article className="flex space-x-10">
+
+      <article className="hidden md:flex space-x-10">
         <div className="flex items-center space-x-4">
           <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition">
             {t("enter")}
@@ -42,6 +54,43 @@ export const Header = () => {
         </div>
         <LanguageSwitcher />
       </article>
+
+      <div className="flex items-center gap-3 md:hidden">
+        <LanguageSwitcher />
+
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <button className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition">
+              <Menu className="h-6 w-6" />
+            </button>
+          </PopoverTrigger>
+
+          <PopoverContent
+            align="end"
+            className="w-56 mt-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white rounded-xl p-6"
+          >
+            <nav className="flex flex-col gap-4">
+              <Link to="/" onClick={() => setOpen(false)}>
+                {t("about_our_company")}
+              </Link>
+
+              <Link to="/" onClick={() => setOpen(false)}>
+                {t("text_to_speech")}
+              </Link>
+
+              <Link to="/" onClick={() => setOpen(false)}>
+                {t("pay")}
+              </Link>
+
+              <div className="border-t border-gray-200 dark:border-zinc-700 my-2" />
+
+              <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition">
+                {t("enter")}
+              </button>
+            </nav>
+          </PopoverContent>
+        </Popover>
+      </div>
     </header>
   );
 };
