@@ -1,4 +1,3 @@
-import { Settings } from "lucide-react";
 import { ModeSwitcher } from "./common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../store/useAppStore";
@@ -8,7 +7,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/component/ui/select";
+import { SettingsModal } from "@/component/SettingsModal";
+import {} from "@/component/SettingsModal";
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
@@ -70,7 +71,7 @@ export const TextToAudio = () => {
             </SelectContent>
           </Select>
 
-          <Settings className="text-gray-500 cursor-pointer" size={18} />
+          <SettingsModal />
         </div>
 
         <div className="flex justify-center mt-6">

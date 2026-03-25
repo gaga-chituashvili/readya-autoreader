@@ -6,7 +6,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/component/ui/accordion";
 import { Plus } from "lucide-react";
 
 export const FAQ = () => {

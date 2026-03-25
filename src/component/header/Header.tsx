@@ -13,7 +13,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/component/ui/popover";
 
 export const Header = () => {
   const { t } = useTranslation("header");
