@@ -1,19 +1,35 @@
-import { useMutation,useQuery } from "@tanstack/react-query";
-import { generateAudioFromText } from "../services/api";
-import { generateAudioFromFile } from "../services/api";
-import { getAudioStreamUrl } from "../services/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  generateAudioFromText,
+  generateAudioFromFile,
+  getAudioStreamUrl,
+} from "../services/api";
 
 export const useGenerateAudioFromText = () => {
   return useMutation({
-    mutationFn: ({ text, email }: { text: string; email: string }) =>
-      generateAudioFromText(text, email),
+    mutationFn: ({
+      text,
+      email,
+      document_id,
+    }: {
+      text: string;
+      email: string;
+      document_id: string;
+    }) => generateAudioFromText(text, email, document_id),
   });
 };
 
 export const useGenerateAudioFromFile = () => {
   return useMutation({
-    mutationFn: ({ file, email }: { file: File; email: string }) =>
-      generateAudioFromFile(file, email),
+    mutationFn: ({
+      file,
+      email,
+      document_id,
+    }: {
+      file: File;
+      email: string;
+      document_id: string;
+    }) => generateAudioFromFile(file, email, document_id),
   });
 };
 

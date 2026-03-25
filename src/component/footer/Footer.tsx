@@ -1,29 +1,74 @@
-import { FaRegCopyright } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { footerData } from "../../data/footerData";
+import { Link } from "@tanstack/react-router";
+import {
+  Instagram,
+  Facebook,
+  Youtube,
+  Linkedin,
+  Copyright,
+} from "lucide-react";
+import Logo from "../../assets/readyaLogo.png";
 
 export const Footer = () => {
+  const { t } = useTranslation("footer");
+
   return (
-    <footer className="bg-black py-8 pb-24 sm:pb-36">
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-6 sm:gap-0 max-w-7xl mx-auto text-gray-400 text-xs sm:text-sm px-4">
-        <div className="flex items-center gap-1">
-          Readya.me
-          <FaRegCopyright size={12} className="inline" />
-          {new Date().getFullYear()}
+    <footer className="bg-white dark:bg-black border-t border-gray-200 dark:border-zinc-800 mt-20">
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center md:text-left">
+          <div className="space-y-3 flex flex-col items-center md:items-start">
+            <img src={Logo} alt="Readya Logo" className="w-32" />
+
+            <p className="text-gray-500 text-sm">{footerData.contact.email}</p>
+
+            <p className="text-gray-500 text-sm">
+              {footerData.contact.website}
+            </p>
+          </div>
+
+          {footerData.sections.map((section, i) => (
+            <div key={i} className="flex flex-col items-center md:items-start">
+              <h4 className="font-semibold mb-4 text-gray-900 dark:text-white">
+                {t(section.title)}
+              </h4>
+
+              <ul className="space-y-2">
+                {section.links.map((link, idx) => (
+                  <li key={idx}>
+                    <Link
+                      to={link.to}
+                      className="text-gray-500 hover:text-black dark:hover:text-white transition"
+                    >
+                      {t(link.label)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center">
-          <Link to="/privacy" className="hover:text-white transition">
-            დარეგისტრირდი
-          </Link>
-          <Link to="/terms" className="hover:text-white transition">
-            მოუსმინე აუდიობლოგს
-          </Link>
+        <div className="flex justify-center mt-10">
+          <div className="w-full max-w-6xl h-px bg-gradient-to-r from-transparent via-black/40 to-transparent dark:via-white/40" />
         </div>
 
-        <span className="text-gray-500 text-center sm:text-right">
-          Powered by Tvitploba
-        </span>
-      </div>
+        <article className="relative mt-10 pt-6 flex flex-col items-center gap-4 text-center md:flex-row md:items-center">
+          <div className="hidden md:block flex-1" />
+
+          <p className="text-gray-500 text-sm flex items-center gap-1 md:absolute md:left-1/2 md:-translate-x-1/2">
+            <Copyright className="w-4 h-4" />
+            {new Date().getFullYear()} Readya. {t("footer_rights")}
+          </p>
+
+          <div className="flex gap-4 text-gray-500 md:ml-auto">
+            <Instagram className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
+            <Facebook className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
+            <Youtube className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
+            <Linkedin className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
+          </div>
+        </article>
+      </section>
     </footer>
   );
 };

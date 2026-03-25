@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { FaDownload, FaHeadphones } from "react-icons/fa";
-import { MdCancel, MdDone } from "react-icons/md";
+import { MdDone } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 import { UploadHeader } from "./UploadHeader";
 import { UploadInfo } from "./UploadInfo";
 import { UploadButtons } from "./UploadButtons";
@@ -9,12 +10,9 @@ import { UploadTextarea } from "./UploadTextarea";
 import {
   generateAudioFromText,
   generateAudioFromFile,
-  getAudioStreamUrl,
 } from "../../services/api";
 import { createPayment } from "../../services/pay";
 import { useSearchParams } from "react-router-dom";
-
-const AUDIO_STORAGE_KEY = "readya_audio_url";
 
 export const Upload = () => {
   const [text, setText] = useState("");
@@ -25,17 +23,18 @@ export const Upload = () => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  const [words, setWords] = useState<any[]>([]);
+  const [currentWordIndex, setCurrentWordIndex] = useState(-1);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
 
   const [isPaid, setIsPaid] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
 
-  useEffect(() => {
-    const savedAudioUrl = localStorage.getItem(AUDIO_STORAGE_KEY);
-    if (savedAudioUrl) setAudioUrl(savedAudioUrl);
-  }, []);
-
+  // Check payment status
   useEffect(() => {
     if (!orderId) return;
 
@@ -44,11 +43,12 @@ export const Upload = () => {
 
       try {
         const res = await fetch(
-          `https://readya-backend.onrender.com/payment/status/${orderId}/`
+          `https://readya-backend.onrender.com/payment/status/${orderId}/`,
         );
+
         const data = await res.json();
 
-        if (data.payment_status === "paid") {
+        if (data.payment_status === "paid" || data.can_upload) {
           setIsPaid(true);
         }
       } catch (err) {
@@ -61,44 +61,73 @@ export const Upload = () => {
     checkPayment();
   }, [orderId]);
 
+  // Word highlighting sync with audio
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || words.length === 0) return;
+
+    const handleTimeUpdate = () => {
+      const time = audio.currentTime;
+
+      const index = words.findIndex((w) => time >= w.start && time <= w.end);
+
+      if (index !== -1) {
+        setCurrentWordIndex(index);
+      }
+    };
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, [words]);
+
   const handleGenerate = async () => {
-    if (!isPaid) {
+    if (!isPaid && !orderId) {
       setError("გთხოვთ ჯერ გადაიხადოთ");
       return;
     }
 
     if (!email.trim()) {
-      setError("გთხოვთ შეიყვანოთ ელ-ფოსტა");
+      setError("შეიყვანეთ ელფოსტა");
       return;
     }
 
     if (!text.trim() && !file) {
-      setError("გთხოვთ ჩასვით ტექსტი ან ატვირთოთ ფაილი");
+      setError("ჩასვით ტექსტი ან ატვირთეთ ფაილი");
       return;
     }
 
     setLoading(true);
     setError("");
-    setAudioUrl("");
     setSuccess(false);
 
     try {
       const result = file
-        ? await generateAudioFromFile(file, email)
-        : await generateAudioFromText(text, email);
+        ? await generateAudioFromFile(file, email, orderId!)
+        : await generateAudioFromText(text, email, orderId!);
 
-      const streamUrl = getAudioStreamUrl(result.id);
-      setAudioUrl(streamUrl);
-      localStorage.setItem(AUDIO_STORAGE_KEY, streamUrl);
+      console.log("✅ Result:", result);
+      console.log("📝 Words count:", result.words?.length);
+
+      const fullUrl = `https://readya-backend.onrender.com${result.stream_url}`;
+      setAudioUrl(fullUrl);
+
+      if (result.words && result.words.length > 0) {
+        console.log("🎯 Setting words:", result.words);
+        setWords(result.words);
+      } else {
+        console.log("⚠️ No words in response");
+        setWords([]);
+      }
+
       setSuccess(true);
       setText("");
       setFile(null);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "დაფიქსირდა შეცდომა. გთხოვთ სცადოთ ხელახლა."
-      );
+    } catch (err: any) {
+      console.error("❌ Error:", err);
+      setError(err.message || "შეცდომა დაფიქსირდა");
     } finally {
       setLoading(false);
     }
@@ -140,6 +169,12 @@ export const Upload = () => {
     }
   };
 
+  const handleCloseAudio = () => {
+    setAudioUrl(null);
+    setWords([]);
+    setCurrentWordIndex(-1);
+  };
+
   return (
     <section className="relative bg-gradient-to-b from-black via-gray-900 to-black sm:min-h-screen py-10 px-4 sm:py-16 sm:px-8">
       <div className="max-w-4xl mx-auto">
@@ -167,7 +202,7 @@ export const Upload = () => {
           <div className="mb-4 p-4 bg-green-500/20 border border-green-500 rounded-lg">
             <p className="text-green-400 text-sm text-center md:text-left">
               <MdDone className="inline-block mr-2" />
-              აუდიო გაიგზავნა ელ-ფოსტაზე. გთხოვთ შეამოწმოთ Inbox ან Spam.
+              აუდიო წარმატებით შეიქმნა!
             </p>
           </div>
         )}
@@ -175,36 +210,34 @@ export const Upload = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <button
             onClick={handleGenerate}
-            disabled={loading || !isPaid || checkingPayment}
-            className="bg-gray-800 text-gray-300 px-8 py-3 rounded-full flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-gray-700 transition"
+            disabled={loading || checkingPayment}
+            className="bg-gray-800 text-gray-300 px-8 py-3 rounded-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700 transition"
           >
             <IoChatboxEllipsesOutline />
-            {loading
-              ? "გენერირდება..."
-              : checkingPayment
-              ? "მოწმდება გადახდა..."
-              : !isPaid
-              ? "ჯერ გადაიხადეთ"
-              : "დააგენერირე"}
+            {loading ? "გენერირდება..." : "დააგენერირე"}
           </button>
 
-          <button
-            onClick={handlePayment}
-            className="bg-purple-700 text-white px-8 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-purple-600 transition shadow-lg hover:scale-105 active:scale-95"
-          >
-            💳 გადაიხადე
-          </button>
+          {!isPaid && (
+            <button
+              onClick={handlePayment}
+              className="bg-purple-700 text-white px-8 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-purple-600 transition"
+            >
+              💳 გადაიხადე (5 GEL)
+            </button>
+          )}
         </div>
 
         {audioUrl && (
           <div className="relative p-4 sm:p-6 bg-gray-800/50 rounded-2xl border border-gray-700">
-            <MdCancel
-              className="absolute top-3 right-3 text-white text-3xl mb-4 cursor-pointer hover:text-4xl hover:text-red-700 hover:scale-105 hover:shadow-lg active:scale-95"
-              onClick={() => {
-                localStorage.removeItem(AUDIO_STORAGE_KEY);
-                setAudioUrl(null);
-              }}
-            />
+            {/* X ღილაკი კუთხეში */}
+            <button
+              onClick={handleCloseAudio}
+              className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-red-500/20 hover:bg-red-500/40 rounded-full transition"
+              aria-label="Close audio player"
+            >
+              <IoMdClose className="text-white text-xl" />
+            </button>
+
             <div className="flex items-center gap-3 mb-4">
               <FaHeadphones className="text-purple-500 text-xl sm:text-2xl" />
               <h3 className="text-white text-base sm:text-lg font-bold">
@@ -212,17 +245,39 @@ export const Upload = () => {
               </h3>
             </div>
 
-            <audio controls className="w-full mb-4">
+            <audio ref={audioRef} controls className="w-full mb-4">
               <source src={audioUrl} type="audio/mpeg" />
             </audio>
 
             <button
               onClick={handleDownload}
-              className="bg-purple-700 text-white px-6 py-2 rounded-full flex items-center gap-2"
+              className="bg-purple-700 text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-purple-600 transition mb-4"
             >
               <FaDownload />
               ჩამოტვირთვა
             </button>
+
+            {words.length > 0 && (
+              <div className="mt-6 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                <h4 className="text-white text-sm font-semibold mb-3 flex items-center gap-2">
+                  📝 ტექსტი (მარკირებული კითხვა)
+                </h4>
+                <div className="text-base sm:text-lg text-gray-300 flex flex-wrap leading-relaxed">
+                  {words.map((w, i) => (
+                    <span
+                      key={i}
+                      className={`mr-2 mb-1 transition-all duration-200 ${
+                        currentWordIndex === i
+                          ? "text-purple-400 font-bold scale-110 underline"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      {w.word}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

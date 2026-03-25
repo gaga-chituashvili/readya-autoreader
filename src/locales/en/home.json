@@ -1,0 +1,75 @@
+{
+  "hero_title": "Add audio to your text!",
+  "hero_description": "Readya is a platform that easily converts any text into audio.",
+  "try_free": "Try Free",
+  "watch_video": "Watch Video",
+  "learn_more": "Learn More",
+  "try_readya": "Try Readya",
+
+  "textarea_placeholder": "Enter your text here...",
+  "generate": "Generate",
+  "language_georgian": "Georgian",
+  "language_english": "English",
+  "characters": "{{count}} / 2000",
+  "text_mode": "Text to Speech",
+  "file_mode": "File to Speech",
+
+  "features_title": "What are Readya's features?",
+
+  "feature_ai_title": "AI Summarization",
+  "feature_ai_desc": "Short, clear summaries. Only the essential information with quick access to key ideas",
+
+  "feature_voice_desc": "Adjust reading speed, choose voice tone, and highlight text while listening",
+
+  "feature_save_desc": "Access information on the go, use bookmarks and mark important sections",
+
+  "feature_listen_desc": "Short, clear summaries. Only the essential information with quick access to key ideas",
+
+  "feature_download_desc": "Save audio files for offline listening. Listen without internet connection",
+
+  "feature_lang_title": "For Language Learners",
+  "feature_lang_desc": "Georgian and English",
+
+  "testimonial_title": "What our users say",
+
+  "testimonial_1_name": "Natia, Teacher",
+  "testimonial_1_text": "Working with large volumes of study materials has become much easier with Readya. Listening to text allows me to manage my time more efficiently.",
+
+  "testimonial_2_name": "Otari, Professional",
+  "testimonial_2_text": "In my workflow, I often need to go through a large number of documents. Readya helps make this process more flexible and efficient.",
+
+  "testimonial_3_name": "Luka, Student",
+  "testimonial_3_text": "Managing time effectively is important during exam preparation. Readya allows me to listen to study materials anytime.",
+
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "what_is_readya": {
+      "q": "What is Readya?",
+      "a": "Readya is an AI-powered platform that converts Georgian text into natural, high-quality audio."
+    },
+    "why_use_readya": {
+      "q": "Who is Readya for?",
+      "a": "Readya is designed for students, professionals, and businesses who want to listen to text, save time, and consume information more efficiently."
+    },
+    "how_to_work": {
+      "q": "How does Readya work?",
+      "a": "Simply paste text or upload a file, choose a voice, and the system will automatically convert it into audio within seconds."
+    },
+    "what_file_types": {
+      "q": "What file types can I use?",
+      "a": "You can use text-based files such as PDF, DOCX, or directly paste text into the platform."
+    },
+    "what_languages": {
+      "q": "What languages is Readya available in?",
+      "a": "Currently, Readya is optimized for the Georgian language, with more languages planned in the future."
+    },
+    "can_use_for_study": {
+      "q": "Can I use it for studying?",
+      "a": "Yes, Readya is perfect for studying — you can listen to lectures, articles, and notes anytime."
+    },
+    "why_readya": {
+      "q": "Why Readya?",
+      "a": "Readya provides a fast, simple, and high-quality way to listen to text, helping you save time and boost productivity."
+    }
+  }
+}
