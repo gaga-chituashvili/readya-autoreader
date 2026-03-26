@@ -19,7 +19,7 @@ export const footerData: FooterData = {
       title: "about_our",
       links: [
         { label: "about_readya", to: "/about-us" },
-        { label: "our_team", to: "/" },
+        { label: "our_team", to: "/our-team" },
         { label: "contact", to: "/" },
       ],
     },

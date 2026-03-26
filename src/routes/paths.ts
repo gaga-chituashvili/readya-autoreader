@@ -3,5 +3,6 @@ export const ROUTES = {
   aboutUs: "/about-us",
   services: "/services",
   supports: "/supports",
+  ourTeam: "/our-team",
   paymentSuccess: "/payment-success",
 } as const;

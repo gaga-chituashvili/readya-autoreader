@@ -1,0 +1,13 @@
+{
+  "title": "Our Team",
+  "aboutTitle": "Ridia",
+  "aboutText": "A modern Georgian-language platform that transforms written text into an audio experience",
+  "membersTitle": "Our Team Members",
+
+  "members": {
+    "rusudan": "Rusudan Macharashvili",
+    "salome": "Salome Gazdeliani",
+    "gaga": "Gaga Chituashvili",
+    "pixora": "Pixora AI"
+  }
+}

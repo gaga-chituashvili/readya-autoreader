@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@/component/ui/breadcrumb";
 
 export default function Breadcrumbs() {
   const routerState = useRouterState();

@@ -9,6 +9,7 @@ import MainLayout from "./layout/MainLayout";
 import { ROUTES } from "./routes/paths";
 import { Services } from "./pages/Services";
 import { Supports } from "./pages/Supports";
+import { OurTeam } from "./pages/OurTeam";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -38,11 +39,18 @@ const supportsRoute = createRoute({
   component: Supports,
 });
 
+const ourTeamRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.ourTeam,
+  component: OurTeam,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutUsRoute,
   servicesRoute,
   supportsRoute,
+  ourTeamRoute,
 ]);
 
 export const router = createRouter({
