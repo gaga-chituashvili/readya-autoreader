@@ -8,6 +8,7 @@ import { ThemeToggle } from "../common/ToggleButton";
 import { useScrollDirection } from "../../hook/useScrollDirection";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/component/ui/button";
 
 import {
   Popover,
@@ -47,9 +48,7 @@ export const Header = () => {
 
       <article className="hidden md:flex space-x-10">
         <div className="flex items-center space-x-4">
-          <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition">
-            {t("enter")}
-          </button>
+          <Button variant="default">{t("enter")}</Button>
           <ThemeToggle />
         </div>
         <LanguageSwitcher />
@@ -85,9 +84,7 @@ export const Header = () => {
 
               <div className="border-t border-gray-200 dark:border-zinc-700 my-2" />
 
-              <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 transition">
-                {t("enter")}
-              </button>
+              <Button variant="default">{t("enter")}</Button>
             </nav>
           </PopoverContent>
         </Popover>

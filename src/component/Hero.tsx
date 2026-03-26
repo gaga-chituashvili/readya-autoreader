@@ -1,5 +1,6 @@
 import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "./ui/button";
 
 export const Hero = () => {
   const { t } = useTranslation("home");
@@ -26,13 +27,9 @@ export const Hero = () => {
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-6 py-3 rounded-full bg-purple-500 text-white font-medium hover:bg-purple-600 transition">
-              {t("learn_more")}
-            </button>
+            <Button variant="default">{t("learn_more")}</Button>
 
-            <button className="w-full sm:w-auto px-6 py-3 rounded-full bg-purple-400 text-white font-medium hover:bg-purple-500 transition">
-              {t("try_readya")}
-            </button>
+            <Button variant="secondary">{t("try_readya")}</Button>
           </div>
         </div>
 

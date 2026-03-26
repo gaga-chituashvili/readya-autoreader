@@ -10,6 +10,7 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import {} from "@/component/SettingsModal";
+import { Button } from "./ui/button";
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
@@ -75,9 +76,7 @@ export const TextToAudio = () => {
         </div>
 
         <div className="flex justify-center mt-6">
-          <button className="px-8 py-3 rounded-full bg-purple-500 text-white font-medium hover:bg-purple-600 transition">
-            {t("generate")}
-          </button>
+          <Button variant="default">{t("generate")}</Button>
         </div>
       </div>
     </section>
