@@ -8,6 +8,7 @@ import { AboutUs } from "./pages/AboutUs";
 import MainLayout from "./layout/MainLayout";
 import { ROUTES } from "./routes/paths";
 import { Services } from "./pages/Services";
+import { Supports } from "./pages/Supports";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -29,10 +30,20 @@ const servicesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.services,
   component: Services,
-
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, aboutUsRoute, servicesRoute]);
+const supportsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.supports,
+  component: Supports,
+});
+
+const routeTree = rootRoute.addChildren([
+  homeRoute,
+  aboutUsRoute,
+  servicesRoute,
+  supportsRoute,
+]);
 
 export const router = createRouter({
   routeTree,
