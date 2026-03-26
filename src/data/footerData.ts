@@ -26,7 +26,7 @@ export const footerData: FooterData = {
     {
       title: "service_user",
       links: [
-        { label: "service", to: "/" },
+        { label: "service", to: "/services" },
         { label: "support", to: "/" },
       ],
     },

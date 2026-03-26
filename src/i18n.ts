@@ -7,12 +7,14 @@ import enHeader from "./locales/en/header.json";
 import enHero from "./locales/en/home.json";
 import enfooter from "./locales/en/footer.json";
 import enAbout from "./locales/en/about.json";
+import enServices from "./locales/en/servicec.json";
 
 // --- Georgian language files import ---
 import kaHeader from "./locales/ka/header.json";
 import kaHero from "./locales/ka/home.json";
 import kafooter from "./locales/ka/footer.json";
 import kaAbout from "./locales/ka/about.json";
+import kaServices from "./locales/ka/services.json";
 
 i18n
   .use(LanguageDetector)
@@ -31,12 +33,14 @@ i18n
         home: enHero,
         footer: enfooter,
         about: enAbout,
+        services: enServices,
       },
       ka: {
         header: kaHeader,
         home: kaHero,
         footer: kafooter,
         about: kaAbout,
+        services: kaServices,
       },
     },
     detection: {

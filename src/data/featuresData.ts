@@ -11,28 +11,28 @@ import {
 export const features: Feature[] = [
   {
     icon: Sparkles,
-    title: "feature_ai_title",
-    description: "feature_ai_desc",
+    title: "home:feature_ai_title",
+    description: "home:feature_ai_desc",
   },
   {
     icon: Settings,
-    description: "feature_voice_desc",
+    description: "home:feature_voice_desc",
   },
   {
     icon: Bookmark,
-    description: "feature_save_desc",
+    description: "home:feature_save_desc",
   },
   {
     icon: Headphones,
-    description: "feature_listen_desc",
+    description: "home:feature_listen_desc",
   },
   {
     icon: Download,
-    description: "feature_download_desc",
+    description: "home:feature_download_desc",
   },
   {
     icon: Languages,
-    title: "feature_lang_title",
-    description: "feature_lang_desc",
+    title: "home:feature_lang_title",
+    description: "home:feature_lang_desc",
   },
 ];
