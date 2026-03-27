@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import type { VoiceSettings, SettingKey } from "@/types/home.type";
-import { DEFAULT_SETTINGS, STORAGE_KEY } from "../constants/settingsConfig";
+import { DEFAULT_SETTINGS, STORAGE_KEY } from "@/constants/settingsConfig";
 
 export const useSettings = () => {
   const [settings, setSettings] = useState<VoiceSettings>(() => {

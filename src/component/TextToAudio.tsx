@@ -1,6 +1,6 @@
-import { ModeSwitcher } from "./common/ModeSwitcher";
+import { ModeSwitcher } from "@/component/common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
-import { useAppStore } from "../store/useAppStore";
+import { useAppStore } from "@/store/useAppStore";
 import {
   Select,
   SelectContent,
@@ -10,7 +10,7 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import {} from "@/component/SettingsModal";
-import { Button } from "./ui/button";
+import { Button } from "@/component/ui/button";
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");

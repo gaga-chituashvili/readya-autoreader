@@ -3,7 +3,7 @@ import {
   generateAudioFromText,
   generateAudioFromFile,
   getAudioStreamUrl,
-} from "../services/api";
+} from "@/services/api";
 
 export const useGenerateAudioFromText = () => {
   return useMutation({

@@ -1,4 +1,4 @@
-import { features } from "../data/featuresData";
+import { features } from "@/data/featuresData";
 import { useTranslation } from "react-i18next";
 
 export const Features = () => {

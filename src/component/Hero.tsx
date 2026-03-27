@@ -1,6 +1,6 @@
 import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "./ui/button";
+import { Button } from "@/component/ui/Button";
 
 export const Hero = () => {
   const { t } = useTranslation("home");

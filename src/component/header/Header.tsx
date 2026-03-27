@@ -1,11 +1,11 @@
 "use client";
 
-import readyalogo from "../../assets/readyalogo.png";
+import readyalogo from "@/assets/Readyalogo.png";
 import { Link } from "@tanstack/react-router";
-import { LanguageSwitcher } from "../common/LanguageSwitcher";
+import { LanguageSwitcher } from "@/component/common/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import { ThemeToggle } from "../common/ToggleButton";
-import { useScrollDirection } from "../../hook/useScrollDirection";
+import { ThemeToggle } from "@/component/common/ToggleButton";
+import { useScrollDirection } from "@/hook/useScrollDirection";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/component/ui/button";
