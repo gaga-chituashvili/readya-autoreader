@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { Section } from "@/types/privacy";
+import type { PrivacySection } from "@/types/privacy";
 
 export const PrivacyPolicy = () => {
   const { t } = useTranslation("privacy");
@@ -7,7 +7,7 @@ export const PrivacyPolicy = () => {
   const sections = t("sections", {
     returnObjects: true,
     defaultValue: [],
-  }) as Section[];
+  }) as PrivacySection[];
 
   return (
     <section className="min-h-screen bg-gray-100 dark:bg-black py-12 px-4 pb-20 sm:pb-28 md:pb-40 lg:pb-56">

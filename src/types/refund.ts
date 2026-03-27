@@ -1,11 +1,11 @@
-export type PrivacySection = {
+export type RefundSection = {
   title: string;
   content: string[];
 };
 
-export type PrivacyLang = {
+export type RefundData = {
   title: string;
   updated: string;
   intro: string;
-  sections: PrivacySection[];
+  sections: RefundSection[];
 };

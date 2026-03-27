@@ -1,13 +1,14 @@
 import { useTranslation } from "react-i18next";
-import type { TermsSection } from "@/types/term.type";
+import type { RefundSection } from "@/types/refund";
+import { EmailPill } from "@/hook/EmailPill";
 
-export const TermsAndPolicy = () => {
-  const { t } = useTranslation("terms");
+export const RefundPolicy = () => {
+  const { t } = useTranslation("refund");
 
   const sections = t("sections", {
     returnObjects: true,
     defaultValue: [],
-  }) as TermsSection[];
+  }) as RefundSection[];
 
   return (
     <section className="min-h-screen bg-gray-100 dark:bg-black py-12 px-4 pb-20 sm:pb-28 md:pb-40 lg:pb-56">
@@ -27,33 +28,30 @@ export const TermsAndPolicy = () => {
         </p>
 
         <div className="space-y-8">
-          {Array.isArray(sections) &&
-            sections.map((section, index) => (
-              <div key={index}>
-                <h2 className="font-semibold text-gray-900 dark:text-white mb-3 text-base sm:text-lg">
-                  {t(`sections.${index}.title`)}
-                </h2>
+          {sections.map((section, index) => (
+            <div key={index}>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-3 text-base sm:text-lg">
+                {section.title}
+              </h2>
 
-                <div className="space-y-2">
-                  {section.content?.map((_, i) => (
+              <div className="space-y-2">
+                {section.content.map((line, i) => {
+                  const isEmail = line.includes("@");
+
+                  return isEmail ? (
+                    <EmailPill key={i} email={line} />
+                  ) : (
                     <p
                       key={i}
                       className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed"
                     >
-                      {t(`sections.${index}.content.${i}`)}
+                      {line}
                     </p>
-                  ))}
-                </div>
-
-                {section.bullets && (
-                  <ul className="list-disc pl-5 mt-3 space-y-1 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                    {section.bullets.map((_, i) => (
-                      <li key={i}>{t(`sections.${index}.bullets.${i}`)}</li>
-                    ))}
-                  </ul>
-                )}
+                  );
+                })}
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>

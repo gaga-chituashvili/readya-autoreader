@@ -6,5 +6,6 @@ export const ROUTES = {
   ourTeam: "/our-team",
   privacyPolicy: "/privacy-policy",
   termsAndPolicy: "/terms-and-policy",
+  refundPolicy: "/refund-policy",
   paymentSuccess: "/payment-success",
 } as const;
