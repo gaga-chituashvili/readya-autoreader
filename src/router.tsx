@@ -52,6 +52,12 @@ const termsAndPolicyRoute = createRoute({
   component: TermsAndPolicy,
 });
 
+const privacyPolicyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.privacyPolicy,
+  component: TermsAndPolicy,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutUsRoute,
@@ -59,6 +65,7 @@ const routeTree = rootRoute.addChildren([
   supportsRoute,
   ourTeamRoute,
   termsAndPolicyRoute,
+  privacyPolicyRoute,
 ]);
 
 export const router = createRouter({

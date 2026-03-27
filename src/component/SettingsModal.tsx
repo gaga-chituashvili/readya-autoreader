@@ -1,5 +1,5 @@
 import { Settings, X } from "lucide-react";
-import { Modal } from "@/shared/ui/modal/Modal";
+import { Modal } from "@/component/ui/modal/Modal";
 import { useModal } from "@/hook/useModal";
 import { useSettings } from "@/hook/useSettings";
 import { SettingsSlider } from "@/component/SettingsModal/SettingsSlider";
@@ -48,7 +48,6 @@ export const SettingsModal = () => {
           </button>
         </header>
 
-      
         <section aria-labelledby="settings-modal-title">
           {SLIDER_CONFIGS.map((config) => (
             <SettingsSlider
