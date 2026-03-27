@@ -15,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/component/ui/popover";
+import { AboutDropdown } from "@/component/AboutDropdown";
 
 export const Header = () => {
   const { t } = useTranslation("header");
@@ -40,9 +41,19 @@ export const Header = () => {
 
       <nav className="hidden md:block">
         <ul className="flex space-x-4">
-          <Link to="/">{t("about_our_company")}</Link>
-          <Link to="/">{t("text_to_speech")}</Link>
-          <Link to="/">{t("pay")}</Link>
+          <AboutDropdown />
+          <Link
+            activeProps={{ className: "text-indigo-500 font-semibold" }}
+            to="/"
+          >
+            {t("text_to_speech")}
+          </Link>
+          <Link
+            activeProps={{ className: "text-indigo-500 font-semibold" }}
+            to="/"
+          >
+            {t("pay")}
+          </Link>
         </ul>
       </nav>
 
@@ -70,15 +81,27 @@ export const Header = () => {
             className="w-56 mt-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white rounded-xl p-6"
           >
             <nav className="flex flex-col gap-4">
-              <Link to="/" onClick={() => setOpen(false)}>
+              <Link
+                activeProps={{ className: "text-indigo-500 font-semibold" }}
+                to="/"
+                onClick={() => setOpen(false)}
+              >
                 {t("about_our_company")}
               </Link>
 
-              <Link to="/" onClick={() => setOpen(false)}>
+              <Link
+                activeProps={{ className: "text-indigo-500 font-semibold" }}
+                to="/"
+                onClick={() => setOpen(false)}
+              >
                 {t("text_to_speech")}
               </Link>
 
-              <Link to="/" onClick={() => setOpen(false)}>
+              <Link
+                activeProps={{ className: "text-indigo-500 font-semibold" }}
+                to="/"
+                onClick={() => setOpen(false)}
+              >
                 {t("pay")}
               </Link>
 
