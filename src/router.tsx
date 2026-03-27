@@ -11,6 +11,7 @@ import { Services } from "@/pages/Services";
 import { Supports } from "@/pages/Supports";
 import { OurTeam } from "@/pages/OurTeam";
 import { TermsAndPolicy } from "@/pages/TermsAndPolicy";
+import { PrivacyPolicy } from "@/pages/PrivacyPolicy";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -55,7 +56,7 @@ const termsAndPolicyRoute = createRoute({
 const privacyPolicyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.privacyPolicy,
-  component: TermsAndPolicy,
+  component: PrivacyPolicy,
 });
 
 const routeTree = rootRoute.addChildren([

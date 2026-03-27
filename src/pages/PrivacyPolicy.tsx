@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
-import type { Section } from "@/types/term.type";
+import type { Section } from "@/types/privacy";
 
-export const TermsAndPolicy = () => {
-  const { t } = useTranslation("terms");
+export const PrivacyPolicy = () => {
+  const { t } = useTranslation("privacy");
 
   const sections = t("sections", {
     returnObjects: true,
@@ -27,33 +27,24 @@ export const TermsAndPolicy = () => {
         </p>
 
         <div className="space-y-8">
-          {Array.isArray(sections) &&
-            sections.map((section, index) => (
-              <div key={index}>
-                <h2 className="font-semibold text-gray-900 dark:text-white mb-3 text-base sm:text-lg">
-                  {t(`sections.${index}.title`)}
-                </h2>
+          {sections.map((section, index) => (
+            <div key={index}>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-3 text-base sm:text-lg">
+                {section.title}
+              </h2>
 
-                <div className="space-y-2">
-                  {section.content?.map((_, i) => (
-                    <p
-                      key={i}
-                      className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed"
-                    >
-                      {t(`sections.${index}.content.${i}`)}
-                    </p>
-                  ))}
-                </div>
-
-                {section.bullets && (
-                  <ul className="list-disc pl-5 mt-3 space-y-1 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                    {section.bullets.map((_, i) => (
-                      <li key={i}>{t(`sections.${index}.bullets.${i}`)}</li>
-                    ))}
-                  </ul>
-                )}
+              <div className="space-y-2">
+                {section.content?.map((line, i) => (
+                  <p
+                    key={i}
+                    className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed"
+                  >
+                    {line}
+                  </p>
+                ))}
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>

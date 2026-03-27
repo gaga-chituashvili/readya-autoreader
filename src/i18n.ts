@@ -11,6 +11,7 @@ import enServices from "@/locales/en/servicec.json";
 import enSupports from "@/locales/en/supports.json";
 import enOurTeam from "@/locales/en/ourTeam.json";
 import enTerms from "@/locales/en/terms.json";
+import enPrivacy from "@/locales/en/privacy.json";
 
 // --- Georgian language files import ---
 import kaHeader from "@/locales/ka/header.json";
@@ -21,6 +22,7 @@ import kaServices from "@/locales/ka/services.json";
 import kaSupports from "@/locales/ka/supports.json";
 import kaOurTeam from "@/locales/ka/ourTeam.json";
 import kaTerms from "@/locales/ka/terms.json";
+import kaprivacy from "@/locales/ka/privacy.json";
 
 i18n
   .use(LanguageDetector)
@@ -43,6 +45,7 @@ i18n
         supports: enSupports,
         ourTeam: enOurTeam,
         terms: enTerms,
+        privacy: enPrivacy,
       },
       ka: {
         header: kaHeader,
@@ -53,6 +56,7 @@ i18n
         supports: kaSupports,
         ourTeam: kaOurTeam,
         terms: kaTerms,
+        privacy: kaprivacy,
       },
     },
     detection: {
