@@ -1,7 +1,7 @@
 import listenicon from "@/assets/listenicon.png";
 import { FaArrowTurnDown } from "react-icons/fa6";
 import { IoMdVolumeHigh } from "react-icons/io";
-import { Button } from "@/component/ui/button";
+import { Button } from "@/component/ui/Button";
 
 const ListenSection = () => {
   return (
