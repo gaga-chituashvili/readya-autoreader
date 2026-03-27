@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/component/common/ToggleButton";
 import { useScrollDirection } from "@/hook/useScrollDirection";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/component/ui/button";
+import { Button } from "@/component/ui/Button";
 
 import {
   Popover,

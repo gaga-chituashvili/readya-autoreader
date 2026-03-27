@@ -10,7 +10,7 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import {} from "@/component/SettingsModal";
-import { Button } from "@/component/ui/button";
+import { Button } from "@/component/ui/Button";
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
