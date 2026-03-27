@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { Section } from "../types/term";
+import type { Section } from "../types/term.type";
 
 export const TermsAndPolicy = () => {
   const { t } = useTranslation("terms");

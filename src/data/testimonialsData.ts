@@ -1,7 +1,7 @@
-import type { Testimonial } from "../types/testimonials";
-import natia from "../assets/natiaPhoto.png";
-import otari from "../assets/otarPhoto.png";
-import luka from "../assets/lukaPhoto.png";
+import type { Testimonial } from "@/types/home.type";
+import natia from "@/assets/natiaPhoto.png";
+import otari from "@/assets/otarPhoto.png";
+import luka from "@/assets/lukaPhoto.png";
 
 export const testimonials: Testimonial[] = [
   {

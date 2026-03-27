@@ -1,4 +1,4 @@
-import type { SliderConfig, VoiceSettings } from "@/types/settings";
+import type { SliderConfig, VoiceSettings } from "@/types/home.type";
 
 export const DEFAULT_SETTINGS: VoiceSettings = {
   speed: 50,

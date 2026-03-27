@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { testimonials } from "../data/testimonialsData";
+import { testimonials } from "@/data/testimonialsData";
 
 export const Testimonials = () => {
   const { t } = useTranslation("home");

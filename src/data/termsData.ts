@@ -1,4 +1,4 @@
-import type { TermsLang } from "@/types/term";
+import type { TermsLang } from "@/types/term.type";
 
 export const termsData: Record<string, TermsLang> = {
   ka: {

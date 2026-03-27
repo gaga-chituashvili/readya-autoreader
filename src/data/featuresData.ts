@@ -1,4 +1,4 @@
-import { type Feature } from "../types/features";
+import { type Feature } from "@/types/home.type";
 import {
   Sparkles,
   Settings,

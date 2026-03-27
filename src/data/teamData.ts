@@ -1,9 +1,8 @@
-import type { TeamMember } from "../types/ourTeam";
+import type { TeamMember } from "@/types/ourTeam.type";
 import rusudanImage from "@/assets/rusudanphoto.png";
 import salomeImage from "@/assets/salomephoto.png";
 import gagaImage from "@/assets/gagaphoto.png";
 import pixoraImage from "@/assets/pixora.png";
-
 
 export const teamMembers: TeamMember[] = [
   {

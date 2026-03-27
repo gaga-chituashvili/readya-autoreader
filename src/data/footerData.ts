@@ -1,4 +1,4 @@
-import type { FooterData } from "../types/footer";
+import type { FooterData } from "@/types/footer";
 
 export const footerData: FooterData = {
   contact: {
