@@ -10,6 +10,7 @@ import { ROUTES } from "./routes/paths";
 import { Services } from "./pages/Services";
 import { Supports } from "./pages/Supports";
 import { OurTeam } from "./pages/OurTeam";
+import { TermsAndPolicy } from "./pages/TermsAndPolicy";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -45,12 +46,19 @@ const ourTeamRoute = createRoute({
   component: OurTeam,
 });
 
+const termsAndPolicyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.termsAndPolicy,
+  component: TermsAndPolicy,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutUsRoute,
   servicesRoute,
   supportsRoute,
   ourTeamRoute,
+  termsAndPolicyRoute,
 ]);
 
 export const router = createRouter({

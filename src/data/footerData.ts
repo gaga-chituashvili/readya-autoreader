@@ -10,7 +10,7 @@ export const footerData: FooterData = {
     {
       title: "conditions",
       links: [
-        { label: "terms_and_policy", to: "/" },
+        { label: "terms_and_policy", to: "/terms-and-policy" },
         { label: "footer_terms", to: "/" },
         { label: "footer_privacy", to: "/" },
       ],
