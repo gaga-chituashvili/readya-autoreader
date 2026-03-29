@@ -8,7 +8,7 @@ import {
   AccordionTrigger,
 } from "@/component/ui/accordion";
 import { Facebook, Instagram, Linkedin, Plus, Youtube } from "lucide-react";
-import { EmailPill } from "@/hook/EmailPill";
+import { EmailPill } from "@/component/ui/EmailPill";
 
 export const Supports = () => {
   const { t } = useTranslation(["home", "supports"]);

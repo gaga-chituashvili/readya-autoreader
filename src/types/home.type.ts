@@ -42,3 +42,10 @@ export type FAQKey =
   | "what_languages"
   | "can_use_for_study"
   | "why_readya";
+
+
+export interface FeatureCardProps {
+  item: {
+    points: string[];
+  };
+}

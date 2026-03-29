@@ -71,5 +71,26 @@
       "q": "Why Readya?",
       "a": "Readya provides a fast, simple, and high-quality way to listen to text, helping you save time and boost productivity."
     }
+  },
+
+  
+  "hero": {
+    "title": "Make reading, learning, and working easier — anytime, anywhere!",
+    "description": "Readya gives you a simple and accessible way to consume information. Read with your ears. Listen to text. Improve comprehension and stay productive in your daily life."
+  },
+  "features": [
+    {
+      "points": ["AI summarization", "Automatically shorten long texts"]
+    },
+    {
+      "points": ["Listen offline without internet", "OCR scanner"]
+    },
+    {
+      "points": ["Download as MP3", "Use across multiple devices"]
+    }
+  ],
+  "auth": {
+    "register": "Sign Up",
+    "login": "Sign In"
   }
 }

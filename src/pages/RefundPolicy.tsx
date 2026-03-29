@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { RefundSection } from "@/types/refund";
-import { EmailPill } from "@/hook/EmailPill";
+import { EmailPill } from "@/component/ui/EmailPill";
 
 export const RefundPolicy = () => {
   const { t } = useTranslation("refund");
