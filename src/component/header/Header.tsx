@@ -9,7 +9,7 @@ import { useScrollDirection } from "@/hook/useScrollDirection";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/component/ui/Button";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 import {
   Popover,
@@ -25,8 +25,16 @@ export const Header = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const reloadPage = () => {
-    window.location.reload();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+
+  const handleLogoClick = () => {
+    if (pathname === ROUTES.home) {
+      window.location.reload();
+    } else {
+      navigate({ to: ROUTES.home });
+    }
   };
 
   return (
@@ -39,7 +47,7 @@ export const Header = () => {
         className="h-10 cursor-pointer"
         src={readyalogo}
         alt="Readya Logo"
-        onClick={reloadPage}
+        onClick={handleLogoClick}
       />
 
       <nav className="hidden md:block">
