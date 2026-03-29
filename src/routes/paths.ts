@@ -9,6 +9,7 @@ export const ROUTES = {
   refundPolicy: "/refund-policy",
   signUp: "/sign-up",
   singnIn: "/sign-in",
+  emailSent: "/email-sent",
   forgetPassword: "/forget-password",
   paymentSuccess: "/payment-success",
 } as const;
