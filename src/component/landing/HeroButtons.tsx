@@ -1,16 +1,25 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/component/ui/Button";
+import { useNavigate } from "@tanstack/react-router";
+import { ROUTES } from "@/routes/paths";
 
 export const HeroButtons = () => {
   const { t } = useTranslation("home");
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-      <Button className="w-full sm:w-auto" variant="secondary">
+      <Button
+        variant="secondary"
+        onClick={() => navigate({ to: ROUTES.signUp })}
+      >
         {t("auth.register")}
       </Button>
 
-      <Button className="w-full sm:w-auto" variant="secondary">
+      <Button
+        variant="secondary"
+        onClick={() => navigate({ to: ROUTES.singnIn })}
+      >
         {t("auth.login")}
       </Button>
     </div>
