@@ -1,5 +1,5 @@
-import { AuthCard } from "@/component/signup/AuthCard";
-import { SocialAuth } from "@/component/signup/SocialAuth";
+import { AuthCard } from "@/component/signin/AuthCard";
+import { SocialAuth } from "@/component/signin/SocialAuth";
 import readyalogo from "@/assets/Readyalogo.png";
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import { useTranslation } from "react-i18next";
