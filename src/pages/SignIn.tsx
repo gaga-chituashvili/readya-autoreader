@@ -53,7 +53,7 @@ export const SignIn = () => {
         </AuthCard>
       </div>
 
-      <div className="pointer-events-none absolute -bottom-[10rem] -right-[-5rem] w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70" />
+      <div className="pointer-events-none absolute  -right-[-30rem] w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70" />
     </section>
   );
 };
