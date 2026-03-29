@@ -8,5 +8,7 @@ export const ROUTES = {
   termsAndPolicy: "/terms-and-policy",
   refundPolicy: "/refund-policy",
   signUp: "/sign-up",
+  singnIn: "/sign-in",
+  forgetPassword: "/forget-password",
   paymentSuccess: "/payment-success",
 } as const;

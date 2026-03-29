@@ -64,7 +64,7 @@ export const Header = () => {
         <div className="flex items-center space-x-4">
           <Button
             variant="default"
-            onClick={() => navigate({ to: ROUTES.signUp })}
+            onClick={() => navigate({ to: ROUTES.singnIn })}
           >
             {t("enter")}
           </Button>
@@ -117,7 +117,7 @@ export const Header = () => {
 
               <Button
                 variant="default"
-                onClick={() => navigate({ to: ROUTES.signUp })}
+                onClick={() => navigate({ to: ROUTES.singnIn })}
               >
                 {t("enter")}
               </Button>

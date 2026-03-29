@@ -14,6 +14,8 @@ import { TermsAndPolicy } from "@/pages/TermsAndPolicy";
 import { PrivacyPolicy } from "@/pages/PrivacyPolicy";
 import { RefundPolicy } from "@/pages/RefundPolicy";
 import { SignUp } from "@/pages/SignUp";
+import { SignIn } from "@/pages/SignIn";
+import { ForgetPassword } from "@/pages/ForgetPassword";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -73,6 +75,17 @@ const signUpRoute = createRoute({
   component: SignUp,
 });
 
+const logInRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.singnIn,
+  component: SignIn,
+});
+
+const forgetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.forgetPassword,
+  component: ForgetPassword,
+});
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
@@ -84,6 +97,8 @@ const routeTree = rootRoute.addChildren([
   privacyPolicyRoute,
   refundPolicyRoute,
   signUpRoute,
+  logInRoute,
+  forgetPasswordRoute,
 ]);
 
 export const router = createRouter({

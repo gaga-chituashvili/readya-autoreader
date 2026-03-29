@@ -17,5 +17,10 @@
   },
 
   "terms_text": "By clicking Sign Up, you agree to Readya’s",
-  "terms_link": "Terms & Conditions"
+  "terms_link": "Terms & Conditions",
+  "log_in": "Log In",
+  "forgot_password": "Forgot Password",
+  "sign_in": "Sign In",
+  "no_account": "Don't have an account?",
+  "create": "Create"
 }
