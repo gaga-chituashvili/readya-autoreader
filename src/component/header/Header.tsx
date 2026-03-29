@@ -53,7 +53,7 @@ export const Header = () => {
           </Link>
           <Link
             activeProps={{ className: "text-indigo-500 font-semibold" }}
-            to="/"
+            to={ROUTES.pricing}
           >
             {t("pay")}
           </Link>

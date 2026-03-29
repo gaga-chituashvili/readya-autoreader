@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgetPasswordSchema } from "@/component/schemas/forgetPassword.schema";
 import type { ForgetPasswordType } from "@/component/schemas/forgetPassword.schema";
-import { Input } from "../ui/Input";
+import { Input } from "@/component/ui/Input";
 import { useTranslation } from "react-i18next";
 
 export const ForgetPassForm = () => {

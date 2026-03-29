@@ -11,5 +11,6 @@ export const ROUTES = {
   singnIn: "/sign-in",
   emailSent: "/email-sent",
   forgetPassword: "/forget-password",
+  pricing: "/pricing",
   paymentSuccess: "/payment-success",
 } as const;

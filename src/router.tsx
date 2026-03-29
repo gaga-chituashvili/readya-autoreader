@@ -16,7 +16,8 @@ import { RefundPolicy } from "@/pages/RefundPolicy";
 import { SignUp } from "@/pages/SignUp";
 import { SignIn } from "@/pages/SignIn";
 import { ForgetPassword } from "@/pages/ForgetPassword";
-import { EmailSent } from "./pages/EmailSent";
+import { EmailSent } from "@/pages/EmailSent";
+import { PricingPage } from "@/pages/PricingPage";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -94,6 +95,12 @@ const emailSentRoute = createRoute({
   component: EmailSent,
 });
 
+const pricingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.pricing,
+  component: PricingPage,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutUsRoute,
@@ -107,6 +114,7 @@ const routeTree = rootRoute.addChildren([
   logInRoute,
   forgetPasswordRoute,
   emailSentRoute,
+  pricingRoute,
 ]);
 
 export const router = createRouter({
