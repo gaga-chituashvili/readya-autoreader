@@ -7,5 +7,6 @@ export const ROUTES = {
   privacyPolicy: "/privacy-policy",
   termsAndPolicy: "/terms-and-policy",
   refundPolicy: "/refund-policy",
+  signUp: "/sign-up",
   paymentSuccess: "/payment-success",
 } as const;

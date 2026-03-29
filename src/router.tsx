@@ -13,6 +13,7 @@ import { OurTeam } from "@/pages/OurTeam";
 import { TermsAndPolicy } from "@/pages/TermsAndPolicy";
 import { PrivacyPolicy } from "@/pages/PrivacyPolicy";
 import { RefundPolicy } from "@/pages/RefundPolicy";
+import { SignUp } from "@/pages/SignUp";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -66,6 +67,13 @@ const refundPolicyRoute = createRoute({
   component: RefundPolicy,
 });
 
+const signUpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.signUp,
+  component: SignUp,
+});
+
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutUsRoute,
@@ -75,6 +83,7 @@ const routeTree = rootRoute.addChildren([
   termsAndPolicyRoute,
   privacyPolicyRoute,
   refundPolicyRoute,
+  signUpRoute,
 ]);
 
 export const router = createRouter({

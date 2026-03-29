@@ -9,6 +9,7 @@ import { useScrollDirection } from "@/hook/useScrollDirection";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/component/ui/Button";
+import { useNavigate } from "@tanstack/react-router";
 
 import {
   Popover,
@@ -16,11 +17,13 @@ import {
   PopoverTrigger,
 } from "@/component/ui/popover";
 import { AboutDropdown } from "@/component/AboutDropdown";
+import { ROUTES } from "@/routes/paths";
 
 export const Header = () => {
   const { t } = useTranslation("header");
   const isVisible = useScrollDirection();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const reloadPage = () => {
     window.location.reload();
@@ -59,7 +62,12 @@ export const Header = () => {
 
       <article className="hidden md:flex space-x-10">
         <div className="flex items-center space-x-4">
-          <Button variant="default">{t("enter")}</Button>
+          <Button
+            variant="default"
+            onClick={() => navigate({ to: ROUTES.signUp })}
+          >
+            {t("enter")}
+          </Button>
           <ThemeToggle />
         </div>
         <LanguageSwitcher />
@@ -107,7 +115,12 @@ export const Header = () => {
 
               <div className="border-t border-gray-200 dark:border-zinc-700 my-2" />
 
-              <Button variant="default">{t("enter")}</Button>
+              <Button
+                variant="default"
+                onClick={() => navigate({ to: ROUTES.signUp })}
+              >
+                {t("enter")}
+              </Button>
             </nav>
           </PopoverContent>
         </Popover>
