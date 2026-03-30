@@ -1,6 +1,6 @@
-import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/component/ui/Button";
+import founder from "@/assets/founder.png";
 
 export const Hero = () => {
   const { t } = useTranslation("home");
@@ -19,9 +19,12 @@ export const Hero = () => {
 
           <div className="mt-10 md:hidden flex justify-center">
             <div className="relative flex items-center justify-center">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-purple-400 flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer">
-                <Play className="text-white" size={28} />
-              </div>
+              <img
+                src={founder}
+                alt="Founder"
+                className="w-40 h-40 object-cover rounded-full"
+              />
+
               <div className="absolute w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-purple-300 opacity-20 blur-2xl"></div>
             </div>
           </div>
@@ -35,9 +38,11 @@ export const Hero = () => {
 
         <div className="hidden md:flex flex-1 justify-end">
           <div className="relative flex items-center justify-center">
-            <div className="w-28 h-28 rounded-full bg-purple-400 flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer">
-              <Play className="text-white" size={32} />
-            </div>
+            <img
+              src={founder}
+              alt="Founder"
+              className="w-40 h-40 object-cover rounded-full"
+            />
 
             <div className="absolute w-36 h-36 rounded-full bg-purple-300 opacity-20 blur-2xl"></div>
           </div>
