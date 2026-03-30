@@ -3,6 +3,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/component/ui/popover";
+import { ROUTES } from "@/routes/paths";
 import { Link } from "@tanstack/react-router";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -24,14 +25,24 @@ export const AboutDropdown = () => {
         className="w-56 mt-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white rounded-xl p-4"
       >
         <nav className="flex flex-col gap-3">
-          <Link to="/about-us" className="hover:text-indigo-500 transition">
+          <Link
+            to={ROUTES.aboutUs}
+            className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+          >
             {t("about_readya")}
           </Link>
-          <Link to="/our-team" className="hover:text-indigo-500 transition">
+
+          <Link
+            to={ROUTES.ourTeam}
+            className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+          >
             {t("our_team")}
           </Link>
 
-          <Link to="/contact" className="hover:text-indigo-500 transition">
+          <Link
+            to={ROUTES.supports}
+            className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+          >
             {t("contact")}
           </Link>
         </nav>

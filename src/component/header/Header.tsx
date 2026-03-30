@@ -54,14 +54,21 @@ export const Header = () => {
         <ul className="flex space-x-4">
           <AboutDropdown />
           <Link
-            activeProps={{ className: "text-indigo-500 font-semibold" }}
-            to="/"
+            to={ROUTES.home}
+            activeProps={{
+              className: "text-indigo-600 font-semibold dark:text-indigo-400",
+            }}
+            className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
           >
             {t("text_to_speech")}
           </Link>
+
           <Link
-            activeProps={{ className: "text-indigo-500 font-semibold" }}
             to={ROUTES.pricing}
+            activeProps={{
+              className: "text-indigo-600 font-semibold dark:text-indigo-400",
+            }}
+            className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
           >
             {t("pay")}
           </Link>
@@ -69,7 +76,7 @@ export const Header = () => {
       </nav>
 
       <article className="hidden md:flex space-x-10">
-        <div className="flex items-center space-x-4">
+        <article className="flex items-center space-x-4">
           <Button
             variant="default"
             onClick={() => navigate({ to: ROUTES.singnIn })}
@@ -77,11 +84,11 @@ export const Header = () => {
             {t("enter")}
           </Button>
           <ThemeToggle />
-        </div>
+        </article>
         <LanguageSwitcher />
       </article>
 
-      <div className="flex items-center gap-3 md:hidden">
+      <section className="flex items-center gap-3 md:hidden">
         <LanguageSwitcher />
         <ThemeToggle />
 
@@ -98,25 +105,37 @@ export const Header = () => {
           >
             <nav className="flex flex-col gap-4">
               <Link
-                activeProps={{ className: "text-indigo-500 font-semibold" }}
-                to="/"
+                to={ROUTES.aboutUs}
                 onClick={() => setOpen(false)}
+                activeProps={{
+                  className:
+                    "text-indigo-600 font-semibold dark:text-indigo-400",
+                }}
+                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
               >
                 {t("about_our_company")}
               </Link>
 
               <Link
-                activeProps={{ className: "text-indigo-500 font-semibold" }}
-                to="/"
+                to={ROUTES.home}
                 onClick={() => setOpen(false)}
+                activeProps={{
+                  className:
+                    "text-indigo-600 font-semibold dark:text-indigo-400",
+                }}
+                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
               >
                 {t("text_to_speech")}
               </Link>
 
               <Link
-                activeProps={{ className: "text-indigo-500 font-semibold" }}
-                to="/"
+                to={ROUTES.pricing}
                 onClick={() => setOpen(false)}
+                activeProps={{
+                  className:
+                    "text-indigo-600 font-semibold dark:text-indigo-400",
+                }}
+                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
               >
                 {t("pay")}
               </Link>
@@ -132,7 +151,7 @@ export const Header = () => {
             </nav>
           </PopoverContent>
         </Popover>
-      </div>
+      </section>
     </header>
   );
 };
