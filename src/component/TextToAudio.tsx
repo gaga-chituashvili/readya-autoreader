@@ -15,7 +15,7 @@ import { Button } from "@/component/ui/Button";
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
 
-  const { text, setText, activeTab, setTab } = useAppStore();
+  const { text, setText } = useAppStore();
 
   const handleChange = (value: string) => {
     i18n.changeLanguage(value);
@@ -42,7 +42,7 @@ export const TextToAudio = () => {
       </svg>
 
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
-        <ModeSwitcher activeTab={activeTab} setActiveTab={setTab} />
+        <ModeSwitcher />
       </div>
 
       <div className="relative z-10 w-full max-w-xl bg-gray-200 dark:bg-gray-900 rounded-3xl p-8 pt-16 shadow-sm">
