@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/component/ui/Button";
-import founder from "@/assets/founder.png";
+import founder from "@/assets/founder1.png";
 
 export const Hero = () => {
   const { t } = useTranslation("home");
@@ -24,8 +24,6 @@ export const Hero = () => {
                 alt="Founder"
                 className="w-40 h-40 object-cover rounded-full"
               />
-
-              <div className="absolute w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-purple-300 opacity-20 blur-2xl"></div>
             </div>
           </div>
 
@@ -43,8 +41,6 @@ export const Hero = () => {
               alt="Founder"
               className="w-40 h-40 object-cover rounded-full"
             />
-
-            <div className="absolute w-36 h-36 rounded-full bg-purple-300 opacity-20 blur-2xl"></div>
           </div>
         </div>
       </div>
