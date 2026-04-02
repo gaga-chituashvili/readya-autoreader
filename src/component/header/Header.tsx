@@ -10,7 +10,7 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/component/ui/Button";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-
+import { useAuthStore } from "@/store/authStore";
 import {
   Popover,
   PopoverContent,
@@ -18,13 +18,14 @@ import {
 } from "@/component/ui/popover";
 import { AboutDropdown } from "@/component/AboutDropdown";
 import { ROUTES } from "@/routes/paths";
+import { UserProfile } from "@/component/UserProfile";
 
 export const Header = () => {
   const { t } = useTranslation("header");
   const isVisible = useScrollDirection();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
+  const { user, isLoading } = useAuthStore();
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
@@ -77,12 +78,17 @@ export const Header = () => {
 
       <article className="hidden md:flex space-x-10">
         <article className="flex items-center space-x-4">
-          <Button
-            variant="default"
-            onClick={() => navigate({ to: ROUTES.singnIn })}
-          >
-            {t("enter")}
-          </Button>
+          {isLoading ? null : user ? (
+            <UserProfile />
+          ) : (
+            <Button
+              variant="default"
+              onClick={() => navigate({ to: ROUTES.singnIn })}
+            >
+              {t("enter")}
+            </Button>
+          )}
+
           <ThemeToggle />
         </article>
         <LanguageSwitcher />
@@ -128,26 +134,33 @@ export const Header = () => {
                 {t("text_to_speech")}
               </Link>
 
-              <Link
-                to={ROUTES.pricing}
-                onClick={() => setOpen(false)}
-                activeProps={{
-                  className:
-                    "text-indigo-600 font-semibold dark:text-indigo-400",
-                }}
-                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
-              >
-                {t("pay")}
-              </Link>
+              <li>
+                <button
+                  onClick={() => {
+                    if (user) {
+                      navigate({ to: ROUTES.pricing });
+                    } else {
+                      navigate({ to: ROUTES.singnIn });
+                    }
+                  }}
+                  className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+                >
+                  {t("pay")}
+                </button>
+              </li>
 
               <div className="border-t border-gray-200 dark:border-zinc-700 my-2" />
 
-              <Button
-                variant="default"
-                onClick={() => navigate({ to: ROUTES.singnIn })}
-              >
-                {t("enter")}
-              </Button>
+              {isLoading ? null : user ? (
+                <UserProfile />
+              ) : (
+                <Button
+                  variant="default"
+                  onClick={() => navigate({ to: ROUTES.singnIn })}
+                >
+                  {t("enter")}
+                </Button>
+              )}
             </nav>
           </PopoverContent>
         </Popover>

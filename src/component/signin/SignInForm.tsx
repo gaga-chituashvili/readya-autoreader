@@ -4,16 +4,19 @@ import { loginSchema } from "@/component/schemas/login.auth.schema";
 import type { LoginType } from "@/component/schemas/login.auth.schema";
 import { Input } from "@/component/ui/Input";
 import { PasswordField } from "@/component/signin/PasswordField";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ROUTES } from "@/routes/paths";
 import { useTranslation } from "react-i18next";
 import { loginRequest } from "@/services/authService";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useState } from "react";
+import { useAuthStore } from "@/store/authStore";
 
 export const SignInForm = () => {
   const { t } = useTranslation("sign");
   const [loading, setLoading] = useState(false);
+  const { fetchUser } = useAuthStore();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -25,10 +28,16 @@ export const SignInForm = () => {
 
   const onSubmit = async (data: LoginType) => {
     setLoading(true);
+
     try {
-      const response = await loginRequest(data);
-      localStorage.setItem("access_token", response.access);
-      console.log(response);
+      const res = await loginRequest(data);
+
+      localStorage.setItem("access_token", res.access);
+      localStorage.setItem("refresh_token", res.refresh);
+
+      await fetchUser();
+
+      navigate({ to: ROUTES.home });
     } catch (error) {
       console.error(error);
     } finally {
@@ -66,8 +75,11 @@ export const SignInForm = () => {
         error={errors.password?.message && t(errors.password.message)}
       />
 
-      <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold">
-        {loading ? <ClipLoader size={20} /> : t("sign_in")}
+      <button
+        disabled={loading}
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold flex items-center justify-center"
+      >
+        {loading ? <ClipLoader size={20} color="#fff" /> : t("sign_in")}
       </button>
     </form>
   );

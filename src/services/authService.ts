@@ -41,7 +41,7 @@ export const getProfile = async (): Promise<ProfileResponse> => {
     throw new Error("No access token found");
   }
 
-  const res = await fetch("https://readya-backend.onrender.com/profile", {
+  const res = await fetch("https://readya-backend.onrender.com/profile/", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -55,4 +55,25 @@ export const getProfile = async (): Promise<ProfileResponse> => {
   }
 
   return data;
+};
+
+export const logoutRequest = async () => {
+  try {
+    const refresh = localStorage.getItem("refresh_token");
+
+    if (refresh) {
+      await fetch("https://readya-backend.onrender.com/logout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh }),
+      });
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+  } finally {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+  }
 };

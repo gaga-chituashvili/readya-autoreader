@@ -1,35 +1,49 @@
-export const createPayment = async (planId: number, email: string) => {
-  const res = await fetch(
-    "https://readya-backend.onrender.com/payment/create/",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        plan_id: planId,
-        email,
-      }),
-    },
-  );
+const API_URL = "https://readya-backend.onrender.com";
 
-  if (!res.ok) {
-    throw new Error("Payment creation failed");
+export const createPayment = async (planId: number) => {
+  const token = localStorage.getItem("access_token");
+
+  if (!token) {
+    throw new Error("UNAUTHORIZED");
   }
 
-  return res.json();
+  const res = await fetch(`${API_URL}/payment/create/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      plan_id: planId,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.detail || "Payment failed");
+  }
+  
+
+  return data;
 };
 
+export const checkPaymentStatus = async (paymentId: string) => {
+  try {
+    const res = await fetch(`${API_URL}/payment/status/${paymentId}/`, {
+      method: "GET",
+    });
 
+    const data = await res.json();
 
-export const checkPaymentStatus = async (documentId: string) => {
-  const res = await fetch(
-    `https://readya-backend.onrender.com/payment/status/${documentId}/`
-  );
+    if (!res.ok) {
+      console.error("Status API error:", data);
+      throw new Error(data?.detail || "Failed to check payment status");
+    }
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch payment status");
+    return data;
+  } catch (error) {
+    console.error("Check payment error:", error);
+    throw error;
   }
-
-  return res.json();
 };

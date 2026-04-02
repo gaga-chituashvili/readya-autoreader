@@ -10,18 +10,21 @@
   "plans": {
     "monthly": [
       {
+        "id": 1,
         "type": "monthly",
         "title": "Monthly",
         "price": "₾30",
         "period": "/ month"
       },
       {
+        "id": 2,
         "type": "quarterly",
         "title": "Quarterly",
         "price": "₾75",
         "period": "/ 3 months"
       },
       {
+        "id": 3,
         "type": "yearly",
         "title": "Yearly",
         "price": "₾230",

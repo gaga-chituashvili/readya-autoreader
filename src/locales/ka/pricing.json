@@ -7,21 +7,25 @@
     "quarterly": "კვარტალური",
     "yearly": "წლიური"
   },
+
   "plans": {
     "monthly": [
       {
+        "id": 1,
         "type": "monthly",
         "title": "თვიური",
         "price": "₾30",
         "period": "დღე 1 ლარი"
       },
       {
+        "id": 2,
         "type": "quarterly",
         "title": "კვარტალური",
         "price": "₾75",
         "oldPrice": "₾90"
       },
       {
+        "id": 3,
         "type": "yearly",
         "title": "წლიური",
         "price": "₾230",

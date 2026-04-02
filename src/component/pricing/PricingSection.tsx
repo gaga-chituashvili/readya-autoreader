@@ -41,8 +41,13 @@ export const PricingSection = () => {
           max-w-6xl mx-auto
         "
       >
-        {data.map((item, i) => (
-          <PricingCard key={i} {...item} active={item.type === activePlan} />
+        {data.map((item) => (
+          <PricingCard
+            key={item.id}
+            {...item}
+            planId={item.id}
+            active={item.type === activePlan}
+          />
         ))}
       </section>
     </section>

@@ -1,10 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useAppStore } from "@/store/useAppStore";
 import { useCreatePayment } from "@/hook/useCreatePayment";
 import { useTranslation } from "react-i18next";
 import type { PricingCardProps } from "@/types/pricing";
 import { useCallback } from "react";
 import { ROUTES } from "@/routes/paths";
+import { useAuthStore } from "@/store/authStore";
+import ClipLoader from "react-spinners/ClipLoader";
 
 type Props = PricingCardProps & {
   planId: number;
@@ -21,32 +22,30 @@ export const PricingCard = ({
   const { t } = useTranslation("pricing");
   const navigate = useNavigate();
 
-  const { email } = useAppStore();
+  const { user } = useAuthStore();
   const { mutateAsync, isPending } = useCreatePayment();
 
   const handleBuy = useCallback(async () => {
-    if (!email) {
+    if (isPending) return;
+
+    if (!user) {
       navigate({ to: ROUTES.singnIn });
       return;
     }
 
     try {
-      const data = await mutateAsync({
-        planId,
-        email,
-      });
+      const data = await mutateAsync({ planId });
 
       if (!data?.payment_url) {
         throw new Error("Missing payment URL");
       }
 
-      // 🔥 redirect payment page
-      window.location.assign(data.payment_url);
+      window.location.href = data.payment_url;
     } catch (err) {
       console.error("Payment error:", err);
       alert(t("payment_error") || "Payment failed");
     }
-  }, [email, planId, mutateAsync, navigate, t]);
+  }, [planId, mutateAsync, navigate, t, user, isPending]);
 
   return (
     <div
@@ -94,7 +93,6 @@ export const PricingCard = ({
 
       <button
         onClick={handleBuy}
-        disabled={isPending}
         className={`
           w-full py-3 rounded-full text-sm font-medium transition-all duration-300
           bg-gradient-to-r from-indigo-500 to-purple-500
@@ -102,9 +100,10 @@ export const PricingCard = ({
           hover:shadow-lg hover:shadow-indigo-500/30
           active:scale-95
           disabled:opacity-60 disabled:cursor-not-allowed
+          flex items-center justify-center
         `}
       >
-        {isPending ? t("loading") : t("buy_now")}
+        {isPending ? <ClipLoader size={20} /> : t("buy_now")}
       </button>
     </div>
   );
