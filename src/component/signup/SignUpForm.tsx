@@ -7,9 +7,15 @@ import { PasswordField } from "@/component/signup/PasswordField";
 import { Link } from "@tanstack/react-router";
 import { ROUTES } from "@/routes/paths";
 import { useTranslation } from "react-i18next";
+import { registerRequest } from "@/services/authService";
+import { useState } from "react";
+import { ClipLoader } from "react-spinners";
+import { useNavigate } from "@tanstack/react-router";
 
 export const SignUpForm = () => {
   const { t } = useTranslation("sign");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -19,8 +25,17 @@ export const SignUpForm = () => {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (data: SignUpType) => {
-    console.log(data);
+  const onSubmit = async (data: SignUpType) => {
+    setLoading(true);
+    try {
+      const response = await registerRequest(data);
+      console.log(response);
+      navigate({ to: ROUTES.singnIn });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,11 +51,11 @@ export const SignUpForm = () => {
 
       {/* Full Name */}
       <Input
-        id="fullName"
+        id="full_name"
         label={t("full_name")}
         placeholder="John Doe"
-        {...register("fullName")}
-        error={errors.fullName?.message && t(errors.fullName.message)}
+        {...register("full_name")}
+        error={errors.full_name?.message && t(errors.full_name.message)}
       />
 
       {/* Passwords */}
@@ -54,12 +69,13 @@ export const SignUpForm = () => {
         />
 
         <PasswordField
-          id="confirmPassword"
+          id="confirm_password"
           label={t("confirm_password")}
           placeholder="••••••"
-          register={register("confirmPassword")}
+          register={register("confirm_password")}
           error={
-            errors.confirmPassword?.message && t(errors.confirmPassword.message)
+            errors.confirm_password?.message &&
+            t(errors.confirm_password.message)
           }
         />
       </div>
@@ -75,7 +91,7 @@ export const SignUpForm = () => {
       </span>
 
       <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold">
-        {t("sign_up")}
+        {loading ? <ClipLoader size={20} /> : t("sign_up")}
       </button>
     </form>
   );

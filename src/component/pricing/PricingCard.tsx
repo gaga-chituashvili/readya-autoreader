@@ -1,5 +1,14 @@
-import type { PricingCardProps } from "@/types/pricing";
+import { useNavigate } from "@tanstack/react-router";
+import { useAppStore } from "@/store/useAppStore";
+import { useCreatePayment } from "@/hook/useCreatePayment";
 import { useTranslation } from "react-i18next";
+import type { PricingCardProps } from "@/types/pricing";
+import { useCallback } from "react";
+import { ROUTES } from "@/routes/paths";
+
+type Props = PricingCardProps & {
+  planId: number;
+};
 
 export const PricingCard = ({
   title,
@@ -7,8 +16,37 @@ export const PricingCard = ({
   oldPrice,
   period,
   active,
-}: PricingCardProps) => {
+  planId,
+}: Props) => {
   const { t } = useTranslation("pricing");
+  const navigate = useNavigate();
+
+  const { email } = useAppStore();
+  const { mutateAsync, isPending } = useCreatePayment();
+
+  const handleBuy = useCallback(async () => {
+    if (!email) {
+      navigate({ to: ROUTES.singnIn });
+      return;
+    }
+
+    try {
+      const data = await mutateAsync({
+        planId,
+        email,
+      });
+
+      if (!data?.payment_url) {
+        throw new Error("Missing payment URL");
+      }
+
+      // 🔥 redirect payment page
+      window.location.assign(data.payment_url);
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert(t("payment_error") || "Payment failed");
+    }
+  }, [email, planId, mutateAsync, navigate, t]);
 
   return (
     <div
@@ -24,36 +62,29 @@ export const PricingCard = ({
         }
       `}
     >
-      {/* 🔥 Glow effect (active only) */}
       {active && (
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur-xl pointer-events-none" />
       )}
 
-      {/* Title */}
       <h3 className="text-lg font-semibold mb-8 text-gray-800 dark:text-white relative z-10">
         {title}
       </h3>
 
-      {/* Price Row */}
       <div className="flex items-end justify-center gap-3 mb-6 relative z-10">
-        {/* Price */}
         <span className="text-5xl font-bold text-indigo-500 leading-none tracking-tight">
           {price}
         </span>
 
-        {/* Slash */}
         {(oldPrice || period) && (
           <span className="text-lg text-gray-800 dark:text-white mb-1">/</span>
         )}
 
-        {/* Period (👉 გვერდით ლამაზად) */}
         {period && (
           <span className="text-sm text-gray-500 dark:text-gray-400 mb-1 whitespace-nowrap">
             {period}
           </span>
         )}
 
-        {/* Old price */}
         {oldPrice && (
           <span className="text-lg line-through text-gray-400 mb-1">
             {oldPrice}
@@ -61,17 +92,19 @@ export const PricingCard = ({
         )}
       </div>
 
-      {/* Button */}
       <button
+        onClick={handleBuy}
+        disabled={isPending}
         className={`
           w-full py-3 rounded-full text-sm font-medium transition-all duration-300
           bg-gradient-to-r from-indigo-500 to-purple-500
           text-white
           hover:shadow-lg hover:shadow-indigo-500/30
           active:scale-95
+          disabled:opacity-60 disabled:cursor-not-allowed
         `}
       >
-        {t("buy_now")}
+        {isPending ? t("loading") : t("buy_now")}
       </button>
     </div>
   );

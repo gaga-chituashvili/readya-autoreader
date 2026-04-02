@@ -7,10 +7,11 @@
   "try_readya": "Try Readya",
 
   "textarea_placeholder": "Enter your text here...",
-  "generate": "Generate",
+  "generate": "დააგენერირე",
+  "generating": "გენერირდება...",
   "language_georgian": "Georgian",
   "language_english": "English",
-  "characters": "{{count}} / 2000",
+  "characters": "{{count}} / 5000 ",
   "text_mode": "Text to Speech",
   "file_mode": "Upload Document",
 

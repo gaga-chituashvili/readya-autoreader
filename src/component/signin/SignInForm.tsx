@@ -7,9 +7,13 @@ import { PasswordField } from "@/component/signin/PasswordField";
 import { Link } from "@tanstack/react-router";
 import { ROUTES } from "@/routes/paths";
 import { useTranslation } from "react-i18next";
+import { loginRequest } from "@/services/authService";
+import ClipLoader from "react-spinners/ClipLoader";
+import { useState } from "react";
 
 export const SignInForm = () => {
   const { t } = useTranslation("sign");
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -19,8 +23,17 @@ export const SignInForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginType) => {
-    console.log(data);
+  const onSubmit = async (data: LoginType) => {
+    setLoading(true);
+    try {
+      const response = await loginRequest(data);
+      localStorage.setItem("access_token", response.access);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,7 +67,7 @@ export const SignInForm = () => {
       />
 
       <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold">
-        {t("sign_in")}
+        {loading ? <ClipLoader size={20} /> : t("sign_in")}
       </button>
     </form>
   );
