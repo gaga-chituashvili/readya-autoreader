@@ -45,12 +45,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       const data = await getProfile();
       set({ user: data, isLoading: false });
-    } catch {
-      localStorage.removeItem("access_token");
-      set({ user: null, token: null, isLoading: false });
+    } catch (error: unknown) {
+      console.log("fetchUser error:", error);
+
+      set({ isLoading: false });
     }
   },
-
   logout: () => {
     localStorage.removeItem("access_token");
     set({ user: null, token: null });
