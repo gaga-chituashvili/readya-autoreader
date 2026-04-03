@@ -1,4 +1,4 @@
-const API_URL = "https://readya-backend.onrender.com";
+import { url } from "@/api/config/url";
 
 export const createPayment = async (planId: number) => {
   const token = localStorage.getItem("access_token");
@@ -7,7 +7,7 @@ export const createPayment = async (planId: number) => {
     throw new Error("UNAUTHORIZED");
   }
 
-  const res = await fetch(`${API_URL}/payment/create/`, {
+  const res = await fetch(`${url}/payment/create/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const createPayment = async (planId: number) => {
 
 export const checkPaymentStatus = async (paymentId: string) => {
   try {
-    const res = await fetch(`${API_URL}/payment/status/${paymentId}/`, {
+    const res = await fetch(`${url}/payment/status/${paymentId}/`, {
       method: "GET",
     });
 

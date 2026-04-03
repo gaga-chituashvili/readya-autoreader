@@ -2,6 +2,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useNavigate } from "@tanstack/react-router";
 import { ROUTES } from "@/routes/paths";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
+import { url } from "@/api/config/url";
 
 export const GoogleAuthButton = () => {
   const login = useAuthStore((s) => s.login);
@@ -16,7 +17,7 @@ export const GoogleAuthButton = () => {
     }
 
     try {
-      const res = await fetch("https://readya-backend.onrender.com/auth/google/", {
+      const res = await fetch(`${url}/auth/google/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

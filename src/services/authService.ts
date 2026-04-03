@@ -5,9 +5,10 @@ import type {
   LoginResponse,
   ProfileResponse,
 } from "../types/log";
+import { url } from "@/api/config/url";
 
-const request = async <T, R>(url: string, payload: T): Promise<R> => {
-  const res = await fetch(url, {
+const request = async <T, R>(endpoint: string, payload: T): Promise<R> => {
+  const res = await fetch(`${url}${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,14 +23,14 @@ const request = async <T, R>(url: string, payload: T): Promise<R> => {
 
 export const registerRequest = (payload: RegisterPayload) => {
   return request<RegisterPayload, RegisterResponse>(
-    "https://readya-backend.onrender.com/register/",
+    "/register/",
     payload,
   );
 };
 
 export const loginRequest = (payload: LoginPayload) => {
   return request<LoginPayload, LoginResponse>(
-    "https://readya-backend.onrender.com/login/",
+    "/login/",
     payload,
   );
 };
@@ -41,7 +42,7 @@ export const getProfile = async (): Promise<ProfileResponse> => {
     throw new Error("No access token found");
   }
 
-  const res = await fetch("https://readya-backend.onrender.com/profile/", {
+  const res = await fetch(`${url}/profile/`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -62,7 +63,7 @@ export const logoutRequest = async () => {
     const refresh = localStorage.getItem("refresh_token");
 
     if (refresh) {
-      await fetch("https://readya-backend.onrender.com/logout/", {
+      await fetch(`${url}/logout/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

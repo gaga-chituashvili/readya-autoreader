@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
-import { Button } from "@/component/ui/Button";
+import { Button } from "@/component/ui/button";
 import { useCheckPayment } from "@/hook/useCheckPayment";
 
 export const TextToAudio = () => {

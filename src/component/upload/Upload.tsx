@@ -13,6 +13,7 @@ import {
 } from "../../services/api";
 import { createPayment } from "../../services/pay";
 import { useSearchParams } from "react-router-dom";
+import {url} from "@/api/config/url";
 
 export const Upload = () => {
   const [text, setText] = useState("");
@@ -43,7 +44,7 @@ export const Upload = () => {
 
       try {
         const res = await fetch(
-          `https://readya-backend.onrender.com/payment/status/${orderId}/`,
+          `${url}/payment/status/${orderId}/`,
         );
 
         const data = await res.json();
@@ -111,7 +112,7 @@ export const Upload = () => {
       console.log("✅ Result:", result);
       console.log("📝 Words count:", result.words?.length);
 
-      const fullUrl = `https://readya-backend.onrender.com${result.stream_url}`;
+      const fullUrl = `${url}${result.stream_url}`;
       setAudioUrl(fullUrl);
 
       if (result.words && result.words.length > 0) {
@@ -125,9 +126,9 @@ export const Upload = () => {
       setSuccess(true);
       setText("");
       setFile(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("❌ Error:", err);
-      setError(err.message || "შეცდომა დაფიქსირდა");
+      setError((err as { message?: string })?.message || "შეცდომა დაფიქსირდა");
     } finally {
       setLoading(false);
     }
