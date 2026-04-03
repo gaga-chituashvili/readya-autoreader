@@ -1,9 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/component/ui/Button";
 import founder from "@/assets/founder1.png";
+import { useNavigate } from "@tanstack/react-router";
+import { ROUTES } from "@/routes/paths";
 
 export const Hero = () => {
   const { t } = useTranslation("home");
+  const navigate = useNavigate();
+
+  const scrollDown = () => {
+    window.scrollTo({
+      top: window.innerHeight * 1.4,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section className="w-full py-20 md:py-28 px-4 sm:px-6 bg-gray-100 dark:bg-black overflow-hidden">
@@ -28,9 +38,16 @@ export const Hero = () => {
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Button variant="default">{t("learn_more")}</Button>
+            <Button
+              variant="default"
+              onClick={() => navigate({ to: ROUTES.aboutUs })}
+            >
+              {t("learn_more")}
+            </Button>
 
-            <Button variant="secondary">{t("try_readya")}</Button>
+            <Button variant="secondary" onClick={scrollDown}>
+              {t("try_readya")}
+            </Button>
           </div>
         </div>
 
