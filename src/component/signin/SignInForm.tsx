@@ -35,6 +35,8 @@ export const SignInForm = () => {
       localStorage.setItem("access_token", res.access);
       localStorage.setItem("refresh_token", res.refresh);
 
+      useAuthStore.setState({ token: res.access });
+
       await fetchUser();
 
       navigate({ to: ROUTES.home });
