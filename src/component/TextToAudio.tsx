@@ -57,8 +57,25 @@ export const TextToAudio = () => {
         <ModeSwitcher />
       </div>
 
+      <svg
+        className="absolute top-0 left-0 w-full h-[250px]"
+        viewBox="0 0 1440 250"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,0 H1440 V120 C1100,250 340,250 0,120 Z"
+          fill="url(#bottomGradient)"
+        />
+        <defs>
+          <linearGradient id="bottomGradient" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stopColor="#d8b4fe" />
+            <stop offset="50%" stopColor="#c4b5fd" />
+            <stop offset="100%" stopColor="#a5b4fc" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       <div className="relative z-10 w-full max-w-xl bg-gray-200 dark:bg-gray-900 rounded-3xl p-8 pt-16 shadow-sm">
-        {/* TEXTAREA */}
         <div className="relative">
           <textarea
             value={text}
@@ -73,7 +90,6 @@ export const TextToAudio = () => {
           </div>
         </div>
 
-        {/* SETTINGS */}
         <div className="flex items-center justify-between mt-4">
           <Select onValueChange={handleChange}>
             <SelectTrigger className="w-[180px] rounded-full border-purple-400">
@@ -89,7 +105,6 @@ export const TextToAudio = () => {
           <SettingsModal />
         </div>
 
-        {/* BUTTON */}
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleGenerate}
