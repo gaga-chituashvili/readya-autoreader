@@ -1,6 +1,7 @@
 import { ModeSwitcher } from "@/component/common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
+import { useAuthStore } from "@/store/authStore";
 import {
   Select,
   SelectContent,
@@ -10,44 +11,75 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
-import { useCheckPayment } from "@/hook/useCheckPayment";
+import {
+  uploadDocument,
+  generateVoice,
+  getAudioStreamUrl,
+} from "@/services/api";
+import { createDocumentId } from "@/utils/document";
+import { useTTSStore } from "@/store/useTTSStore";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
-
   const { text, setText, selectedFile } = useAppStore();
-
-  const { mutateAsync, isPending } = useCheckPayment();
-
-  const searchParams = new URLSearchParams(window.location.search);
-  const orderId = searchParams.get("order_id");
+  const { user } = useAuthStore();
+  const { loading, audioUrl, error, words } = useTTSStore();
 
   const handleChange = (value: string) => {
     i18n.changeLanguage(value);
   };
 
   const handleGenerate = async () => {
-    if (!text.trim() && !selectedFile) {
-      alert(t("error_empty_input"));
+    if (!user) {
+      useTTSStore.setState({ error: "Please login first" });
       return;
     }
 
-    if (!orderId) {
-      alert(t("error_payment_required"));
+    if (!text.trim() && !selectedFile) {
+      useTTSStore.setState({ error: t("error_empty_input") });
       return;
     }
+
+    useTTSStore.setState({
+      loading: true,
+      error: "",
+      audioUrl: null,
+      words: [],
+    });
 
     try {
-      const data = await mutateAsync(orderId);
+      const docId = createDocumentId();
+      console.log("📝 Generated docId:", docId);
 
-      if (data.payment_status !== "paid" && !data.can_upload) {
-        alert(t("error_payment_required"));
-        return;
+      const uploadResult = await uploadDocument(
+        text.trim() || undefined,
+        selectedFile,
+        user.email,
+        docId,
+      );
+      console.log("✅ Upload result:", uploadResult);
+
+      const voiceResult = await generateVoice(docId);
+      console.log("🎵 Voice result:", voiceResult);
+
+      const fullUrl = getAudioStreamUrl(docId);
+      console.log("🔊 Stream URL:", fullUrl);
+      useTTSStore.setState({ audioUrl: fullUrl });
+
+      if (voiceResult.words && voiceResult.words.length > 0) {
+        useTTSStore.setState({ words: voiceResult.words });
       }
 
-      console.log("READY TO GENERATE AUDIO");
-    } catch (err) {
-      console.error("Payment check failed", err);
+      setText("");
+      useAppStore.setState({ selectedFile: null });
+    } catch (err: unknown) {
+      console.error("❌ TTS ERROR:", err);
+      useTTSStore.setState({
+        error: (err as Error).message || "Something went wrong",
+      });
+    } finally {
+      useTTSStore.setState({ loading: false });
     }
   };
 
@@ -57,24 +89,6 @@ export const TextToAudio = () => {
         <ModeSwitcher />
       </div>
 
-      <svg
-        className="absolute top-0 left-0 w-full h-[250px]"
-        viewBox="0 0 1440 250"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0,0 H1440 V120 C1100,250 340,250 0,120 Z"
-          fill="url(#bottomGradient)"
-        />
-        <defs>
-          <linearGradient id="bottomGradient" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#d8b4fe" />
-            <stop offset="50%" stopColor="#c4b5fd" />
-            <stop offset="100%" stopColor="#a5b4fc" />
-          </linearGradient>
-        </defs>
-      </svg>
-
       <div className="relative z-10 w-full max-w-xl bg-gray-200 dark:bg-gray-900 rounded-3xl p-8 pt-16 shadow-sm">
         <div className="relative">
           <textarea
@@ -82,11 +96,10 @@ export const TextToAudio = () => {
             onChange={(e) => setText(e.target.value)}
             maxLength={5000}
             placeholder={t("textarea_placeholder")}
-            className="w-full h-52 resize-none rounded-2xl border border-purple-400 bg-transparent p-4 outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+            className="w-full h-52 resize-none rounded-2xl border border-purple-400 bg-transparent p-4 outline-none focus:ring-2 focus:ring-purple-400 text-sm dark:text-white"
           />
-
-          <div className="absolute top-2 right-3 text-xs text-gray-500">
-            {t("characters", { count: text.length })}
+          <div className="absolute bottom-2 right-4 text-xs text-gray-500 dark:text-gray-400">
+            {text.length}/5000
           </div>
         </div>
 
@@ -105,15 +118,41 @@ export const TextToAudio = () => {
           <SettingsModal />
         </div>
 
+        {error && (
+          <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleGenerate}
-            disabled={isPending}
-            variant="default"
+            disabled={loading}
+            className="px-8 py-3"
           >
-            {isPending ? t("generating") : t("generate")}
+            {loading ? <ClipLoader size={20} /> : t("generate")}
           </Button>
         </div>
+
+        {audioUrl && (
+          <div className="mt-6 p-4 bg-gray-800/50 dark:bg-gray-800 rounded-2xl border border-gray-700">
+            <h3 className="text-white text-lg font-bold mb-4 flex items-center gap-2">
+              Your Audio is Ready
+            </h3>
+
+            <audio controls className="w-full mb-4">
+              <source src={audioUrl} type="audio/mpeg" />
+            </audio>
+
+            {words.length > 0 && (
+              <div className="mt-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                <h4 className="text-white text-sm font-semibold mb-3">
+                  Text (Highlighted Reading)
+                </h4>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

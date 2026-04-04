@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Button } from "@/component/ui/Button";
+import { Button } from "@/component/ui/button";
 
 type Props = {
   active: string;
@@ -21,8 +21,9 @@ export const PricingToggle = ({ active, onChange }: Props) => {
           flex
         "
       >
-        {options.map((opt) => (
+        {options.map((opt, index) => (
           <Button
+            key={index}
             onClick={() => onChange(opt)}
             variant={active === opt ? "toggleActive" : "toggle"}
             size="toggle"

@@ -7,8 +7,8 @@
   "try_readya": "Try Readya",
 
   "textarea_placeholder": "Enter your text here...",
-  "generate": "დააგენერირე",
-  "generating": "გენერირდება...",
+  "generate": "Generate Audio",
+  "generating": "Generating...",
   "language_georgian": "Georgian",
   "language_english": "English",
   "characters": "{{count}} / 5000 ",

@@ -2,14 +2,16 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const uploadDocument = async (
   text?: string,
-  file?: File,
+  file?: File | null,
   email?: string,
+  documentId?: string,
 ) => {
   const formData = new FormData();
 
   if (text) formData.append("text", text);
   if (file) formData.append("file", file);
   if (email) formData.append("email", email);
+  if (documentId) formData.append("document_id", documentId);
 
   const res = await fetch(`${API_URL}/upload/`, {
     method: "POST",
@@ -23,7 +25,6 @@ export const uploadDocument = async (
 
   return res.json();
 };
-
 export const generateVoice = async (docId: string) => {
   const res = await fetch(`${API_URL}/voice/${docId}/`, {
     method: "POST",
