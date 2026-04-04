@@ -11,11 +11,7 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
-import {
-  uploadDocument,
-  generateVoice,
-  getAudioStreamUrl,
-} from "@/services/api";
+import { generateVoice, getAudioStreamUrl } from "@/services/api";
 import { createDocumentId } from "@/utils/document";
 import { useTTSStore } from "@/store/useTTSStore";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -50,21 +46,11 @@ export const TextToAudio = () => {
 
     try {
       const docId = createDocumentId();
-      console.log("📝 Generated docId:", docId);
-
-      const uploadResult = await uploadDocument(
-        text.trim() || undefined,
-        selectedFile,
-        user.email,
-        docId,
-      );
-      console.log("✅ Upload result:", uploadResult);
 
       const voiceResult = await generateVoice(docId);
-      console.log("🎵 Voice result:", voiceResult);
 
       const fullUrl = getAudioStreamUrl(docId);
-      console.log("🔊 Stream URL:", fullUrl);
+
       useTTSStore.setState({ audioUrl: fullUrl });
 
       if (voiceResult.words && voiceResult.words.length > 0) {
@@ -74,7 +60,6 @@ export const TextToAudio = () => {
       setText("");
       useAppStore.setState({ selectedFile: null });
     } catch (err: unknown) {
-      console.error("❌ TTS ERROR:", err);
       useTTSStore.setState({
         error: (err as Error).message || "Something went wrong",
       });
