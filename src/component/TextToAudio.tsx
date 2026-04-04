@@ -11,7 +11,11 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
-import { generateVoice, getAudioStreamUrl } from "@/services/api";
+import {
+  uploadDocument,
+  generateVoice,
+  getAudioStreamUrl,
+} from "@/services/api";
 import { createDocumentId } from "@/utils/document";
 import { useTTSStore } from "@/store/useTTSStore";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -47,13 +51,19 @@ export const TextToAudio = () => {
     try {
       const docId = createDocumentId();
 
+      await uploadDocument(
+        text.trim() || undefined,
+        selectedFile,
+        user.email,
+        docId,
+      );
+
       const voiceResult = await generateVoice(docId);
 
       const fullUrl = getAudioStreamUrl(docId);
-
       useTTSStore.setState({ audioUrl: fullUrl });
 
-      if (voiceResult.words && voiceResult.words.length > 0) {
+      if (voiceResult.words?.length) {
         useTTSStore.setState({ words: voiceResult.words });
       }
 
