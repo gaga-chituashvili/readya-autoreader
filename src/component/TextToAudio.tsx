@@ -2,6 +2,7 @@ import { ModeSwitcher } from "@/component/common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
 import { useAuthStore } from "@/store/authStore";
+
 import {
   Select,
   SelectContent,
@@ -11,24 +12,20 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
-import {
-  uploadDocument,
-  generateVoice,
-  getAudioStreamUrl,
-} from "@/services/api";
-import { createDocumentId } from "@/utils/document";
+
 import { useTTSStore } from "@/store/useTTSStore";
+import { useGenerateAudio } from "@/hook/useGenerateAudio";
+
 import ClipLoader from "react-spinners/ClipLoader";
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
+
   const { text, setText, selectedFile } = useAppStore();
   const { user } = useAuthStore();
   const { loading, audioUrl, error, words } = useTTSStore();
 
-  const handleChange = (value: string) => {
-    i18n.changeLanguage(value);
-  };
+  const { generate } = useGenerateAudio();
 
   const handleGenerate = async () => {
     if (!user) {
@@ -36,46 +33,11 @@ export const TextToAudio = () => {
       return;
     }
 
-    if (!text.trim() && !selectedFile) {
-      useTTSStore.setState({ error: t("error_empty_input") });
-      return;
-    }
+    await generate(text, selectedFile, user.email, t);
+  };
 
-    useTTSStore.setState({
-      loading: true,
-      error: "",
-      audioUrl: null,
-      words: [],
-    });
-
-    try {
-      const docId = createDocumentId();
-
-      await uploadDocument(
-        text.trim() || undefined,
-        selectedFile,
-        user.email,
-        docId,
-      );
-
-      const voiceResult = await generateVoice(docId);
-
-      const fullUrl = getAudioStreamUrl(docId);
-      useTTSStore.setState({ audioUrl: fullUrl });
-
-      if (voiceResult.words?.length) {
-        useTTSStore.setState({ words: voiceResult.words });
-      }
-
-      setText("");
-      useAppStore.setState({ selectedFile: null });
-    } catch (err: unknown) {
-      useTTSStore.setState({
-        error: (err as Error).message || "Something went wrong",
-      });
-    } finally {
-      useTTSStore.setState({ loading: false });
-    }
+  const handleChange = (value: string) => {
+    i18n.changeLanguage(value);
   };
 
   return (
@@ -113,6 +75,7 @@ export const TextToAudio = () => {
           <SettingsModal />
         </div>
 
+        {/* ERROR */}
         {error && (
           <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg">
             <p className="text-red-400 text-sm">{error}</p>
@@ -131,7 +94,7 @@ export const TextToAudio = () => {
 
         {audioUrl && (
           <div className="mt-6 p-4 bg-gray-800/50 dark:bg-gray-800 rounded-2xl border border-gray-700">
-            <h3 className="text-white text-lg font-bold mb-4 flex items-center gap-2">
+            <h3 className="text-white text-lg font-bold mb-4">
               Your Audio is Ready
             </h3>
 
