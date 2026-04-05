@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Button } from "@/component/ui/Button";
+import { Button } from "@/component/ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { ROUTES } from "@/routes/paths";
 

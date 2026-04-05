@@ -1,13 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  generateAudioFromText,
-  generateAudioFromFile,
+  uploadDocument,
+  generateVoice,
   getAudioStreamUrl,
 } from "@/services/api";
 
 export const useGenerateAudioFromText = () => {
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       text,
       email,
       document_id,
@@ -15,13 +15,17 @@ export const useGenerateAudioFromText = () => {
       text: string;
       email: string;
       document_id: string;
-    }) => generateAudioFromText(text, email, document_id),
+    }) => {
+      await uploadDocument(text, null, email, document_id);
+
+      return await generateVoice(document_id);
+    },
   });
 };
 
 export const useGenerateAudioFromFile = () => {
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       file,
       email,
       document_id,
@@ -29,7 +33,11 @@ export const useGenerateAudioFromFile = () => {
       file: File;
       email: string;
       document_id: string;
-    }) => generateAudioFromFile(file, email, document_id),
+    }) => {
+      await uploadDocument(undefined, file, email, document_id);
+
+      return await generateVoice(document_id);
+    },
   });
 };
 

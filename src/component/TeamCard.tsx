@@ -1,4 +1,4 @@
-import type { TeamCardProps } from "@/types/teamCard";
+import type { TeamCardProps } from "@/types/ourTeam.type";
 import { useTranslation } from "react-i18next";
 
 export const TeamCard = ({ name, role, image }: TeamCardProps) => {
