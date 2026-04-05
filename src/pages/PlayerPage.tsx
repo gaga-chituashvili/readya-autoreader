@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useParams } from "@tanstack/react-router";
 import { useTTSStore } from "@/store/useTTSStore";
-import { getAudioStreamUrl, generateVoice } from "@/services/api";
+
 import { ClipLoader } from "react-spinners";
 
 type Word = {
@@ -32,17 +32,19 @@ export const PlayerPage = () => {
     if (!docId) return;
 
     const load = async () => {
-      const res = await generateVoice(docId);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/document/${docId}/`,
+      );
+      const data = await res.json();
 
       useTTSStore.setState({
-        audioUrl: getAudioStreamUrl(docId),
-        words: res.words || [],
+        audioUrl: data.audio_url,
+        words: data.words || [],
       });
     };
 
     load();
   }, [docId]);
-
   // ⚡ faster lookup (binary-ish)
   const handleTimeUpdate = useCallback(
     (currentTime: number) => {
@@ -104,7 +106,7 @@ export const PlayerPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white flex items-center justify-center p-6">
       <div className="w-full max-w-3xl bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 shadow-xl">
         <h1 className="text-2xl font-semibold mb-6 tracking-tight">
-          🎧 Audio Reader
+           Audio Reader
         </h1>
 
         <audio

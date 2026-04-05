@@ -34,10 +34,6 @@ export const TextToAudio = () => {
 
   const { generate } = useGenerateAudio();
 
-  useEffect(() => {
-    console.log("WORDS:", words);
-  }, [words]);
-
   const audioRef = useRef<HTMLAudioElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
 
@@ -50,12 +46,13 @@ export const TextToAudio = () => {
   }, [words]);
 
   const handleGenerate = async () => {
-    if (!user) {
-      useTTSStore.setState({ error: "Please login first" });
-      return;
-    }
+    if (!user) return;
 
-    await generate(text, selectedFile, user.email, t);
+    try {
+      await generate(text, selectedFile, user.email, t);
+    } catch (e) {
+      console.error("Generate error:", e);
+    }
   };
 
   const handleChange = (value: string) => {
