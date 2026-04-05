@@ -13,4 +13,5 @@ export const ROUTES = {
   forgetPassword: "/forget-password",
   pricing: "/pricing",
   paymentSuccess: "/payment-success",
+  player: "/player/:docId",
 } as const;
