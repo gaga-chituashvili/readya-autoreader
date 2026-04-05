@@ -1,6 +1,6 @@
 "use client";
 
-import readyalogo from "@/assets/readyaLogo.png";
+import logo from "@/assets/readya-logo.png";
 import { Link } from "@tanstack/react-router";
 import { LanguageSwitcher } from "@/component/common/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
@@ -46,7 +46,7 @@ export const Header = () => {
     >
       <img
         className="h-10 cursor-pointer"
-        src={readyalogo}
+        src={logo}
         alt="Readya Logo"
         onClick={handleLogoClick}
       />

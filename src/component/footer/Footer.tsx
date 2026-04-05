@@ -8,7 +8,7 @@ import {
   Linkedin,
   Copyright,
 } from "lucide-react";
-import Logo from "@/assets/readyaLogo.png";
+import logo from "@/assets/readya-logo.png";
 
 export const Footer = () => {
   const { t } = useTranslation("footer");
@@ -18,7 +18,7 @@ export const Footer = () => {
       <section className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center md:text-left">
           <div className="space-y-3 flex flex-col items-center md:items-start">
-            <img src={Logo} alt="Readya Logo" className="w-32" />
+            <img src={logo} alt="Readya Logo" className="w-32" />
 
             <p className="text-gray-500 text-sm">{footerData.contact.email}</p>
 
