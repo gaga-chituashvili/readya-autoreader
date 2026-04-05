@@ -1,7 +1,7 @@
 import { SignUpForm } from "@/component/signup/SignUpForm";
 import { AuthCard } from "@/component/signup/AuthCard";
 import { SocialAuth } from "@/component/signup/SocialAuth";
-import readyalogo from "@/assets/ReadyaLogo.png";
+import logo from "@/assets/readya-logo.png";
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +20,7 @@ export const SignUp = () => {
 
         <AuthCard>
           <img
-            src={readyalogo}
+            src={logo}
             alt="Readya Logo"
             className="mx-auto mb-6 w-24 md:w-28"
           />
