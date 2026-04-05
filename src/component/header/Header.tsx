@@ -1,6 +1,6 @@
 "use client";
 
-import readyalogo from "@/assets/Readyalogo.png";
+import readyalogo from "@/assets/readyaLogo.png";
 import { Link } from "@tanstack/react-router";
 import { LanguageSwitcher } from "@/component/common/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
