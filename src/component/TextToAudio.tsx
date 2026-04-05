@@ -17,6 +17,13 @@ import { useTTSStore } from "@/store/useTTSStore";
 import { useGenerateAudio } from "@/hook/useGenerateAudio";
 
 import ClipLoader from "react-spinners/ClipLoader";
+import { useRef, useState, useEffect, useMemo, useCallback } from "react";
+
+type Word = {
+  word: string;
+  start: number;
+  end: number;
+};
 
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
@@ -26,6 +33,21 @@ export const TextToAudio = () => {
   const { loading, audioUrl, error, words } = useTTSStore();
 
   const { generate } = useGenerateAudio();
+
+  useEffect(() => {
+    console.log("WORDS:", words);
+  }, [words]);
+
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
+
+  const normalizedWords: Word[] = useMemo(() => {
+    return (words as Word[]).map((w) => ({
+      ...w,
+      start: w.start > 50 ? w.start / 1000 : w.start,
+      end: w.end > 50 ? w.end / 1000 : w.end,
+    }));
+  }, [words]);
 
   const handleGenerate = async () => {
     if (!user) {
@@ -38,6 +60,44 @@ export const TextToAudio = () => {
 
   const handleChange = (value: string) => {
     i18n.changeLanguage(value);
+  };
+
+  const handleTimeUpdate = useCallback(
+    (currentTime: number) => {
+      let newIndex = -1;
+
+      for (let i = 0; i < normalizedWords.length; i++) {
+        const w = normalizedWords[i];
+        if (currentTime >= w.start && currentTime <= w.end) {
+          newIndex = i;
+          break;
+        }
+      }
+
+      if (newIndex !== activeIndex) {
+        setActiveIndex(newIndex);
+      }
+    },
+    [normalizedWords, activeIndex],
+  );
+
+  useEffect(() => {
+    if (activeIndex < 0) return;
+
+    const el = document.getElementById(`word-${activeIndex}`);
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [activeIndex]);
+
+  const handleWordClick = (start: number) => {
+    if (!audioRef.current) return;
+
+    audioRef.current.currentTime = start;
+    audioRef.current.play();
   };
 
   return (
@@ -75,7 +135,6 @@ export const TextToAudio = () => {
           <SettingsModal />
         </div>
 
-        {/* ERROR */}
         {error && (
           <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg">
             <p className="text-red-400 text-sm">{error}</p>
@@ -98,15 +157,40 @@ export const TextToAudio = () => {
               Your Audio is Ready
             </h3>
 
-            <audio controls className="w-full mb-4">
+            <audio
+              ref={audioRef}
+              controls
+              className="w-full mb-4"
+              onTimeUpdate={(e) =>
+                handleTimeUpdate(e.currentTarget.currentTime)
+              }
+            >
               <source src={audioUrl} type="audio/mpeg" />
             </audio>
 
-            {words.length > 0 && (
-              <div className="mt-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+            {normalizedWords.length > 0 && (
+              <div className="mt-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700 max-h-[300px] overflow-y-auto">
                 <h4 className="text-white text-sm font-semibold mb-3">
                   Text (Highlighted Reading)
                 </h4>
+
+                <div className="text-white text-lg leading-8">
+                  {normalizedWords.map((w, i) => (
+                    <span
+                      id={`word-${i}`}
+                      key={i}
+                      onClick={() => handleWordClick(w.start)}
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor:
+                          i === activeIndex ? "yellow" : "transparent",
+                        transition: "0.15s",
+                      }}
+                    >
+                      {w.word}{" "}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
