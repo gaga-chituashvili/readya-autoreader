@@ -1,0 +1,36 @@
+{
+  "title": "Choose your plan",
+  "description1": "Turn your learning materials into a personal audio lesson.",
+  "description2": "Turn your accounts, emails, and contracts into productive listening.",
+  "plans_labels": {
+    "monthly": "Monthly",
+    "quarterly": "Quarterly",
+    "yearly": "Yearly"
+  },
+  "plans": {
+    "monthly": [
+      {
+        "id": 1,
+        "type": "monthly",
+        "title": "Monthly",
+        "price": "₾30",
+        "period": "/ month"
+      },
+      {
+        "id": 2,
+        "type": "quarterly",
+        "title": "Quarterly",
+        "price": "₾75",
+        "period": "/ 3 months"
+      },
+      {
+        "id": 3,
+        "type": "yearly",
+        "title": "Yearly",
+        "price": "₾230",
+        "period": "/ year"
+      }
+    ]
+  },
+  "buy_now": "Buy Now"
+}

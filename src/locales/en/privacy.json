@@ -1,0 +1,57 @@
+{
+  "title": "Privacy Policy",
+  "updated": "Last updated: 2026",
+  "intro": "Readya respects your privacy and is committed to protecting your personal data.",
+  "sections": [
+    {
+      "title": "1. What Data We Collect",
+      "content": [
+        "We may collect the following information:",
+        "Personal data (such as email when creating an account)",
+        "Text and documents you input or upload to the platform",
+        "Usage data (how you use the service)"
+      ]
+    },
+    {
+      "title": "2. How We Use Your Data",
+      "content": [
+        "Your information is used for:",
+        "Providing and operating the service",
+        "Improving user experience",
+        "Ensuring system security and stability",
+        "Communication when necessary"
+      ]
+    },
+    {
+      "title": "3. Data Protection",
+      "content": [
+        "We take appropriate technical and organizational measures to protect your data.",
+        "Uploaded text is used solely for providing the service (text-to-speech conversion)."
+      ]
+    },
+    {
+      "title": "4. Data Sharing",
+      "content": [
+        "We do not sell or share your personal data with third parties, except when:",
+        "Required by law",
+        "Necessary for the technical operation of the service"
+      ]
+    },
+    {
+      "title": "5. Your Rights",
+      "content": [
+        "You have the right to:",
+        "Access your personal data",
+        "Request correction or deletion of your data",
+        "Stop using the service at any time"
+      ]
+    },
+    {
+      "title": "6. Changes",
+      "content": [
+        "This policy may be updated periodically.",
+        "Continued use of the service means you agree to the updated terms."
+      ]
+    }
+  ]
+}

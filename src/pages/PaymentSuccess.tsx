@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { checkPaymentStatus } from "../services/pay";
+import { checkPaymentStatus } from "@/services/pay";
 import {
   MdCheckCircle,
   MdHourglassEmpty,

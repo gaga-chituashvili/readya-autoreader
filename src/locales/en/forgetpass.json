@@ -1,0 +1,14 @@
+{
+  "forget_password": "Forgot Password",
+  "back": "Go back",
+  "email": "Email",
+  "send": "Reset Password",
+
+  "errors": {
+    "email_required": "Email is required",
+    "email_invalid": "Please enter a valid email"
+  },
+
+  "email_sent_title": "Check your email!",
+  "email_sent_desc": "We have sent a reset link/code to your email address."
+}

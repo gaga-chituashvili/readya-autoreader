@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { footerData } from "../../data/footerData";
+import { footerData } from "@/data/footerData";
 import { Link } from "@tanstack/react-router";
 import {
   Instagram,
@@ -8,7 +8,7 @@ import {
   Linkedin,
   Copyright,
 } from "lucide-react";
-import Logo from "../../assets/readyaLogo.png";
+import Logo from "@/assets/readyaLogo.png";
 
 export const Footer = () => {
   const { t } = useTranslation("footer");

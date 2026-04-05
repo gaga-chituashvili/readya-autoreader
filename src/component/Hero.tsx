@@ -1,8 +1,19 @@
-import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/component/ui/button";
+import founder from "@/assets/founder1.png";
+import { useNavigate } from "@tanstack/react-router";
+import { ROUTES } from "@/routes/paths";
 
 export const Hero = () => {
   const { t } = useTranslation("home");
+  const navigate = useNavigate();
+
+  const scrollDown = () => {
+    window.scrollTo({
+      top: window.innerHeight * 1.4,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section className="w-full py-20 md:py-28 px-4 sm:px-6 bg-gray-100 dark:bg-black overflow-hidden">
@@ -18,31 +29,35 @@ export const Hero = () => {
 
           <div className="mt-10 md:hidden flex justify-center">
             <div className="relative flex items-center justify-center">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-purple-400 flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer">
-                <Play className="text-white" size={28} />
-              </div>
-              <div className="absolute w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-purple-300 opacity-20 blur-2xl"></div>
+              <img
+                src={founder}
+                alt="Founder"
+                className="w-40 h-40 object-cover rounded-full"
+              />
             </div>
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-6 py-3 rounded-full bg-purple-500 text-white font-medium hover:bg-purple-600 transition">
+            <Button
+              variant="default"
+              onClick={() => navigate({ to: ROUTES.aboutUs })}
+            >
               {t("learn_more")}
-            </button>
+            </Button>
 
-            <button className="w-full sm:w-auto px-6 py-3 rounded-full bg-purple-400 text-white font-medium hover:bg-purple-500 transition">
+            <Button variant="secondary" onClick={scrollDown}>
               {t("try_readya")}
-            </button>
+            </Button>
           </div>
         </div>
 
         <div className="hidden md:flex flex-1 justify-end">
           <div className="relative flex items-center justify-center">
-            <div className="w-28 h-28 rounded-full bg-purple-400 flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer">
-              <Play className="text-white" size={32} />
-            </div>
-
-            <div className="absolute w-36 h-36 rounded-full bg-purple-300 opacity-20 blur-2xl"></div>
+            <img
+              src={founder}
+              alt="Founder"
+              className="w-40 h-40 object-cover rounded-full"
+            />
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
-import type { FAQKey } from "../types/faq";
+import type { FAQKey } from "@/types/home.type";
 
 export const faqKeys: FAQKey[] = [
-  "what_is_readya",
   "why_use_readya",
   "how_to_work",
   "what_file_types",

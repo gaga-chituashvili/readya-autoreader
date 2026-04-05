@@ -1,0 +1,26 @@
+{
+  "create_account": "შექმენი ანგარიში",
+  "email": "ელ. ფოსტა",
+  "full_name": "სახელი და გვარი",
+  "password": "პაროლი",
+  "confirm_password": "გაიმეორე პაროლი",
+  "sign_up": "შექმენი ანგარიში",
+
+  "errors": {
+    "email_invalid": "შეიყვანე ვალიდური ელ. ფოსტა",
+    "email_required": "ელ. ფოსტა სავალდებულოა",
+    "full_name_required": "სახელი და გვარი სავალდებულოა",
+    "password_min": "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს",
+    "password_required": "პაროლი სავალდებულოა",
+    "confirm_password_required": "გაიმეორე პაროლი",
+    "passwords_not_match": "პაროლები არ ემთხვევა"
+  },
+
+  "terms_text": "რეგისტრაციაზე დაჭერით ეთანხმები რედიას",
+  "terms_link": "წესებს და პირობებს",
+  "log_in": "ავტორიზაცია",
+  "forgot_password": "პაროლის აღდგენა",
+  "sign_in": "შესვლა",
+  "no_account": "არ გაქვს ანგარიში?",
+  "create": "შექმენი"
+}

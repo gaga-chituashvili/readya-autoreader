@@ -1,0 +1,41 @@
+{
+  "home": "Home",
+  "about-us": "About Readya",
+  "contact": "Contact",
+  "service": "Service",
+  "support": "Support",
+
+  "title": "About Us",
+  "subtitle": "What is Readya?",
+
+  "description": "Readya is a modern Georgian platform that transforms written text into an audio experience.",
+
+  "features_title": "Our users transform every day:",
+  "features": [
+    "Documents",
+    "Texts",
+    "Learning materials",
+    "Books",
+    "Personal notes"
+  ],
+
+  "extra": "Into a listenable format — for studying, working, or simply consuming information with ease.",
+
+  "audience_title": "Our platform is designed for everyone, but especially helps:",
+  "audience": [
+    "People with dyslexia",
+    "Users with ADHD",
+    "Individuals with visual impairments",
+    "Those who get tired quickly while reading"
+  ],
+
+  "cta_title": "Start listening today!",
+
+  "benefits": [
+    "Feel calm and free — read with your ears.",
+    "Learn at your own pace.",
+    "Work more efficiently."
+  ],
+
+  "cta": "Readya.me — the smarter way to read."
+}

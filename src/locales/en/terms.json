@@ -1,0 +1,52 @@
+{
+  "title": "Terms of Service",
+  "updated": "Last updated: 2026",
+  "intro": "By using Readya, you agree to the following terms:",
+  "sections": [
+    {
+      "title": "1. Use of Service",
+      "content": [
+        "Readya is an AI-powered text-to-speech platform.",
+        "The service must be used in compliance with applicable laws."
+      ]
+    },
+    {
+      "title": "2. User Content",
+      "content": [
+        "Users are solely responsible for any text they upload or input into the platform.",
+        "You retain ownership of your content, but grant us permission to process it in order to provide the service."
+      ]
+    },
+    {
+      "title": "3. Restrictions",
+      "content": [
+        "The following is prohibited:",
+        "• Misuse or abuse of the platform",
+        "• Attempting to damage or overload the system",
+        "• Uploading illegal or offensive content"
+      ]
+    },
+    {
+      "title": "4. Intellectual Property",
+      "content": [
+        "The software, design, and technology of Readya are the intellectual property of the company."
+      ]
+    },
+    {
+      "title": "5. Availability",
+      "content": [
+        "We strive to keep the service continuously available, but we do not guarantee it will always operate without interruptions or errors."
+      ]
+    },
+    {
+      "title": "6. Limitation of Liability",
+      "content": [
+        "Readya is not responsible for any damages that may arise from the use of the service."
+      ]
+    },
+    {
+      "title": "7. Changes",
+      "content": ["We reserve the right to modify these terms at any time."]
+    }
+  ]
+}

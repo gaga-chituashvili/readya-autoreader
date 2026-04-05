@@ -1,65 +1,41 @@
-const API_URL = "https://readya-backend.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const generateAudioFromText = async (
-  _text: string,
-  _email: string,
-  orderId: string,
+export const uploadDocument = async (
+  text?: string,
+  file?: File | null,
+  email?: string,
+  documentId?: string,
 ) => {
-  try {
-    // POST to /voice/{orderId}/ endpoint
-    const response = await fetch(`${API_URL}/voice/${orderId}/`, {
-      method: "POST",
-    });
+  const formData = new FormData();
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to generate audio");
-    }
+  if (text) formData.append("text", text);
+  if (file) formData.append("file", file);
+  if (email) formData.append("email", email);
+  if (documentId) formData.append("document_id", documentId);
 
-    const data = await response.json();
+  const res = await fetch(`${API_URL}/upload/`, {
+    method: "POST",
+    body: formData,
+  });
 
-    console.log("📦 API Response:", data);
-    console.log("📝 Words:", data.words);
-
-    return {
-      stream_url: data.stream_url,
-      words: data.words || [],
-    };
-  } catch (error) {
-    console.error("❌ Error generating audio:", error);
-    throw error;
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Upload failed");
   }
+
+  return res.json();
 };
+export const generateVoice = async (docId: string) => {
+  const res = await fetch(`${API_URL}/voice/${docId}/`, {
+    method: "POST",
+  });
 
-export const generateAudioFromFile = async (
-  _file: File,
-  _email: string,
-  orderId: string,
-) => {
-  try {
-    // POST to /voice/{orderId}/ endpoint
-    const response = await fetch(`${API_URL}/voice/${orderId}/`, {
-      method: "POST",
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to generate audio");
-    }
-
-    const data = await response.json();
-
-    console.log("📦 API Response:", data);
-    console.log("📝 Words:", data.words);
-
-    return {
-      stream_url: data.stream_url,
-      words: data.words || [],
-    };
-  } catch (error) {
-    console.error("❌ Error generating audio:", error);
-    throw error;
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Voice generation failed");
   }
+
+  return res.json();
 };
 
 export const getAudioStreamUrl = (docId: string) => {
