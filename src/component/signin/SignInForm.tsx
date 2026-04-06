@@ -31,12 +31,7 @@ export const SignInForm = () => {
     setLoading(true);
 
     try {
-      const res = await loginRequest(data);
-
-      localStorage.setItem("access_token", res.access);
-      localStorage.setItem("refresh_token", res.refresh);
-
-      useAuthStore.setState({ token: res.access });
+      await loginRequest(data);
 
       await fetchUser();
 
