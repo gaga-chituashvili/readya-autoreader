@@ -18,21 +18,19 @@ const request = async <T, R>(endpoint: string, payload: T): Promise<R> => {
 
   const data = await res.json();
 
+  if (!res.ok) {
+    throw data;
+  }
+
   return data;
 };
 
 export const registerRequest = (payload: RegisterPayload) => {
-  return request<RegisterPayload, RegisterResponse>(
-    "/register/",
-    payload,
-  );
+  return request<RegisterPayload, RegisterResponse>("/register/", payload);
 };
 
 export const loginRequest = (payload: LoginPayload) => {
-  return request<LoginPayload, LoginResponse>(
-    "/login/",
-    payload,
-  );
+  return request<LoginPayload, LoginResponse>("/login/", payload);
 };
 
 export const getProfile = async (): Promise<ProfileResponse> => {

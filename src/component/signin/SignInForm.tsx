@@ -21,6 +21,7 @@ export const SignInForm = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginType>({
     resolver: zodResolver(loginSchema),
@@ -40,8 +41,21 @@ export const SignInForm = () => {
       await fetchUser();
 
       navigate({ to: ROUTES.home });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      const backendErrors = error as Record<string, string[] | string>;
+
+      if (backendErrors) {
+        Object.keys(backendErrors).forEach((key) => {
+          setError(key as keyof LoginType, {
+            type: "manual",
+            message: Array.isArray(backendErrors[key])
+              ? backendErrors[key][0]
+              : backendErrors[key],
+          });
+        });
+      } else {
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -54,7 +68,7 @@ export const SignInForm = () => {
         label={t("email")}
         placeholder="example@gmail.com"
         {...register("email")}
-        error={errors.email?.message && t(errors.email.message)}
+        error={errors.email?.message}
       />
 
       <div className="flex justify-between items-center">
@@ -74,7 +88,7 @@ export const SignInForm = () => {
         id="password"
         placeholder="••••••"
         register={register("password")}
-        error={errors.password?.message && t(errors.password.message)}
+        error={errors.password?.message}
       />
 
       <button
