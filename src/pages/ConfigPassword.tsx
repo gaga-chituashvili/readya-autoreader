@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { AuthCard } from "@/component/forgetpassword/AuthCard";
 import { useTranslation } from "react-i18next";
 import { ConfigPasswordForm } from "@/component/configpassword/ConfigPasswordForm";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { ROUTES } from "@/routes/paths";
 import { passwordResetConfirmRequest } from "@/services/authService";
-import { useState } from "react";
+import type { config } from "@/types/resetPassword.type";
 
 export const ConfigPassword = () => {
   const { t } = useTranslation("configpassword");
@@ -31,12 +32,13 @@ export const ConfigPassword = () => {
       });
 
       navigate({ to: ROUTES.signIn });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const e = err as config;
       setError(
-        err?.detail ||
-          err?.error ||
-          err?.confirm_password?.[0] ||
-          err?.password?.[0] ||
+        e.detail ||
+          e.error ||
+          e.confirm_password?.[0] ||
+          e.password?.[0] ||
           "Something went wrong",
       );
     } finally {
