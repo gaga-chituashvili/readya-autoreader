@@ -16,7 +16,6 @@ export const PricingSection = () => {
 
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
-      {/* Header */}
       <div className="text-center max-w-2xl mx-auto">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
           {t("title")}

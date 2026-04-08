@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import { getProfile } from "@/services/authService";
+import type { ProfileResponse } from "@/types/log";
 
-type User = {
-  email: string;
-  full_name: string;
-};
+type User = ProfileResponse;
 
 type AuthStore = {
   user: User | null;

@@ -40,6 +40,18 @@ export const UserProfile = () => {
           <div>
             <p className="font-semibold text-gray-900">{user.full_name}</p>
             <p className="text-sm text-gray-500">{user.email}</p>
+
+            <p className="text-xs mt-1 text-gray-600">
+              {user.subscription_plan
+                ? `Plan: ${user.subscription_plan}`
+                : "Free plan"}
+            </p>
+
+            {user.subscription_end && (
+              <p className="text-xs text-gray-500">
+                Expires: {new Date(user.subscription_end).toLocaleDateString()}
+              </p>
+            )}
           </div>
         </div>
 

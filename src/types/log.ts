@@ -33,6 +33,9 @@ export type ProfileResponse = {
   id: number;
   email: string;
   full_name: string;
+  subscription_plan: string | null;
+  subscription_end: string | null;
+  is_active_subscription: boolean;
 };
 
 export type ResetPasswordPayload = {

@@ -20,6 +20,7 @@ import { EmailSent } from "@/pages/EmailSent";
 import { PricingPage } from "@/pages/PricingPage";
 import { PlayerPage } from "@/pages/PlayerPage";
 import { ConfigPassword } from "@/pages/ConfigPassword";
+import PaymentSuccess from "@/pages/PaymentSuccess";
 
 const rootRoute = createRootRoute({
   component: MainLayout,
@@ -115,6 +116,12 @@ const resetPasswordRoute = createRoute({
   component: ConfigPassword,
 });
 
+const paymentSuccessRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: ROUTES.paymentSuccess,
+  component: PaymentSuccess,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutUsRoute,
@@ -131,6 +138,8 @@ const routeTree = rootRoute.addChildren([
   pricingRoute,
   playerRoute,
   resetPasswordRoute,
+  paymentSuccessRoute,
+
 ]);
 
 export const router = createRouter({
