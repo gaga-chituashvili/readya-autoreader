@@ -16,6 +16,7 @@ export const uploadDocument = async (
   const res = await fetch(`${API_URL}/upload/`, {
     method: "POST",
     body: formData,
+    credentials: "include",
   });
 
   if (!res.ok) {
@@ -28,6 +29,7 @@ export const uploadDocument = async (
 export const generateVoice = async (docId: string) => {
   const res = await fetch(`${API_URL}/voice/${docId}/`, {
     method: "POST",
+    credentials: "include",
   });
 
   if (!res.ok) {
