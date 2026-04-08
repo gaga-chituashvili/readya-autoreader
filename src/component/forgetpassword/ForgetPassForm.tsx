@@ -5,7 +5,12 @@ import type { ForgetPasswordType } from "@/component/schemas/forgetPassword.sche
 import { Input } from "@/component/ui/Input";
 import { useTranslation } from "react-i18next";
 
-export const ForgetPassForm = () => {
+type Props = {
+  onSubmit: (data: ForgetPasswordType) => Promise<void>;
+  loading?: boolean;
+};
+
+export const ForgetPassForm = ({ onSubmit, loading }: Props) => {
   const { t } = useTranslation("forgetpass");
 
   const {
@@ -15,10 +20,6 @@ export const ForgetPassForm = () => {
   } = useForm<ForgetPasswordType>({
     resolver: zodResolver(forgetPasswordSchema),
   });
-
-  const onSubmit = (data: ForgetPasswordType) => {
-    console.log(data);
-  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -30,8 +31,12 @@ export const ForgetPassForm = () => {
         error={errors.email?.message && t(errors.email.message)}
       />
 
-      <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold">
-        {t("send")}
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold"
+      >
+        {loading ? "Sending..." : t("send")}
       </button>
     </form>
   );

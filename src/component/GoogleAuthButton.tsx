@@ -5,33 +5,35 @@ import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { url } from "@/api/config/url";
 
 export const GoogleAuthButton = () => {
-  const login = useAuthStore((s) => s.login);
+  const setUser = useAuthStore((s) => s.setUser);
   const navigate = useNavigate();
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     const token = credentialResponse.credential;
 
-    if (!token) {
-      console.error("No credential received");
-      return;
-    }
+    if (!token) return;
 
     try {
-      const res = await fetch(`${url}/auth/google/`, {
+      await fetch(`${url}/auth/google/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ token }),
       });
 
-      if (!res.ok) {
-        throw new Error("Google login failed");
-      }
+      const res = await fetch(`${url}/profile/`, {
+        method: "GET",
+        credentials: "include",
+      });
 
-      const data = await res.json();
+      if (!res.ok) throw new Error("Failed to fetch profile");
 
-      login(data);
+      const user = await res.json();
+
+      setUser(user);
+
       navigate({ to: ROUTES.home });
     } catch (err) {
       console.error("Google auth error:", err);

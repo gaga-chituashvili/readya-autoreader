@@ -83,7 +83,7 @@ export const Header = () => {
           ) : (
             <Button
               variant="default"
-              onClick={() => navigate({ to: ROUTES.singnIn })}
+              onClick={() => navigate({ to: ROUTES.signIn })}
             >
               {t("enter")}
             </Button>
@@ -140,7 +140,7 @@ export const Header = () => {
                     if (user) {
                       navigate({ to: ROUTES.pricing });
                     } else {
-                      navigate({ to: ROUTES.singnIn });
+                      navigate({ to: ROUTES.signIn });
                     }
                   }}
                   className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
@@ -156,7 +156,7 @@ export const Header = () => {
               ) : (
                 <Button
                   variant="default"
-                  onClick={() => navigate({ to: ROUTES.singnIn })}
+                  onClick={() => navigate({ to: ROUTES.signIn })}
                 >
                   {t("enter")}
                 </Button>

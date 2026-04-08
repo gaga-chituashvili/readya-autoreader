@@ -29,7 +29,7 @@ export const PricingCard = ({
     if (isPending) return;
 
     if (!user) {
-      navigate({ to: ROUTES.singnIn });
+      navigate({ to: ROUTES.signIn });
       return;
     }
 

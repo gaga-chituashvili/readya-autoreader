@@ -1,58 +1,34 @@
 import { create } from "zustand";
 import { getProfile } from "@/services/authService";
+import type { ProfileResponse } from "@/types/log";
 
-type User = {
-  email: string;
-  full_name: string;
-};
+type User = ProfileResponse;
 
 type AuthStore = {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
 
   setUser: (user: User) => void;
-  login: (data: { access: string; user: User }) => void;
   fetchUser: () => Promise<void>;
   logout: () => void;
 };
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
-  token: localStorage.getItem("access_token"),
   isLoading: true,
 
   setUser: (user) => set({ user }),
 
-  login: (data) => {
-    localStorage.setItem("access_token", data.access);
-
-    set({
-      user: data.user,
-      token: data.access,
-      isLoading: false,
-    });
-  },
-
   fetchUser: async () => {
-    const token = get().token;
-
-    if (!token) {
-      set({ isLoading: false });
-      return;
-    }
-
     try {
       const data = await getProfile();
       set({ user: data, isLoading: false });
-    } catch (error: unknown) {
-      console.log("fetchUser error:", error);
-
-      set({ isLoading: false });
+    } catch {
+      set({ user: null, isLoading: false });
     }
   },
+
   logout: () => {
-    localStorage.removeItem("access_token");
-    set({ user: null, token: null });
+    set({ user: null });
   },
 }));
