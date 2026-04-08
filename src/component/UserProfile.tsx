@@ -15,7 +15,7 @@ export const UserProfile = () => {
   const handleLogout = async () => {
     await logoutRequest();
     logout();
-    navigate({ to: ROUTES.singnIn });
+    navigate({ to: ROUTES.signIn });
   };
 
   return (

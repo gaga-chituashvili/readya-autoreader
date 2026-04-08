@@ -30,7 +30,7 @@ export const SignUpForm = () => {
     try {
       const response = await registerRequest(data);
       console.log(response);
-      navigate({ to: ROUTES.singnIn });
+      navigate({ to: ROUTES.signIn });
     } catch (error) {
       console.error(error);
     } finally {

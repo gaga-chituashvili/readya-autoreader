@@ -8,7 +8,6 @@ export type PasswordFieldProps = {
   id?: string;
 };
 
-
 export type RegisterPayload = {
   email: string;
   full_name: string;
@@ -30,9 +29,16 @@ export type LoginResponse = {
   refresh: string;
 };
 
-
 export type ProfileResponse = {
   id: number;
   email: string;
   full_name: string;
+};
+
+export type ResetPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordResponse = {
+  message: string;
 };

@@ -8,10 +8,11 @@ export const ROUTES = {
   termsAndPolicy: "/terms-and-policy",
   refundPolicy: "/refund-policy",
   signUp: "/sign-up",
-  singnIn: "/sign-in",
+  signIn: "/sign-in",
   emailSent: "/email-sent",
   forgetPassword: "/forget-password",
   pricing: "/pricing",
   paymentSuccess: "/payment-success",
-  player: "/player/:docId",
+  player: "/player/$docId",
+  resetPassword: "/reset-password/$uid/$token",
 } as const;

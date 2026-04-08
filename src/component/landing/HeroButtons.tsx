@@ -18,7 +18,7 @@ export const HeroButtons = () => {
 
       <Button
         variant="secondary"
-        onClick={() => navigate({ to: ROUTES.singnIn })}
+        onClick={() => navigate({ to: ROUTES.signIn })}
       >
         {t("auth.login")}
       </Button>

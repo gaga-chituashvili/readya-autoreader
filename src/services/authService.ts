@@ -4,6 +4,8 @@ import type {
   LoginPayload,
   LoginResponse,
   ProfileResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
 } from "../types/log";
 import { url } from "@/api/config/url";
 
@@ -33,6 +35,26 @@ export const registerRequest = (payload: RegisterPayload) => {
 export const loginRequest = (payload: LoginPayload) => {
   return request<LoginPayload, LoginResponse>("/login/", payload);
 };
+
+export const resetPasswordRequest = (payload: ResetPasswordPayload) => {
+  return request<ResetPasswordPayload, ResetPasswordResponse>(
+    "/password-reset/",
+    payload,
+  );
+};
+
+export const passwordResetConfirmRequest = (payload: {
+  uid: string;
+  token: string;
+  password: string;
+  confirm_password: string;
+}) => {
+  return request<typeof payload, { detail: string }>(
+    "/password-reset-confirm/",
+    payload,
+  );
+};
+
 
 export const getProfile = async (): Promise<ProfileResponse> => {
   const res = await fetch(`${url}/profile/`, {

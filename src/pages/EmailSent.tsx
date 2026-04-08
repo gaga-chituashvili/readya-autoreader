@@ -35,7 +35,7 @@ export const EmailSent = ({ title, description, showBack = true }: Props) => {
 
         {showBack && (
           <Link
-            to={ROUTES.singnIn}
+            to={ROUTES.signIn}
             className="inline-block text-indigo-500 hover:text-indigo-600 hover:underline font-medium transition"
           >
             {t("back")}
