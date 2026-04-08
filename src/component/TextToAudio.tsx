@@ -48,6 +48,11 @@ export const TextToAudio = () => {
   const handleGenerate = async () => {
     if (!user) return;
 
+    if (!user.is_active_subscription) {
+      alert("Subscription required");
+      return;
+    }
+
     try {
       await generate(text, selectedFile, user.email, t);
     } catch (e) {
