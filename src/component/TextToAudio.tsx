@@ -14,7 +14,6 @@ import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
 
 import { useTTSStore } from "@/store/useTTSStore";
-import { useGenerateAudio } from "@/hook/useGenerateAudio";
 
 import ClipLoader from "react-spinners/ClipLoader";
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
@@ -30,9 +29,9 @@ export const TextToAudio = () => {
 
   const { text, setText, selectedFile } = useAppStore();
   const { user } = useAuthStore();
-  const { loading, audioUrl, error, words } = useTTSStore();
+  const { loading, audioUrl, error, words, generate } = useTTSStore();
 
-  const { generate } = useGenerateAudio();
+  // ❌ წაიშალა useGenerateAudio გამოყენება
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
@@ -48,13 +47,8 @@ export const TextToAudio = () => {
   const handleGenerate = async () => {
     if (!user) return;
 
-    if (!user.is_active_subscription) {
-      alert("Subscription required");
-      return;
-    }
-
     try {
-      await generate(text, selectedFile, user.email, t);
+      await generate(text, selectedFile, user.email);
     } catch (e) {
       console.error("Generate error:", e);
     }
