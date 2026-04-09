@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getProfile } from "@/services/authService";
+import { getProfile, logoutRequest } from "@/services/authService";
 import type { ProfileResponse } from "@/types/log";
 
 type User = ProfileResponse;
@@ -28,7 +28,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
-  logout: () => {
+  logout: async () => {
+    await logoutRequest();
     set({ user: null });
   },
 }));
