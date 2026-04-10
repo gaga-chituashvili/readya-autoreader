@@ -20,6 +20,7 @@ export const SignUpForm = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<SignUpType>({
     resolver: zodResolver(signupSchema),
@@ -31,8 +32,21 @@ export const SignUpForm = () => {
       const response = await registerRequest(data);
       console.log(response);
       navigate({ to: ROUTES.signIn });
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      const backendErrors = error as Record<string, string[] | string>;
+
+      if (backendErrors) {
+        Object.keys(backendErrors).forEach((key) => {
+          setError(key as keyof SignUpType, {
+            type: "manual",
+            message: Array.isArray(backendErrors[key])
+              ? backendErrors[key][0]
+              : backendErrors[key],
+          });
+        });
+      } else {
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -40,32 +54,29 @@ export const SignUpForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Email */}
       <Input
         id="email"
         label={t("email")}
         placeholder="example@gmail.com"
         {...register("email")}
-        error={errors.email?.message && t(errors.email.message)}
+        error={errors.email?.message}
       />
 
-      {/* Full Name */}
       <Input
         id="full_name"
         label={t("full_name")}
         placeholder="John Doe"
         {...register("full_name")}
-        error={errors.full_name?.message && t(errors.full_name.message)}
+        error={errors.full_name?.message}
       />
 
-      {/* Passwords */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <PasswordField
           id="password"
           label={t("password")}
           placeholder="••••••"
           register={register("password")}
-          error={errors.password?.message && t(errors.password.message)}
+          error={errors.password?.message}
         />
 
         <PasswordField
@@ -73,10 +84,7 @@ export const SignUpForm = () => {
           label={t("confirm_password")}
           placeholder="••••••"
           register={register("confirm_password")}
-          error={
-            errors.confirm_password?.message &&
-            t(errors.confirm_password.message)
-          }
+          error={errors.confirm_password?.message}
         />
       </div>
 
