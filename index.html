@@ -39,7 +39,13 @@
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 
     <link rel="canonical" href="https://readya.me/" />
-    <script src="https://cdn.jsdelivr.net/npm/@silktide/cookieconsent@latest/build/cookieconsent.min.js"></script>
+    <!-- Start cookieyes banner -->
+    <script
+      id="cookieyes"
+      type="text/javascript"
+      src="https://cdn-cookieyes.com/client_data/ae540a4d6f13196468b7aa264bbbc34b/script.js"
+    ></script>
+    <!-- End cookieyes banner -->
   </head>
 
   <body>
@@ -54,28 +60,5 @@
     <div id="root"></div>
 
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Silktide init -->
-    <script>
-      window.addEventListener("load", function () {
-        cookieconsent.initialise({
-          palette: {
-            popup: {
-              background: "#1e1e2f",
-            },
-            button: {
-              background: "#6c5ce7",
-            },
-          },
-          theme: "classic",
-          position: "bottom",
-          content: {
-            message: "We use cookies to improve your experience.",
-            dismiss: "Accept",
-            link: "Learn more",
-            href: "/privacy-policy",
-          },
-        });
-      });
-    </script>
   </body>
 </html>
