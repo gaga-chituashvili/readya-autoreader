@@ -1,48 +1,80 @@
 📁 Project Structure
 
 ```
+readya-autoreader/
 ├── README.md                # Project documentation and setup instructions
-├── eslint.config.js         # ESLint configuration (code quality rules)
-├── index.html               # Main HTML entry file (Vite)
-├── package-lock.json        # Locked versions of dependencies
-├── package.json             # Project dependencies and npm scripts
-├── postcss.config.js        # PostCSS configuration (used by Tailwind CSS)
-├── public                   # Static public assets
-│   └── vite.svg             # Default Vite asset
-├── src                      # Main application source code
-│   ├── App.css              # Styles for the root App component
-│   ├── App.tsx              # Root React component
-│   ├── assets               # Images and static assets
-│   │   ├── Readyalogo.png
-│   │   └── listenicon.png
-│   ├── component            # Reusable UI components
-│   │   ├── ListenSection.tsx # Audio listening section component
-│   │   ├── footer
-│   │   │   └── Footer.tsx   # Application footer
-│   │   ├── header
-│   │   │   └── Header.tsx   # Application header / navigation
-│   │   └── upload           # Upload-related components
-│   │       ├── Upload.tsx
-│   │       ├── UploadButtons.tsx
-│   │       ├── UploadHeader.tsx
-│   │       ├── UploadInfo.tsx
-│   │       └── UploadTextarea.tsx
-│   ├── index.css            # Global styles
-│   ├── layout
-│   │   └── MainLayout.tsx   # Shared layout (Header + Footer)
-│   ├── main.tsx             # Application entry point
-│   ├── pages
-│   │   └── Home.tsx         # Page-level component
-│   ├── routes
-│   │   ├── Routes.tsx       # React Router configuration
-│   │   └── paths.ts         # Centralized route paths
-│   └── services
-│       └── api.ts           # Backend API service layer
-├── tailwind.config.js       # Tailwind CSS configuration
-├── tsconfig.app.json        # TypeScript config for the app
-├── tsconfig.json            # Base TypeScript configuration
-├── tsconfig.node.json       # TypeScript config for Node.js
-└── vite.config.ts           # Vite configuration
+├── package.json            # Project dependencies and scripts
+├── vite.config.ts          # Vite configuration
+├── vercel.json             # Vercel deployment configuration
+├── index.html              # Root HTML file
+
+├── public/                 # Static assets (served as-is)
+│   ├── _redirects          # Routing rules (for SPA / hosting)
+│   └── readya.svg          # Static logo/icon
+
+├── src/                    # Main application source code :contentReference[oaicite:0]{index=0}
+│
+│   ├── main.tsx            # App entry point (React root rendering)
+│   ├── App.tsx             # Root component
+│   ├── index.css           # Global styles (Tailwind etc.)
+│   ├── i18n.ts             # i18n configuration (translations setup)
+│
+│   ├── api/                # API configuration
+│   │   └── config/url.ts   # Base API URL configuration
+│
+│   ├── assets/             # Images and static media files
+│
+│   ├── component/          # Reusable UI components (feature-based structure)
+│   │
+│   │   ├── ui/             # Generic reusable UI elements (buttons, inputs, modals)
+│   │   ├── common/         # Shared components (language switcher, theme toggle)
+│   │
+│   │   ├── signin/         # Login-related components
+│   │   ├── signup/         # Registration-related components
+│   │   ├── forgetpassword/ # Password reset flow
+│   │   ├── configpassword/ # Password configuration/reset confirmation
+│   │
+│   │   ├── landing/        # Landing page sections (hero, features, etc.)
+│   │   ├── pricing/        # Pricing UI components
+│   │   ├── upload/         # File/text upload functionality
+│   │   ├── footer/         # Footer component
+│   │   ├── header/         # Header/navigation component
+│   │
+│   │   └── schemas/        # Zod validation schemas for forms
+│
+│   ├── pages/              # Route-level pages (mapped to routes)
+│   │   ├── Home.tsx
+│   │   ├── SignIn.tsx
+│   │   ├── SignUp.tsx
+│   │   └── ...             # Other pages (pricing, privacy, etc.)
+│
+│   ├── router.tsx          # App routing configuration
+│   ├── routes/paths.ts     # Centralized route paths
+│
+│   ├── services/           # API calls and business logic
+│   │   ├── api.ts          # Axios instance / base setup
+│   │   ├── authService.ts  # Authentication requests
+│   │   ├── payment.ts      # Payment-related APIs
+│
+│   ├── store/              # Global state management (Zustand)
+│   │   ├── authStore.ts    # Authentication state
+│   │   ├── useAppStore.ts  # General app state
+│
+│   ├── hook/               # Custom React hooks
+│   │   ├── useGenerateAudio.ts  # Text-to-audio logic
+│   │   ├── useSettings.ts       # Settings state handling
+│
+│   ├── data/               # Static data (FAQ, features, etc.)
+│   ├── constants/          # App constants/configurations
+│   ├── types/              # TypeScript types/interfaces
+│   ├── utils/              # Helper functions
+│   ├── lib/                # Shared utilities/helpers
+│
+│   ├── locales/            # Translations (i18n)
+│   │   ├── en/             # English translations
+│   │   └── ka/             # Georgian translations
+│
+│   └── layout/             # Layout components (e.g. MainLayout)
 ```
 ## Tech Stack
 
