@@ -16,7 +16,7 @@ import { Button } from "@/component/ui/button";
 import { useTTSStore } from "@/store/useTTSStore";
 
 import ClipLoader from "react-spinners/ClipLoader";
-import { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 
 type Word = {
   word: string;
@@ -31,19 +31,40 @@ export const TextToAudio = () => {
   const { user } = useAuthStore();
   const { loading, audioUrl, error, words, generate } = useTTSStore();
 
-  // ❌ წაიშალა useGenerateAudio გამოყენება
-
   const audioRef = useRef<HTMLAudioElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
 
-  const normalizedWords: Word[] = useMemo(() => {
-    return (words as Word[]).map((w) => ({
-      ...w,
-      start: w.start > 50 ? w.start / 1000 : w.start,
-      end: w.end > 50 ? w.end / 1000 : w.end,
-    }));
-  }, [words]);
+  const normalizedWords: Word[] = words as Word[];
 
+  useEffect(() => {
+    let rafId: number;
+
+    const update = () => {
+      if (!audioRef.current) return;
+
+      const currentTime = audioRef.current.currentTime;
+
+      setActiveIndex((prev) => {
+        const index = normalizedWords.findIndex(
+          (w) => currentTime >= w.start && currentTime < w.end,
+        );
+
+        if (index !== -1 && index !== prev) {
+          return index;
+        }
+
+        return prev;
+      });
+
+      rafId = requestAnimationFrame(update);
+    };
+
+    rafId = requestAnimationFrame(update);
+
+    return () => cancelAnimationFrame(rafId);
+  }, [normalizedWords]);
+
+  
   const handleGenerate = async () => {
     if (!user) return;
 
@@ -57,25 +78,6 @@ export const TextToAudio = () => {
   const handleChange = (value: string) => {
     i18n.changeLanguage(value);
   };
-
-  const handleTimeUpdate = useCallback(
-    (currentTime: number) => {
-      let newIndex = -1;
-
-      for (let i = 0; i < normalizedWords.length; i++) {
-        const w = normalizedWords[i];
-        if (currentTime >= w.start && currentTime <= w.end) {
-          newIndex = i;
-          break;
-        }
-      }
-
-      if (newIndex !== activeIndex) {
-        setActiveIndex(newIndex);
-      }
-    },
-    [normalizedWords, activeIndex],
-  );
 
   useEffect(() => {
     if (activeIndex < 0) return;
@@ -101,8 +103,6 @@ export const TextToAudio = () => {
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
         <ModeSwitcher />
       </div>
-      
-      
 
       <div className="relative z-10 w-full max-w-xl bg-gray-200 dark:bg-gray-900 rounded-3xl p-8 pt-16 shadow-sm">
         <div className="relative">
@@ -155,14 +155,7 @@ export const TextToAudio = () => {
               Your Audio is Ready
             </h3>
 
-            <audio
-              ref={audioRef}
-              controls
-              className="w-full mb-4"
-              onTimeUpdate={(e) =>
-                handleTimeUpdate(e.currentTarget.currentTime)
-              }
-            >
+            <audio ref={audioRef} controls className="w-full mb-4">
               <source src={audioUrl} type="audio/mpeg" />
             </audio>
 
