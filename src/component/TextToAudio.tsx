@@ -64,7 +64,6 @@ export const TextToAudio = () => {
     return () => cancelAnimationFrame(rafId);
   }, [normalizedWords]);
 
-  
   const handleGenerate = async () => {
     if (!user) return;
 
@@ -174,8 +173,13 @@ export const TextToAudio = () => {
                       style={{
                         cursor: "pointer",
                         backgroundColor:
-                          i === activeIndex ? "yellow" : "transparent",
-                        transition: "0.15s",
+                          i === activeIndex
+                            ? "rgba(255, 235, 59, 0.35)"
+                            : "transparent",
+                        color: i === activeIndex ? "#000" : "inherit",
+                        transition: "all 0.2s ease",
+                        padding: "2px 4px",
+                        borderRadius: "4px",
                       }}
                     >
                       {w.word}{" "}
