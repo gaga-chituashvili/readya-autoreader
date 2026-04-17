@@ -71,7 +71,9 @@ export const TextToAudio = () => {
     const update = () => {
       if (!audioRef.current || !normalizedWords.length) return;
 
-      const currentTime = audioRef.current.currentTime;
+      const SYNC_OFFSET = -0.05;
+
+      const currentTime = audioRef.current.currentTime + SYNC_OFFSET;
 
       setActiveIndex(() => {
         return findWordIndex(currentTime);
@@ -181,7 +183,10 @@ export const TextToAudio = () => {
               onPlay={() => {
                 if (!audioRef.current || !normalizedWords.length) return;
 
-                const t = audioRef.current.currentTime;
+                const SYNC_OFFSET = -0.05;
+
+                const t = audioRef.current.currentTime + SYNC_OFFSET;
+
                 const index = findWordIndex(t);
 
                 setActiveIndex(index);
