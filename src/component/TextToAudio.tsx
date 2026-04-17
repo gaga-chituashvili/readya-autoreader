@@ -2,6 +2,7 @@ import { ModeSwitcher } from "@/component/common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
 import { useAuthStore } from "@/store/authStore";
+import { useCallback } from "react";
 
 import {
   Select,
@@ -36,24 +37,44 @@ export const TextToAudio = () => {
 
   const normalizedWords: Word[] = words as Word[];
 
+  const findWordIndex = useCallback(
+    (time: number) => {
+      let left = 0;
+      let right = normalizedWords.length - 1;
+
+      while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        const w = normalizedWords[mid];
+
+        if (time >= w.start && time < w.end) {
+          return mid;
+        }
+
+        if (time < w.start) {
+          right = mid - 1;
+        } else {
+          left = mid + 1;
+        }
+      }
+
+      if (left >= normalizedWords.length) {
+        return normalizedWords.length - 1;
+      }
+
+      return Math.max(0, left - 1);
+    },
+    [normalizedWords],
+  );
   useEffect(() => {
     let rafId: number;
 
     const update = () => {
-      if (!audioRef.current) return;
+      if (!audioRef.current || !normalizedWords.length) return;
 
       const currentTime = audioRef.current.currentTime;
 
-      setActiveIndex((prev) => {
-        const index = normalizedWords.findIndex(
-          (w) => currentTime >= w.start && currentTime < w.end,
-        );
-
-        if (index !== -1 && index !== prev) {
-          return index;
-        }
-
-        return prev;
+      setActiveIndex(() => {
+        return findWordIndex(currentTime);
       });
 
       rafId = requestAnimationFrame(update);
@@ -62,7 +83,7 @@ export const TextToAudio = () => {
     rafId = requestAnimationFrame(update);
 
     return () => cancelAnimationFrame(rafId);
-  }, [normalizedWords]);
+  }, [normalizedWords, findWordIndex]);
 
   const handleGenerate = async () => {
     if (!user) return;
@@ -154,7 +175,19 @@ export const TextToAudio = () => {
               Your Audio is Ready
             </h3>
 
-            <audio ref={audioRef} controls className="w-full mb-4">
+            <audio
+              ref={audioRef}
+              controls
+              onPlay={() => {
+                if (!audioRef.current || !normalizedWords.length) return;
+
+                const t = audioRef.current.currentTime;
+                const index = findWordIndex(t);
+
+                setActiveIndex(index);
+              }}
+              className="w-full mb-4"
+            >
               <source src={audioUrl} type="audio/mpeg" />
             </audio>
 
