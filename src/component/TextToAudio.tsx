@@ -37,6 +37,16 @@ export const TextToAudio = () => {
 
   const normalizedWords: Word[] = words as Word[];
 
+  const getDynamicOffset = useCallback(() => {
+    if (!audioRef.current || !normalizedWords.length) return 0;
+
+    const audioDuration = audioRef.current.duration;
+
+    const avgWordDuration = audioDuration / normalizedWords.length;
+
+    return -avgWordDuration * 0.3;
+  }, [normalizedWords]);
+
   const findWordIndex = useCallback(
     (time: number) => {
       let left = 0;
@@ -71,12 +81,14 @@ export const TextToAudio = () => {
     const update = () => {
       if (!audioRef.current || !normalizedWords.length) return;
 
-      const SYNC_OFFSET = -0.05;
+      const offset = getDynamicOffset();
 
-      const currentTime = audioRef.current.currentTime + SYNC_OFFSET;
+      const currentTime = audioRef.current.currentTime + offset;
 
-      setActiveIndex(() => {
-        return findWordIndex(currentTime);
+      setActiveIndex((prev) => {
+        const index = findWordIndex(currentTime);
+        if (index === prev) return prev;
+        return index;
       });
 
       rafId = requestAnimationFrame(update);
@@ -85,7 +97,7 @@ export const TextToAudio = () => {
     rafId = requestAnimationFrame(update);
 
     return () => cancelAnimationFrame(rafId);
-  }, [normalizedWords, findWordIndex]);
+  }, [normalizedWords, findWordIndex, getDynamicOffset]);
 
   const handleGenerate = async () => {
     if (!user) return;
@@ -183,7 +195,7 @@ export const TextToAudio = () => {
               onPlay={() => {
                 if (!audioRef.current || !normalizedWords.length) return;
 
-                const SYNC_OFFSET = -0.05;
+                const SYNC_OFFSET = getDynamicOffset();
 
                 const t = audioRef.current.currentTime + SYNC_OFFSET;
 
