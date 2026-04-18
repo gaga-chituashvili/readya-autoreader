@@ -2,8 +2,7 @@ import { ModeSwitcher } from "@/component/common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
 import { useAuthStore } from "@/store/authStore";
-import { useCallback } from "react";
-
+import { useCallback, useRef, useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -13,11 +12,8 @@ import {
 } from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
-
 import { useTTSStore } from "@/store/useTTSStore";
-
 import ClipLoader from "react-spinners/ClipLoader";
-import { useRef, useState, useEffect } from "react";
 
 type Word = {
   word: string;
@@ -25,83 +21,98 @@ type Word = {
   end: number;
 };
 
+function useAudioHighlight(
+  audioRef: React.RefObject<HTMLAudioElement | null>,
+  words: Word[],
+) {
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const rafRef = useRef<number | null>(null);
+
+  const findIndex = useCallback(
+    (time: number): number => {
+      if (!words.length) return -1;
+      let lo = 0;
+      let hi = words.length - 1;
+      while (lo <= hi) {
+        const mid = (lo + hi) >> 1;
+        if (time < words[mid].start) {
+          hi = mid - 1;
+        } else if (time >= words[mid].end) {
+          lo = mid + 1;
+        } else {
+          return mid;
+        }
+      }
+
+      return Math.max(0, lo - 1);
+    },
+    [words],
+  );
+
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const tick = () => {
+      if (!audioRef.current) return;
+      const t = audioRef.current.currentTime;
+      setActiveIndex(findIndex(t));
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [isPlaying, findIndex, audioRef]);
+
+  const syncToTime = useCallback(
+    (t: number) => setActiveIndex(findIndex(t)),
+    [findIndex],
+  );
+
+  const handlers = {
+    onPlay: () => setIsPlaying(true),
+    onPause: () => setIsPlaying(false),
+    onEnded: () => {
+      setIsPlaying(false);
+      setActiveIndex(-1);
+    },
+    onSeeked: () => {
+      if (audioRef.current) syncToTime(audioRef.current.currentTime);
+    },
+  };
+
+  return { activeIndex, syncToTime, handlers };
+}
+
 export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
-
   const { text, setText, selectedFile } = useAppStore();
   const { user } = useAuthStore();
   const { loading, audioUrl, error, words, generate } = useTTSStore();
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const activeWordRef = useRef<HTMLSpanElement | null>(null);
 
-  const normalizedWords: Word[] = words as Word[];
+  const normalizedWords = words as Word[];
 
-  const getDynamicOffset = useCallback(() => {
-    if (!audioRef.current || !normalizedWords.length) return 0;
-
-    const audioDuration = audioRef.current.duration;
-
-    const avgWordDuration = audioDuration / normalizedWords.length;
-
-    return -avgWordDuration * 0.3;
-  }, [normalizedWords]);
-
-  const findWordIndex = useCallback(
-    (time: number) => {
-      let left = 0;
-      let right = normalizedWords.length - 1;
-
-      while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        const w = normalizedWords[mid];
-
-        if (time >= w.start && time < w.end) {
-          return mid;
-        }
-
-        if (time < w.start) {
-          right = mid - 1;
-        } else {
-          left = mid + 1;
-        }
-      }
-
-      if (left >= normalizedWords.length) {
-        return normalizedWords.length - 1;
-      }
-
-      return Math.max(0, left - 1);
-    },
-    [normalizedWords],
+  const { activeIndex, syncToTime, handlers } = useAudioHighlight(
+    audioRef,
+    normalizedWords,
   );
+
   useEffect(() => {
-    let rafId: number;
-
-    const update = () => {
-      if (!audioRef.current || !normalizedWords.length) return;
-
-      const offset = getDynamicOffset();
-
-      const currentTime = audioRef.current.currentTime + offset;
-
-      setActiveIndex((prev) => {
-        const index = findWordIndex(currentTime);
-        if (index === prev) return prev;
-        return index;
+    if (activeWordRef.current) {
+      activeWordRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
       });
-
-      rafId = requestAnimationFrame(update);
-    };
-
-    rafId = requestAnimationFrame(update);
-
-    return () => cancelAnimationFrame(rafId);
-  }, [normalizedWords, findWordIndex, getDynamicOffset]);
+    }
+  }, [activeIndex]);
 
   const handleGenerate = async () => {
     if (!user) return;
-
     try {
       await generate(text, selectedFile, user.email);
     } catch (e) {
@@ -109,26 +120,11 @@ export const TextToAudio = () => {
     }
   };
 
-  const handleChange = (value: string) => {
-    i18n.changeLanguage(value);
-  };
-
-  useEffect(() => {
-    if (activeIndex < 0) return;
-
-    const el = document.getElementById(`word-${activeIndex}`);
-    if (el) {
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  }, [activeIndex]);
-
+  // სიტყვაზე კლიკი — seek + play
   const handleWordClick = (start: number) => {
     if (!audioRef.current) return;
-
     audioRef.current.currentTime = start;
+    syncToTime(start);
     audioRef.current.play();
   };
 
@@ -139,6 +135,7 @@ export const TextToAudio = () => {
       </div>
 
       <div className="relative z-10 w-full max-w-xl bg-gray-200 dark:bg-gray-900 rounded-3xl p-8 pt-16 shadow-sm">
+        {/* Textarea */}
         <div className="relative">
           <textarea
             value={text}
@@ -152,27 +149,28 @@ export const TextToAudio = () => {
           </div>
         </div>
 
+        {/* Controls */}
         <div className="flex items-center justify-between mt-4">
-          <Select onValueChange={handleChange}>
+          <Select onValueChange={(v) => i18n.changeLanguage(v)}>
             <SelectTrigger className="w-[180px] rounded-full border-purple-400">
               <SelectValue placeholder={t("language_georgian")} />
             </SelectTrigger>
-
             <SelectContent>
               <SelectItem value="ka">{t("language_georgian")}</SelectItem>
               <SelectItem value="en">{t("language_english")}</SelectItem>
             </SelectContent>
           </Select>
-
           <SettingsModal />
         </div>
 
+        {/* Error */}
         {error && (
           <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg">
             <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
 
+        {/* Generate button */}
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleGenerate}
@@ -192,18 +190,8 @@ export const TextToAudio = () => {
             <audio
               ref={audioRef}
               controls
-              onPlay={() => {
-                if (!audioRef.current || !normalizedWords.length) return;
-
-                const SYNC_OFFSET = getDynamicOffset();
-
-                const t = audioRef.current.currentTime + SYNC_OFFSET;
-
-                const index = findWordIndex(t);
-
-                setActiveIndex(index);
-              }}
               className="w-full mb-4"
+              {...handlers}
             >
               <source src={audioUrl} type="audio/mpeg" />
             </audio>
@@ -214,27 +202,33 @@ export const TextToAudio = () => {
                   Text (Highlighted Reading)
                 </h4>
 
-                <div className="text-white text-lg leading-8">
-                  {normalizedWords.map((w, i) => (
-                    <span
-                      id={`word-${i}`}
-                      key={i}
-                      onClick={() => handleWordClick(w.start)}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          i === activeIndex
+                <div className="text-white text-lg leading-8 select-none">
+                  {normalizedWords.map((w, i) => {
+                    const isActive = i === activeIndex;
+                    return (
+                      <span
+                        key={i}
+                        ref={isActive ? activeWordRef : null}
+                        onClick={() => handleWordClick(w.start)}
+                        style={{
+                          cursor: "pointer",
+                          display: "inline-block",
+                          padding: "2px 4px",
+                          borderRadius: "4px",
+                          marginRight: "2px",
+                          backgroundColor: isActive
                             ? "rgba(255, 235, 59, 0.35)"
                             : "transparent",
-                        color: i === activeIndex ? "#000" : "inherit",
-                        transition: "all 0.2s ease",
-                        padding: "2px 4px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      {w.word}{" "}
-                    </span>
-                  ))}
+                          color: isActive ? "#000" : "inherit",
+                          transition:
+                            "background-color 0.08s ease, color 0.08s ease",
+                          willChange: "background-color",
+                        }}
+                      >
+                        {w.word}
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
             )}
