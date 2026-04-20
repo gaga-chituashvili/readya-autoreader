@@ -2,7 +2,7 @@
 
 import { teamMembers } from "@/data/teamData";
 import { TeamCard } from "@/component/TeamCard";
-import biglogo from "@/assets/biglogo.png";
+import readya from "@/assets/readya.jpeg";
 import { useTranslation } from "react-i18next";
 
 export const OurTeam = () => {
@@ -19,12 +19,12 @@ export const OurTeam = () => {
         <div className="grid md:grid-cols-2 gap-10 items-center mb-24">
           <div className="rounded-2xl overflow-hidden bg-white">
             <img
-              src={biglogo}
+              src={readya}
               alt="Team"
-              className="w-full max-w-[400px] h-full object-cover"
+              className="w-full  h-full object-cover"
             />
           </div>
-          
+
           <div>
             <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
               {t("aboutTitle")}
