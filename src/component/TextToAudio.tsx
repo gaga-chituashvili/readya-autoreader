@@ -14,6 +14,7 @@ import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
 import { useTTSStore } from "@/store/useTTSStore";
 import ClipLoader from "react-spinners/ClipLoader";
+import { GradientBlob } from "./ui/GradientBlob";
 
 type Word = {
   word: string;
@@ -120,7 +121,6 @@ export const TextToAudio = () => {
     }
   };
 
-  // სიტყვაზე კლიკი — seek + play
   const handleWordClick = (start: number) => {
     if (!audioRef.current) return;
     audioRef.current.currentTime = start;
@@ -130,12 +130,12 @@ export const TextToAudio = () => {
 
   return (
     <section className="relative w-full py-24 flex justify-center bg-gray-100 dark:bg-black overflow-hidden">
+      <GradientBlob />
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
         <ModeSwitcher />
       </div>
 
       <div className="relative z-10 w-full max-w-xl bg-gray-200 dark:bg-gray-900 rounded-3xl p-8 pt-16 shadow-sm">
-        {/* Textarea */}
         <div className="relative">
           <textarea
             value={text}
@@ -149,7 +149,6 @@ export const TextToAudio = () => {
           </div>
         </div>
 
-        {/* Controls */}
         <div className="flex items-center justify-between mt-4">
           <Select onValueChange={(v) => i18n.changeLanguage(v)}>
             <SelectTrigger className="w-[180px] rounded-full border-purple-400">
@@ -163,14 +162,12 @@ export const TextToAudio = () => {
           <SettingsModal />
         </div>
 
-        {/* Error */}
         {error && (
           <div className="mt-4 p-3 bg-red-500/20 border border-red-500 rounded-lg">
             <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
 
-        {/* Generate button */}
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleGenerate}

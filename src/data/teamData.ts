@@ -1,14 +1,14 @@
 import type { TeamMember } from "@/types/ourTeam.type";
-import rusudanImage from "@/assets/rusudanphoto.png";
+import founder from "@/assets/founder.png";
 import salomeImage from "@/assets/salomephoto.png";
-import gagaImage from "@/assets/gagaphoto.png";
+import gch from "@/assets/gch.png";
 import pixoraImage from "@/assets/pixora.png";
 
 export const teamMembers: TeamMember[] = [
   {
     name: "rusudan",
     role: "Founder & CEO",
-    image: rusudanImage,
+    image: founder,
   },
   {
     name: "salome",
@@ -18,7 +18,7 @@ export const teamMembers: TeamMember[] = [
   {
     name: "gaga",
     role: "Full-Stack Developer & AI Engineer",
-    image: gagaImage,
+    image: gch,
   },
   {
     name: "pixora",
