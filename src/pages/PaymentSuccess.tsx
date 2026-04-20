@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { checkPaymentStatus } from "@/services/pay";
+import { checkPaymentStatus } from "@/services/payment";
 import { useAuthStore } from "@/store/authStore";
 import {
   MdCheckCircle,

@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import { ROUTES } from "@/routes/paths";
 import { useAuthStore } from "@/store/authStore";
 import ClipLoader from "react-spinners/ClipLoader";
+import { toast } from "sonner";
 
 type Props = PricingCardProps & {
   planId: number;
@@ -41,9 +42,8 @@ export const PricingCard = ({
       }
 
       window.location.href = data.payment_url;
-    } catch (err) {
-      console.error("Payment error:", err);
-      alert(t("payment_error") || "Payment failed");
+    } catch {
+      toast.error(t("payment_error"));
     }
   }, [planId, mutateAsync, navigate, t, user, isPending]);
 

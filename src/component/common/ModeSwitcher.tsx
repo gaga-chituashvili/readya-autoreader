@@ -2,6 +2,7 @@ import { FileText, Upload } from "lucide-react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
+import { toast } from "sonner";
 
 export const ModeSwitcher = () => {
   const { t } = useTranslation("home");
@@ -24,12 +25,13 @@ export const ModeSwitcher = () => {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("Unsupported file type");
+      toast.error("Unsupported file type");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       alert("File too large");
+      toast.error("File too large");
       return;
     }
 

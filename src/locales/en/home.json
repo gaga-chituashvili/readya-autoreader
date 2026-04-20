@@ -88,10 +88,11 @@
   "auth": {
     "register": "Sign Up",
     "login": "Sign In",
-    "login_required": "Please log in to continue"
+    "login_required": "Please log in to continue",
+    "generate_error": "generate_error"
   },
- "settings": {
-  "title": "Voice Settings",
-  "speed": "Speed"
-}
+  "settings": {
+    "title": "Voice Settings",
+    "speed": "Speed"
+  }
 }

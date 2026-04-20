@@ -32,5 +32,6 @@
       }
     ]
   },
+  "payment_error": "Payment failed",
   "buy_now": "Buy Now"
 }

@@ -127,8 +127,8 @@ export const TextToAudio = () => {
     }
     try {
       await generate(text, selectedFile, user.email);
-    } catch (e) {
-      console.error("Generate error:", e);
+    } catch {
+      toast.error(t("auth.generate_error"));
     }
   };
 
