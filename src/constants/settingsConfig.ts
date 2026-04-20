@@ -2,9 +2,6 @@ import type { SliderConfig, VoiceSettings } from "@/types/home.type";
 
 export const DEFAULT_SETTINGS: VoiceSettings = {
   speed: 50,
-  tone: 50,
-  reading: 50,
-  saveSettings: false,
 };
 
 export const SLIDER_CONFIGS: SliderConfig[] = [

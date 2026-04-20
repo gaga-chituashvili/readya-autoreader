@@ -4,9 +4,6 @@ import { type LucideIcon } from "lucide-react";
 
 export interface VoiceSettings {
   speed: number;
-  tone: number;
-  reading: number;
-  saveSettings: boolean;
 }
 
 export type SettingKey = keyof VoiceSettings;
@@ -42,7 +39,6 @@ export type FAQKey =
   | "what_languages"
   | "can_use_for_study"
   | "why_readya";
-
 
 export interface FeatureCardProps {
   item: {
