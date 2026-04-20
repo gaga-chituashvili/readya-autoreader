@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import type { VoiceSettings, SettingKey } from "@/types/home.type";
 import { DEFAULT_SETTINGS, STORAGE_KEY } from "@/constants/settingsConfig";
+import { toast } from "sonner";
 
 export const useSettings = () => {
   const [settings, setSettings] = useState<VoiceSettings>(() => {
@@ -23,20 +24,10 @@ export const useSettings = () => {
     setSettings(DEFAULT_SETTINGS);
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-      console.error("Failed to reset settings:", error);
+    } catch {
+      toast.error("Failed to reset settings");
     }
   }, []);
-
-  useEffect(() => {
-    if (settings.saveSettings) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-      } catch (error) {
-        console.error("Failed to save settings:", error);
-      }
-    }
-  }, [settings]);
 
   return {
     settings,
