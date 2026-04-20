@@ -6,11 +6,13 @@ import { SettingsSlider } from "@/component/SettingsModal/SettingsSlider";
 import { SLIDER_CONFIGS } from "@/constants/settingsConfig";
 import { useTTSStore } from "@/store/useTTSStore";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export const SettingsModal = () => {
   const { isOpen, open, close } = useModal();
   const { settings, updateSetting } = useSettings();
   const { setSpeed } = useTTSStore();
+  const { t } = useTranslation("home");
 
   useEffect(() => {
     setSpeed(settings.speed);
@@ -37,7 +39,7 @@ export const SettingsModal = () => {
             id="settings-modal-title"
             className="text-xl font-semibold text-gray-900 dark:text-white"
           >
-            ხმის პარამეტრები
+            {t("settings.title")}
           </h2>
           <button
             onClick={close}
@@ -58,7 +60,7 @@ export const SettingsModal = () => {
           {SLIDER_CONFIGS.map((config) => (
             <SettingsSlider
               key={config.key}
-              label={config.label}
+              label={t(config.label)}
               value={settings[config.key]}
               min={config.min}
               max={config.max}

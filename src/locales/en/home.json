@@ -88,5 +88,9 @@
   "auth": {
     "register": "Sign Up",
     "login": "Sign In"
-  }
+  },
+ "settings": {
+  "title": "Voice Settings",
+  "speed": "Speed"
+}
 }

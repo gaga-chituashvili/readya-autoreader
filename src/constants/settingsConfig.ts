@@ -7,7 +7,7 @@ export const DEFAULT_SETTINGS: VoiceSettings = {
 export const SLIDER_CONFIGS: SliderConfig[] = [
   {
     key: "speed",
-    label: "კითხვის სიჩქარის რეგულირება",
+    label: "settings.speed",
     min: 0,
     max: 100,
     step: 1,
