@@ -160,16 +160,7 @@ export const TextToAudio = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <Select onValueChange={(v) => i18n.changeLanguage(v)}>
-            <SelectTrigger className="w-[180px] rounded-full border-purple-400">
-              <SelectValue placeholder={t("language_georgian")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ka">{t("language_georgian")}</SelectItem>
-              <SelectItem value="en">{t("language_english")}</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex items-center justify-end mt-4">
           <SettingsModal />
         </div>
 
