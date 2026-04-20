@@ -3,13 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
 import { useAuthStore } from "@/store/authStore";
 import { useCallback, useRef, useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/component/ui/select";
 import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
 import { useTTSStore } from "@/store/useTTSStore";
