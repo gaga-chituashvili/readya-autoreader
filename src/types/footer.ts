@@ -7,4 +7,10 @@ export type FooterData = {
     title: string;
     links: { label: string; to: string }[];
   }[];
+  socialLinks: {
+    instagram: string;
+    facebook: string;
+    youtube: string;
+    linkedin: string;
+  };
 };

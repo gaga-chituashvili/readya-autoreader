@@ -31,4 +31,12 @@ export const footerData: FooterData = {
       ],
     },
   ],
+  socialLinks: {
+    instagram:
+      "https://www.instagram.com/readya.me?igsh=Y2Vob21udGlscTA%3D&utm_source=qr",
+    facebook:
+      "https://www.facebook.com/Readya.me?mibextid=wwXIfr&rdid=dj47jAOxGQCfBwfV&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1J296Wb9Hz%2F%3Fmibextid%3DwwXIfr%26ref%3D1",
+    youtube: "https://www.youtube.com/watch?v=YTpFZR-Mr5Y",
+    linkedin: "https://www.linkedin.com/company/readya/posts/?feedView=all",
+  },
 };

@@ -1,3 +1,5 @@
+
+
 import { useTranslation } from "react-i18next";
 import { footerData } from "@/data/footerData";
 import { Link } from "@tanstack/react-router";
@@ -9,6 +11,13 @@ import {
   Copyright,
 } from "lucide-react";
 import logo from "@/assets/readya-logo.png";
+
+const socialIcons = {
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  linkedin: Linkedin,
+};
 
 export const Footer = () => {
   const { t } = useTranslation("footer");
@@ -62,10 +71,21 @@ export const Footer = () => {
           </p>
 
           <div className="flex gap-4 text-gray-500 md:ml-auto">
-            <Instagram className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
-            <Facebook className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
-            <Youtube className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
-            <Linkedin className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer" />
+            {Object.entries(footerData.socialLinks).map(([key, url]) => {
+              const Icon = socialIcons[key as keyof typeof socialIcons];
+              return (
+                <a
+                  key={key}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={key}
+                  className="w-5 h-5 hover:text-black dark:hover:text-white transition cursor-pointer"
+                >
+                  <Icon className="w-5 h-5" />
+                </a>
+              );
+            })}
           </div>
         </article>
       </section>
