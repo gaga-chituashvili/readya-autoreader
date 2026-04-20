@@ -15,20 +15,6 @@ export const SLIDER_CONFIGS: SliderConfig[] = [
     max: 100,
     step: 1,
   },
-  {
-    key: "tone",
-    label: "ხმის ტონის არჩევა",
-    min: 0,
-    max: 100,
-    step: 1,
-  },
-  {
-    key: "reading",
-    label: "ტექსტის ჰაილაითი მოსმენის დროს",
-    min: 0,
-    max: 100,
-    step: 1,
-  },
 ];
 
 export const STORAGE_KEY = "voice-settings";

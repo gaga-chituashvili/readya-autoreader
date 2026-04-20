@@ -91,7 +91,8 @@ export const TextToAudio = () => {
   const { t, i18n } = useTranslation("home");
   const { text, setText, selectedFile } = useAppStore();
   const { user } = useAuthStore();
-  const { loading, audioUrl, error, words, generate } = useTTSStore();
+  const { loading, audioUrl, error, words, generate, speed } = useTTSStore();
+  const toPlaybackRate = (percent: number) => 0.5 + (percent / 100) * 0.84;
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const activeWordRef = useRef<HTMLSpanElement | null>(null);
@@ -111,6 +112,12 @@ export const TextToAudio = () => {
       });
     }
   }, [activeIndex]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = toPlaybackRate(speed);
+    }
+  }, [speed]);
 
   const handleGenerate = async () => {
     if (!user) return;

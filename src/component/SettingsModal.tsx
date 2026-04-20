@@ -3,12 +3,18 @@ import { Modal } from "@/component/ui/modal/Modal";
 import { useModal } from "@/hook/useModal";
 import { useSettings } from "@/hook/useSettings";
 import { SettingsSlider } from "@/component/SettingsModal/SettingsSlider";
-import { SettingsCheckbox } from "@/component/SettingsModal/SettingsCheckbox";
 import { SLIDER_CONFIGS } from "@/constants/settingsConfig";
+import { useTTSStore } from "@/store/useTTSStore";
+import { useEffect } from "react";
 
 export const SettingsModal = () => {
   const { isOpen, open, close } = useModal();
   const { settings, updateSetting } = useSettings();
+  const { setSpeed } = useTTSStore();
+
+  useEffect(() => {
+    setSpeed(settings.speed);
+  }, [settings.speed, setSpeed]);
 
   return (
     <>
@@ -61,12 +67,6 @@ export const SettingsModal = () => {
             />
           ))}
         </section>
-
-        <SettingsCheckbox
-          label="შეინახე პარამეტრები"
-          checked={settings.saveSettings}
-          onChange={(checked) => updateSetting("saveSettings", checked)}
-        />
       </Modal>
     </>
   );

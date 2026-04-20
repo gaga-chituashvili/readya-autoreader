@@ -13,6 +13,8 @@ type TTSState = {
   audioUrl: string | null;
   error: string;
   words: unknown[];
+  speed: number; 
+  setSpeed: (speed: number) => void;
 
   generate: (text: string, file: File | null, email: string) => Promise<void>;
   reset: () => void;
@@ -25,6 +27,8 @@ export const useTTSStore = create<TTSState>()(
       audioUrl: null,
       error: "",
       words: [],
+      speed: 50,
+      setSpeed: (speed) => set({ speed }),
 
       generate: async (text, file, email) => {
         set({ loading: true, error: "", audioUrl: null, words: [] });
