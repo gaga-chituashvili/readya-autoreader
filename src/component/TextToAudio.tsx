@@ -15,6 +15,7 @@ import { Button } from "@/component/ui/button";
 import { useTTSStore } from "@/store/useTTSStore";
 import ClipLoader from "react-spinners/ClipLoader";
 import { GradientBlob } from "./ui/GradientBlob";
+import { toast } from "sonner";
 
 type Word = {
   word: string;
@@ -120,7 +121,10 @@ export const TextToAudio = () => {
   }, [speed]);
 
   const handleGenerate = async () => {
-    if (!user) return;
+    if (!user) {
+      toast.error(t("auth.login_required"));
+      return;
+    }
     try {
       await generate(text, selectedFile, user.email);
     } catch (e) {

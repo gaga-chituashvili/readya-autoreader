@@ -87,7 +87,8 @@
   ],
   "auth": {
     "register": "Sign Up",
-    "login": "Sign In"
+    "login": "Sign In",
+    "login_required": "Please log in to continue"
   },
  "settings": {
   "title": "Voice Settings",

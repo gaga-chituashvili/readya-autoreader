@@ -9,6 +9,7 @@ import { ThemeProvider } from "next-themes";
 
 import { AnalyticsWrapper } from "@/component/AnalyticsWrapper";
 import { SpeedInsightsWrapper } from "@/component/SpeedInsightsWrapper";
+import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class">
         <App />
+        <Toaster position="top-center" richColors />
       </ThemeProvider>
 
       <SpeedInsightsWrapper />
