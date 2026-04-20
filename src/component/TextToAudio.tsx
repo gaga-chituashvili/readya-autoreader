@@ -82,7 +82,7 @@ function useAudioHighlight(
 }
 
 export const TextToAudio = () => {
-  const { t, i18n } = useTranslation("home");
+  const { t } = useTranslation("home");
   const { text, setText, selectedFile } = useAppStore();
   const { user } = useAuthStore();
   const { loading, audioUrl, error, words, generate, speed } = useTTSStore();
