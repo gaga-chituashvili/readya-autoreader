@@ -8,8 +8,8 @@ export const AboutUs = () => {
   const benefits = t("benefits", { returnObjects: true }) as string[];
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-      <div className="pointer-events-none absolute bottom-20 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70 dark:opacity-40" />
+    <section className="relative  mx-auto px-4 sm:px-6 lg:px-40 py-16 sm:py-20 overflow-hidden">
+      <div className="pointer-events-none absolute bottom-20 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300 opacity-70 dark:opacity-40 " />
 
       <article className="relative z-10 max-w-3xl space-y-6 sm:space-y-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
@@ -45,7 +45,7 @@ export const AboutUs = () => {
             {t("audience_title")}
           </p>
 
-          <ul className="list-disc pl-5 sm:pl-6 space-y-1 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+          <ul className=" pl-5 sm:pl-6 space-y-1 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
             {audience.map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -57,13 +57,13 @@ export const AboutUs = () => {
             {t("cta_title")}
           </p>
 
-          <ul className="list-disc pl-5 sm:pl-6 space-y-1 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+          <ul className=" pl-5 sm:pl-6 space-y-1 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
             {benefits.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
 
-          <p className="text-purple-600 dark:text-purple-400 font-semibold text-sm sm:text-base">
+          <p className="text-purple-600 dark:text-purple-400 font-semibold text-sm sm:text-base md:text-2xl lg:text-3xl ">
             {t("cta")}
           </p>
         </div>
