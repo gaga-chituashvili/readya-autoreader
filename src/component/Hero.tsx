@@ -33,7 +33,7 @@ export const Hero = () => {
               <img
                 src={founder}
                 alt="Founder"
-                className="w-40 h-40 object-cover rounded-full"
+                className="w-40 h-40 object-cover object-top rounded-full"
               />
             </div>
           </div>
