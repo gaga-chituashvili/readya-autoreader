@@ -1,4 +1,14 @@
+import { url } from "@/api/config/url";
+
 const API_URL = import.meta.env.VITE_API_URL;
+
+const refreshAccessToken = async (): Promise<boolean> => {
+  const res = await fetch(`${url}/token/refresh/`, {
+    method: "POST",
+    credentials: "include",
+  });
+  return res.ok;
+};
 
 export const uploadDocument = async (
   text?: string,
@@ -13,11 +23,22 @@ export const uploadDocument = async (
   if (email) formData.append("email", email);
   if (documentId) formData.append("document_id", documentId);
 
-  const res = await fetch(`${API_URL}/upload/`, {
+  let res = await fetch(`${API_URL}/upload/`, {
     method: "POST",
     body: formData,
     credentials: "include",
   });
+
+  if (res.status === 401) {
+    const refreshed = await refreshAccessToken();
+    if (!refreshed) throw new Error("Session expired");
+
+    res = await fetch(`${API_URL}/upload/`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+  }
 
   if (!res.ok) {
     const err = await res.json();
@@ -26,11 +47,22 @@ export const uploadDocument = async (
 
   return res.json();
 };
+
 export const generateVoice = async (docId: string) => {
-  const res = await fetch(`${API_URL}/voice/${docId}/`, {
+  let res = await fetch(`${API_URL}/voice/${docId}/`, {
     method: "POST",
     credentials: "include",
   });
+
+  if (res.status === 401) {
+    const refreshed = await refreshAccessToken();
+    if (!refreshed) throw new Error("Session expired");
+
+    res = await fetch(`${API_URL}/voice/${docId}/`, {
+      method: "POST",
+      credentials: "include",
+    });
+  }
 
   if (!res.ok) {
     const err = await res.json();

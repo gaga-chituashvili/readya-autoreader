@@ -9,6 +9,14 @@ import type {
 } from "../types/log";
 import { url } from "@/api/config/url";
 
+const refreshAccessToken = async (): Promise<boolean> => {
+  const res = await fetch(`${url}/token/refresh/`, {
+    method: "POST",
+    credentials: "include",
+  });
+  return res.ok;
+};
+
 const request = async <T, R>(endpoint: string, payload: T): Promise<R> => {
   const res = await fetch(`${url}${endpoint}`, {
     method: "POST",
@@ -55,12 +63,21 @@ export const passwordResetConfirmRequest = (payload: {
   );
 };
 
-
 export const getProfile = async (): Promise<ProfileResponse> => {
-  const res = await fetch(`${url}/profile/`, {
+  let res = await fetch(`${url}/profile/`, {
     method: "GET",
     credentials: "include",
   });
+
+  if (res.status === 401) {
+    const refreshed = await refreshAccessToken();
+    if (!refreshed) throw new Error("Session expired");
+
+    res = await fetch(`${url}/profile/`, {
+      method: "GET",
+      credentials: "include",
+    });
+  }
 
   const data: ProfileResponse = await res.json();
 
