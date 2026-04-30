@@ -15,4 +15,6 @@ export const ROUTES = {
   paymentSuccess: "/payment-success",
   player: "/player/$docId",
   resetPassword: "/reset-password/$uid/$token",
+  profile: "/profile",
+  library: "/library",
 } as const;

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
 import { useAuthStore } from "@/store/authStore";
 import { useCallback, useRef, useState, useEffect } from "react";
-import { SettingsModal } from "@/component/SettingsModal";
 import { Button } from "@/component/ui/button";
 import { useTTSStore } from "@/store/useTTSStore";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -151,10 +150,6 @@ export const TextToAudio = () => {
           <div className="absolute bottom-2 right-4 text-xs text-gray-500 dark:text-gray-400">
             {text.length}/5000
           </div>
-        </div>
-
-        <div className="flex items-center justify-end mt-4">
-          <SettingsModal />
         </div>
 
         {error && (
