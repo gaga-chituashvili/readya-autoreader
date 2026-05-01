@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ClipLoader } from "react-spinners";
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Word = { word: string; start: number; end: number };
 
@@ -11,15 +14,17 @@ interface DocumentDetail {
   words: Word[];
 }
 
+// ─── API ──────────────────────────────────────────────────────────────────────
+
 async function fetchDocumentDetail(docId: string): Promise<DocumentDetail> {
   const res = await fetch(`${API_URL}/document/${docId}/`, {
     credentials: "include",
   });
-
   if (!res.ok) throw new Error("Failed to load document");
-
   return res.json();
 }
+
+// ─── PlayerModal ──────────────────────────────────────────────────────────────
 
 interface PlayerModalProps {
   docId: string;
@@ -36,7 +41,7 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close on Escape key
+  // Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -45,6 +50,7 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  // Fetch
   useEffect(() => {
     let cancelled = false;
 
@@ -67,7 +73,7 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
       cancelled = true;
     };
   }, [docId]);
-  
+
   const normalizedWords = useMemo(
     () =>
       words.map((w) => ({
@@ -81,9 +87,9 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
   const handleTimeUpdate = useCallback(
     (currentTime: number) => {
       const OFFSET = 0.12;
-      let left = 0;
-      let right = normalizedWords.length - 1;
-      let found = -1;
+      let left = 0,
+        right = normalizedWords.length - 1,
+        found = -1;
 
       while (left <= right) {
         const mid = Math.floor((left + right) / 2);
@@ -119,86 +125,108 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="Audio Reader"
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-      onClick={handleBackdrop}
-    >
-      <div className="w-full max-w-2xl bg-gray-900 border border-white/10 rounded-2xl p-6 shadow-2xl relative">
-        <button
-          onClick={onClose}
-          aria-label="Close player"
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+    <AnimatePresence>
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Audio Reader"
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={handleBackdrop}
+      >
+        <motion.div
+          className="w-full max-w-2xl bg-gray-900 dark:bg-gray-950 border border-white/10 rounded-2xl p-6 shadow-2xl relative"
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
         >
-          <X size={20} />
-        </button>
+          {/* Close */}
+          <button
+            onClick={onClose}
+            aria-label="Close player"
+            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
 
-        <h2 className="text-lg font-semibold text-white mb-5">Audio Reader</h2>
+          <h2 className="text-lg font-semibold text-white mb-5">
+            Audio Reader
+          </h2>
 
-        {loading && (
-          <div className="flex items-center justify-center h-40">
-            <ClipLoader size={24} color="#fff" />
-          </div>
-        )}
+          {/* Loading */}
+          {loading && (
+            <div className="flex items-center justify-center h-40">
+              <ClipLoader size={24} color="#fff" />
+            </div>
+          )}
 
-        {!loading && error && (
-          <div className="flex items-center justify-center h-40 text-red-400 text-sm">
-            {error}
-          </div>
-        )}
+          {/* Error */}
+          {!loading && error && (
+            <div className="flex items-center justify-center h-40 text-red-400 text-sm">
+              {error}
+            </div>
+          )}
 
-        {!loading && !error && !audioUrl && (
-          <div className="flex items-center justify-center h-40 text-gray-400 text-sm">
-            Audio not available
-          </div>
-        )}
+          {/* No audio */}
+          {!loading && !error && !audioUrl && (
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm">
+              Audio not available
+            </div>
+          )}
 
-        {!loading && !error && audioUrl && (
-          <>
-            <audio
-              ref={audioRef}
-              controls
-              className="w-full mb-5"
-              onTimeUpdate={(e) =>
-                handleTimeUpdate(e.currentTarget.currentTime)
-              }
-            >
-              <source src={audioUrl} type="audio/mpeg" />
-            </audio>
-
-            {normalizedWords.length > 0 && (
-              <div
-                ref={containerRef}
-                className="max-h-64 overflow-y-auto rounded-xl p-4 leading-8 text-base bg-gray-800 border border-white/10"
+          {/* Player */}
+          {!loading && !error && audioUrl && (
+            <>
+              <audio
+                ref={audioRef}
+                controls
+                className="w-full mb-5"
+                onTimeUpdate={(e) =>
+                  handleTimeUpdate(e.currentTarget.currentTime)
+                }
               >
-                <div className="flex flex-wrap gap-x-1 gap-y-2">
-                  {normalizedWords.map((w, i) => (
-                    <span
-                      key={i}
-                      id={`word-${i}`}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleWordClick(w.start)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && handleWordClick(w.start)
-                      }
-                      className={`cursor-pointer px-1 rounded transition-all duration-150 outline-none ${
-                        i === activeIndex
-                          ? "bg-yellow-300 text-black shadow"
-                          : "text-gray-100 hover:bg-gray-700 focus-visible:ring-1 focus-visible:ring-yellow-300"
-                      }`}
-                    >
-                      {w.word}
-                    </span>
-                  ))}
+                <source src={audioUrl} type="audio/mpeg" />
+              </audio>
+
+              {normalizedWords.length > 0 && (
+                <div
+                  ref={containerRef}
+                  className="max-h-64 overflow-y-auto rounded-xl p-4 leading-8 text-base bg-gray-800 dark:bg-gray-900 border border-white/10"
+                >
+                  <div className="flex flex-wrap gap-x-1 gap-y-2">
+                    {normalizedWords.map((w, i) => (
+                      <motion.span
+                        key={i}
+                        id={`word-${i}`}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleWordClick(w.start)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleWordClick(w.start)
+                        }
+                        className={`cursor-pointer px-1 rounded outline-none ${
+                          i === activeIndex
+                            ? "bg-yellow-300 text-black shadow"
+                            : "text-gray-100 hover:bg-gray-700 focus-visible:ring-1 focus-visible:ring-yellow-300"
+                        }`}
+                        animate={
+                          i === activeIndex ? { scale: 1.05 } : { scale: 1 }
+                        }
+                        transition={{ duration: 0.1 }}
+                      >
+                        {w.word}
+                      </motion.span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+              )}
+            </>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

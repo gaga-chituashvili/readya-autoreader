@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { Document } from "@/services/Libraryservice";
 import { FileIcon } from "./FileIcon";
 import { timeAgo } from "@/utils/timeAgo";
@@ -17,10 +18,10 @@ const STATUS_LABEL: Record<Document["status"], string> = {
 };
 
 const STATUS_COLOR: Record<Document["status"], string> = {
-  done: "text-gray-400",
+  done: "text-gray-400 dark:text-gray-500",
   processing: "text-blue-400",
   failed: "text-red-400",
-  pending_payment: "text-gray-400",
+  pending_payment: "text-gray-400 dark:text-gray-500",
 };
 
 interface DocumentCardProps {
@@ -35,20 +36,32 @@ export function DocumentCard({ doc, onOpen }: DocumentCardProps) {
     : `${FILE_TYPE_LABELS[doc.file_type]} file`;
 
   return (
-    <div
+    <motion.div
       role="button"
       tabIndex={0}
       aria-label={`Open ${label}`}
-      className="flex flex-col gap-2 cursor-pointer group outline-none"
+      className="flex flex-col gap-2 cursor-pointer outline-none"
       onClick={() => onOpen(doc.id)}
       onKeyDown={(e) => e.key === "Enter" && onOpen(doc.id)}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <div className="w-full aspect-[3/4] rounded-xl border border-black/[0.07] bg-white overflow-hidden group-hover:border-black/20 group-focus-visible:ring-2 group-focus-visible:ring-blue-500 transition-colors">
+      {/* Thumbnail */}
+      <motion.div
+        className="w-full aspect-[3/4] rounded-xl border border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-gray-800 overflow-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
+        whileHover={{
+          boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+          borderColor: "rgba(0,0,0,0.2)",
+        }}
+        transition={{ duration: 0.2 }}
+      >
         <FileIcon type={doc.file_type} />
-      </div>
+      </motion.div>
 
+      {/* Info */}
       <div>
-        <p className="text-sm text-gray-800 font-medium leading-snug line-clamp-2">
+        <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-snug line-clamp-2 group-hover:text-gray-900">
           {label}
         </p>
         <p className={`text-xs mt-0.5 ${STATUS_COLOR[doc.status]}`}>
@@ -56,6 +69,6 @@ export function DocumentCard({ doc, onOpen }: DocumentCardProps) {
           {FILE_TYPE_LABELS[doc.file_type]}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
