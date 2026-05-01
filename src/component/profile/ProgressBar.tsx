@@ -12,7 +12,7 @@ export function ProgressBar({ value, max }: ProgressBarProps) {
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={max}
-      className="h-1 w-full bg-gray-100 rounded-full mt-3 mb-1"
+      className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full mt-3 mb-1"
     >
       <div
         className="h-full bg-blue-500 rounded-full transition-all duration-500"

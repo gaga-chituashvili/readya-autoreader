@@ -9,7 +9,7 @@ const WEEKLY_MINUTES = 0;
 export default function ProfilePage() {
   return (
     <div className="flex flex-col gap-3 pt-20">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <DailyGoalCard
           progress={DAILY_PROGRESS_MINUTES}
           goal={DAILY_GOAL_MINUTES}
