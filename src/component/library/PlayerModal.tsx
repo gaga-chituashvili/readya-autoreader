@@ -5,16 +5,12 @@ import { ClipLoader } from "react-spinners";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type Word = { word: string; start: number; end: number };
 
 interface DocumentDetail {
-  audio_url: string | null;
+  stream_url: string | null;
   words: Word[];
 }
-
-// ─── API ──────────────────────────────────────────────────────────────────────
 
 async function fetchDocumentDetail(docId: string): Promise<DocumentDetail> {
   const res = await fetch(`${API_URL}/document/${docId}/`, {
@@ -23,8 +19,6 @@ async function fetchDocumentDetail(docId: string): Promise<DocumentDetail> {
   if (!res.ok) throw new Error("Failed to load document");
   return res.json();
 }
-
-// ─── PlayerModal ──────────────────────────────────────────────────────────────
 
 interface PlayerModalProps {
   docId: string;
@@ -41,7 +35,6 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -50,14 +43,13 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Fetch
   useEffect(() => {
     let cancelled = false;
 
     fetchDocumentDetail(docId)
       .then((data) => {
         if (cancelled) return;
-        setAudioUrl(data.audio_url);
+        setAudioUrl(data.stream_url);
         setWords(data.words ?? []);
       })
       .catch((e: Error) => {
@@ -143,7 +135,6 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
         >
-          {/* Close */}
           <button
             onClick={onClose}
             aria-label="Close player"
@@ -156,28 +147,24 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
             Audio Reader
           </h2>
 
-          {/* Loading */}
           {loading && (
             <div className="flex items-center justify-center h-40">
               <ClipLoader size={24} color="#fff" />
             </div>
           )}
 
-          {/* Error */}
           {!loading && error && (
             <div className="flex items-center justify-center h-40 text-red-400 text-sm">
               {error}
             </div>
           )}
 
-          {/* No audio */}
           {!loading && !error && !audioUrl && (
             <div className="flex items-center justify-center h-40 text-gray-400 text-sm">
               Audio not available
             </div>
           )}
 
-          {/* Player */}
           {!loading && !error && audioUrl && (
             <>
               <audio

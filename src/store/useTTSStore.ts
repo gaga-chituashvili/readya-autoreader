@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import {
-  uploadDocument,
-  generateVoice,
-  getAudioStreamUrl,
-} from "@/services/api";
+import { uploadDocument, generateVoice } from "@/services/api";
 import { createDocumentId } from "@/utils/document";
 
 type TTSState = {
@@ -13,7 +9,7 @@ type TTSState = {
   audioUrl: string | null;
   error: string;
   words: unknown[];
-  speed: number; 
+  speed: number;
   setSpeed: (speed: number) => void;
 
   generate: (text: string, file: File | null, email: string) => Promise<void>;
@@ -38,9 +34,10 @@ export const useTTSStore = create<TTSState>()(
 
           await uploadDocument(text, file, email, docId);
           const voiceRes = await generateVoice(docId);
+  
 
           set({
-            audioUrl: getAudioStreamUrl(docId),
+            audioUrl: voiceRes.stream_url,
             words: voiceRes.words || [],
           });
         } catch (err: unknown) {

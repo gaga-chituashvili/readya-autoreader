@@ -47,7 +47,6 @@ export function DocumentCard({ doc, onOpen }: DocumentCardProps) {
       whileTap={{ scale: 0.97 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      {/* Thumbnail */}
       <motion.div
         className="w-full aspect-[3/4] rounded-xl border border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-gray-800 overflow-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
         whileHover={{
@@ -59,7 +58,6 @@ export function DocumentCard({ doc, onOpen }: DocumentCardProps) {
         <FileIcon type={doc.file_type} />
       </motion.div>
 
-      {/* Info */}
       <div>
         <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-snug line-clamp-2 group-hover:text-gray-900">
           {label}
