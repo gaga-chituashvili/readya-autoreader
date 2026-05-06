@@ -43,6 +43,7 @@ export const useTTSStore = create<TTSState>()(
           set({
             audioUrl: voiceRes.stream_url,
             words: voiceRes.words || [],
+            originalText: voiceRes.original_text || text,
           });
         } catch (err: unknown) {
           set({ error: (err as Error).message || "Something went wrong" });
