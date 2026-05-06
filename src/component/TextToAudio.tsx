@@ -16,8 +16,8 @@ const SPEED_STEPS = [0.75, 1, 1.25, 1.5, 1.75, 2];
 
 const ACTIVE_CLASS =
   "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer bg-yellow-300 dark:bg-yellow-400 text-gray-900";
-const SPOKEN_CLASS =
-  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-800 dark:text-gray-100";
+// const SPOKEN_CLASS =
+//   "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-800 dark:text-gray-100";
 const UNSPOKEN_CLASS =
   "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-300 dark:text-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400";
 
@@ -148,59 +148,120 @@ function useAudioHighlight(
   return { handlers, registerCallback, seekToTime, togglePlay };
 }
 
+const SENTENCE_ACTIVE_CLASS =
+  "bg-indigo-200/60 dark:bg-indigo-900/20 rounded-md";
+
 const WordReader = memo(function WordReader({
   displayWords,
+  sentenceIndices,
   registerCallback,
   onWordClick,
 }: {
   displayWords: Word[];
+
+  sentenceIndices: number[];
+
   registerCallback: (cb: (i: number) => void) => void;
+
   onWordClick: (start: number) => void;
 }) {
   const spanRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const sentenceRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
   const prevActiveRef = useRef(-1);
 
   useEffect(() => {
     registerCallback((next: number) => {
       const prev = prevActiveRef.current;
+
       if (prev >= 0 && spanRefs.current[prev]) {
-        spanRefs.current[prev]!.className = SPOKEN_CLASS;
+        spanRefs.current[prev]!.className = UNSPOKEN_CLASS;
       }
-      if (next > prev) {
-        for (let i = Math.max(0, prev + 1); i < next; i++) {
-          if (spanRefs.current[i])
-            spanRefs.current[i]!.className = SPOKEN_CLASS;
-        }
-      }
+
       if (next >= 0 && spanRefs.current[next]) {
         spanRefs.current[next]!.className = ACTIVE_CLASS;
+
         spanRefs.current[next]!.scrollIntoView({
-          behavior: "smooth",
+          behavior: "auto",
           block: "nearest",
         });
       }
+
+      const prevSentence = sentenceIndices[prev];
+
+      const nextSentence = sentenceIndices[next];
+
+      if (prevSentence !== undefined && sentenceRefs.current[prevSentence]) {
+        sentenceRefs.current[prevSentence]!.className = "";
+      }
+
+      if (nextSentence !== undefined && sentenceRefs.current[nextSentence]) {
+        sentenceRefs.current[nextSentence]!.className = SENTENCE_ACTIVE_CLASS;
+      }
+
       if (next === -1) {
         spanRefs.current.forEach((s) => {
-          if (s) s.className = UNSPOKEN_CLASS;
+          if (s) {
+            s.className = UNSPOKEN_CLASS;
+          }
+        });
+
+        sentenceRefs.current.forEach((s) => {
+          if (s) {
+            s.className = "";
+          }
         });
       }
+
       prevActiveRef.current = next;
     });
-  }, [registerCallback]);
+  }, [registerCallback, sentenceIndices]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<number, Word[]>();
+
+    displayWords.forEach((w, i) => {
+      const s = sentenceIndices[i] ?? 0;
+
+      if (!map.has(s)) {
+        map.set(s, []);
+      }
+
+      map.get(s)!.push(w);
+    });
+
+    return Array.from(map.entries());
+  }, [displayWords, sentenceIndices]);
+
+  let globalIndex = 0;
 
   return (
-    <div className="font-serif text-[17px] leading-[2.1] select-none">
-      {displayWords.map((w, i) => (
-        <span key={i}>
-          <span
-            ref={(el) => {
-              spanRefs.current[i] = el;
-            }}
-            onClick={() => onWordClick(w.start)}
-            className={UNSPOKEN_CLASS}
-          >
-            {w.word}
-          </span>{" "}
+    <div className="font-serif text-[17px] leading-[2.1] select-none break-words whitespace-pre-wrap overflow-x-hidden">
+      {grouped.map(([sentenceId, words]) => (
+        <span
+          key={sentenceId}
+          ref={(el) => {
+            sentenceRefs.current[sentenceId] = el;
+          }}
+        >
+          {words.map((w) => {
+            const currentIndex = globalIndex++;
+
+            return (
+              <span key={currentIndex}>
+                <span
+                  ref={(el) => {
+                    spanRefs.current[currentIndex] = el;
+                  }}
+                  onClick={() => onWordClick(w.start)}
+                  className={UNSPOKEN_CLASS}
+                >
+                  {w.word}
+                </span>{" "}
+              </span>
+            );
+          })}
         </span>
       ))}
     </div>
@@ -218,18 +279,27 @@ export const TextToAudio = () => {
     })),
   );
   const { user } = useAuthStore(useShallow((s) => ({ user: s.user })));
-  const { loading, audioUrl, error, words, generate, speed, originalText } =
-    useTTSStore(
-      useShallow((s) => ({
-        loading: s.loading,
-        audioUrl: s.audioUrl,
-        error: s.error,
-        words: s.words,
-        generate: s.generate,
-        speed: s.speed,
-        originalText: s.originalText,
-      })),
-    );
+  const {
+    loading,
+    audioUrl,
+    error,
+    words,
+    sentenceIndices,
+    generate,
+    speed,
+    originalText,
+  } = useTTSStore(
+    useShallow((s) => ({
+      loading: s.loading,
+      audioUrl: s.audioUrl,
+      error: s.error,
+      words: s.words,
+      sentenceIndices: s.sentenceIndices,
+      generate: s.generate,
+      speed: s.speed,
+      originalText: s.originalText,
+    })),
+  );
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -242,11 +312,16 @@ export const TextToAudio = () => {
 
   const normalizedWords = useMemo(() => words as Word[], [words]);
   const originalWords = useMemo(
-    () => (originalText || text).trim().split(/\s+/),
-    [originalText, text],
+    () =>
+      originalText
+        .trim()
+        .split(/\s+/)
+        .map((w) => w.replace(/[^\u10D0-\u10FFa-zA-Z0-9]/g, ""))
+        .filter(Boolean),
+    [originalText],
   );
   const displayWords = useMemo(() => {
-    if (!normalizedWords.length || !originalWords.length) return [];
+    if (!normalizedWords.length || !originalText) return [];
     const n = originalWords.length;
     const m = normalizedWords.length;
     const result: Word[] = [];
@@ -262,7 +337,7 @@ export const TextToAudio = () => {
       });
     }
     return result;
-  }, [originalWords, normalizedWords]);
+  }, [originalWords, normalizedWords, originalText]);
 
   const { handlers, registerCallback, seekToTime, togglePlay } =
     useAudioHighlight(audioRef, displayWords, playIconRef, pauseIconRef);
@@ -388,6 +463,7 @@ export const TextToAudio = () => {
               <div className="px-6 py-6 max-h-64 overflow-y-auto">
                 <WordReader
                   displayWords={displayWords}
+                  sentenceIndices={sentenceIndices}
                   registerCallback={registerCallback}
                   onWordClick={handleWordClick}
                 />
