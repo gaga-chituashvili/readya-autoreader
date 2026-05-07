@@ -101,9 +101,20 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
 
   useEffect(() => {
     if (activeIndex < 0) return;
-    document
-      .getElementById(`word-${activeIndex}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const el = document.getElementById(`word-${activeIndex}`);
+    const container = containerRef.current;
+    if (!el || !container) return;
+
+    const elRect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    const targetScroll =
+      container.scrollTop +
+      (elRect.top - containerRect.top) -
+      containerRect.height / 2 +
+      elRect.height / 2;
+
+    container.scrollTo({ top: targetScroll, behavior: "smooth" });
   }, [activeIndex]);
 
   const handleWordClick = (start: number) => {
