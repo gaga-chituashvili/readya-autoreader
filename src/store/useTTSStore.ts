@@ -1,5 +1,3 @@
-// useTTSStore.ts
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -10,18 +8,12 @@ type TTSState = {
   loading: boolean;
   audioUrl: string | null;
   error: string;
-
   words: unknown[];
-  sentenceIndices: number[];
-
   originalText: string;
-
+  sentenceIndices: number[];
   speed: number;
-
   setSpeed: (speed: number) => void;
-
   generate: (text: string, file: File | null, email: string) => Promise<void>;
-
   reset: () => void;
 };
 
@@ -29,19 +21,12 @@ export const useTTSStore = create<TTSState>()(
   persist(
     (set) => ({
       loading: false,
-
       audioUrl: null,
-
       error: "",
-
       words: [],
-
-      sentenceIndices: [],
-
       originalText: "",
-
+      sentenceIndices: [],
       speed: 50,
-
       setSpeed: (speed) => set({ speed }),
 
       generate: async (text, file, email) => {
@@ -50,30 +35,22 @@ export const useTTSStore = create<TTSState>()(
           error: "",
           audioUrl: null,
           words: [],
+          originalText: "",
           sentenceIndices: [],
-          originalText: text,
         });
 
         try {
           const docId = createDocumentId();
-
           await uploadDocument(text, file, email, docId);
-
           const voiceRes = await generateVoice(docId);
-
           set({
             audioUrl: voiceRes.stream_url,
-
             words: voiceRes.words || [],
-
-            sentenceIndices: voiceRes.sentence_indices || [],
-
             originalText: voiceRes.original_text || text,
+            sentenceIndices: voiceRes.sentence_indices || [],
           });
         } catch (err: unknown) {
-          set({
-            error: (err as Error).message || "Something went wrong",
-          });
+          set({ error: (err as Error).message || "Something went wrong" });
         } finally {
           set({ loading: false });
         }
@@ -85,18 +62,17 @@ export const useTTSStore = create<TTSState>()(
           audioUrl: null,
           error: "",
           words: [],
-          sentenceIndices: [],
           originalText: "",
+          sentenceIndices: [],
         }),
     }),
     {
       name: "tts-storage",
-
       partialize: (state) => ({
         audioUrl: state.audioUrl,
         words: state.words,
-        sentenceIndices: state.sentenceIndices,
         originalText: state.originalText,
+        sentenceIndices: state.sentenceIndices,
       }),
     },
   ),

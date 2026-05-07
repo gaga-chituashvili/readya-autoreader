@@ -14,12 +14,16 @@ type Word = { word: string; start: number; end: number };
 
 const SPEED_STEPS = [0.75, 1, 1.25, 1.5, 1.75, 2];
 
-const ACTIVE_CLASS =
+const ACTIVE_WORD_CLASS =
   "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer bg-yellow-300 dark:bg-yellow-400 text-gray-900";
-// const SPOKEN_CLASS =
-//   "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-800 dark:text-gray-100";
-const UNSPOKEN_CLASS =
-  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-300 dark:text-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400";
+const SPOKEN_WORD_CLASS =
+  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-800 dark:text-gray-100";
+const UNSPOKEN_WORD_CLASS =
+  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400";
+
+const ACTIVE_SENTENCE_CLASS =
+  "inline bg-purple-100 dark:bg-purple-900/30 rounded-[6px] px-[2px]";
+const INACTIVE_SENTENCE_CLASS = "inline";
 
 const fmt = (s: number): string => {
   const m = Math.floor(s / 60);
@@ -133,7 +137,6 @@ function useAudioHighlight(
     else audioRef.current.play();
   }, [audioRef]);
 
-  // WordReader-ს callback-ის დარეგისტრირება
   const registerCallback = useCallback((cb: (i: number) => void) => {
     onActiveIndexChangeRef.current = cb;
   }, []);
@@ -148,8 +151,7 @@ function useAudioHighlight(
   return { handlers, registerCallback, seekToTime, togglePlay };
 }
 
-const SENTENCE_ACTIVE_CLASS =
-  "bg-indigo-200/60 dark:bg-indigo-900/20 rounded-md";
+// ─── WordReader ───────────────────────────────────────────────────────────────
 
 const WordReader = memo(function WordReader({
   displayWords,
@@ -158,104 +160,96 @@ const WordReader = memo(function WordReader({
   onWordClick,
 }: {
   displayWords: Word[];
-
   sentenceIndices: number[];
-
   registerCallback: (cb: (i: number) => void) => void;
-
   onWordClick: (start: number) => void;
 }) {
-  const spanRefs = useRef<(HTMLSpanElement | null)[]>([]);
-
+  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const sentenceRefs = useRef<(HTMLSpanElement | null)[]>([]);
-
   const prevActiveRef = useRef(-1);
+  const prevSentenceRef = useRef(-1);
+
+  // წინადადებების დაჯგუფება
+  const sentenceIndicesRef = useRef(sentenceIndices);
+  useEffect(() => {
+    sentenceIndicesRef.current = sentenceIndices;
+  }, [sentenceIndices]);
+
+  const sentences = useMemo(() => {
+    if (!displayWords.length || !sentenceIndices.length) return [];
+    const map = new Map<number, number[]>();
+    sentenceIndices.forEach((sIdx, wIdx) => {
+      if (!map.has(sIdx)) map.set(sIdx, []);
+      map.get(sIdx)!.push(wIdx);
+    });
+    return Array.from(map.entries()).sort(([a], [b]) => a - b);
+  }, [displayWords, sentenceIndices]);
 
   useEffect(() => {
     registerCallback((next: number) => {
       const prev = prevActiveRef.current;
 
-      if (prev >= 0 && spanRefs.current[prev]) {
-        spanRefs.current[prev]!.className = UNSPOKEN_CLASS;
+      if (prev >= 0 && wordRefs.current[prev]) {
+        wordRefs.current[prev]!.className = SPOKEN_WORD_CLASS;
       }
-
-      if (next >= 0 && spanRefs.current[next]) {
-        spanRefs.current[next]!.className = ACTIVE_CLASS;
-
-        spanRefs.current[next]!.scrollIntoView({
-          behavior: "auto",
+      if (next > prev) {
+        for (let i = Math.max(0, prev + 1); i < next; i++) {
+          if (wordRefs.current[i])
+            wordRefs.current[i]!.className = SPOKEN_WORD_CLASS;
+        }
+      }
+      if (next >= 0 && wordRefs.current[next]) {
+        wordRefs.current[next]!.className = ACTIVE_WORD_CLASS;
+        wordRefs.current[next]!.scrollIntoView({
+          behavior: "smooth",
           block: "nearest",
         });
       }
-
-      const prevSentence = sentenceIndices[prev];
-
-      const nextSentence = sentenceIndices[next];
-
-      if (prevSentence !== undefined && sentenceRefs.current[prevSentence]) {
-        sentenceRefs.current[prevSentence]!.className = "";
-      }
-
-      if (nextSentence !== undefined && sentenceRefs.current[nextSentence]) {
-        sentenceRefs.current[nextSentence]!.className = SENTENCE_ACTIVE_CLASS;
-      }
-
       if (next === -1) {
-        spanRefs.current.forEach((s) => {
-          if (s) {
-            s.className = UNSPOKEN_CLASS;
-          }
-        });
-
-        sentenceRefs.current.forEach((s) => {
-          if (s) {
-            s.className = "";
-          }
+        wordRefs.current.forEach((s) => {
+          if (s) s.className = UNSPOKEN_WORD_CLASS;
         });
       }
-
       prevActiveRef.current = next;
+
+      const currentSentence = next >= 0 ? (sentenceIndices[next] ?? -1) : -1;
+      const prevSentence = prevSentenceRef.current;
+
+      if (currentSentence !== prevSentence) {
+        if (prevSentence >= 0 && sentenceRefs.current[prevSentence]) {
+          sentenceRefs.current[prevSentence]!.className =
+            INACTIVE_SENTENCE_CLASS;
+        }
+        if (currentSentence >= 0 && sentenceRefs.current[currentSentence]) {
+          sentenceRefs.current[currentSentence]!.className =
+            ACTIVE_SENTENCE_CLASS;
+        }
+        prevSentenceRef.current = currentSentence;
+      }
     });
   }, [registerCallback, sentenceIndices]);
 
-  const grouped = useMemo(() => {
-    const map = new Map<number, Word[]>();
-
-    displayWords.forEach((w, i) => {
-      const s = sentenceIndices[i] ?? 0;
-
-      if (!map.has(s)) {
-        map.set(s, []);
-      }
-
-      map.get(s)!.push(w);
-    });
-
-    return Array.from(map.entries());
-  }, [displayWords, sentenceIndices]);
-
-  let globalIndex = 0;
-
   return (
-    <div className="font-serif text-[17px] leading-[2.1] select-none break-words whitespace-pre-wrap overflow-x-hidden">
-      {grouped.map(([sentenceId, words]) => (
+    <div className="font-serif text-[17px] leading-[2.2] select-none">
+      {sentences.map(([sIdx, wordIndices]) => (
         <span
-          key={sentenceId}
+          key={sIdx}
           ref={(el) => {
-            sentenceRefs.current[sentenceId] = el;
+            sentenceRefs.current[sIdx] = el;
           }}
+          className={INACTIVE_SENTENCE_CLASS}
         >
-          {words.map((w) => {
-            const currentIndex = globalIndex++;
-
+          {wordIndices.map((wIdx) => {
+            const w = displayWords[wIdx];
+            if (!w) return null; // ← დაამატე
             return (
-              <span key={currentIndex}>
+              <span key={wIdx}>
                 <span
                   ref={(el) => {
-                    spanRefs.current[currentIndex] = el;
+                    wordRefs.current[wIdx] = el;
                   }}
                   onClick={() => onWordClick(w.start)}
-                  className={UNSPOKEN_CLASS}
+                  className={UNSPOKEN_WORD_CLASS}
                 >
                   {w.word}
                 </span>{" "}
@@ -267,6 +261,8 @@ const WordReader = memo(function WordReader({
     </div>
   );
 });
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export const TextToAudio = () => {
   const { t } = useTranslation("home");
@@ -284,20 +280,20 @@ export const TextToAudio = () => {
     audioUrl,
     error,
     words,
-    sentenceIndices,
     generate,
     speed,
-    originalText,
+
+    sentenceIndices,
   } = useTTSStore(
     useShallow((s) => ({
       loading: s.loading,
       audioUrl: s.audioUrl,
       error: s.error,
       words: s.words,
-      sentenceIndices: s.sentenceIndices,
       generate: s.generate,
       speed: s.speed,
       originalText: s.originalText,
+      sentenceIndices: s.sentenceIndices,
     })),
   );
 
@@ -310,34 +306,7 @@ export const TextToAudio = () => {
 
   const [playbackRate, setPlaybackRate] = useState(1);
 
-  const normalizedWords = useMemo(() => words as Word[], [words]);
-  const originalWords = useMemo(
-    () =>
-      originalText
-        .trim()
-        .split(/\s+/)
-        .map((w) => w.replace(/[^\u10D0-\u10FFa-zA-Z0-9]/g, ""))
-        .filter(Boolean),
-    [originalText],
-  );
-  const displayWords = useMemo(() => {
-    if (!normalizedWords.length || !originalText) return [];
-    const n = originalWords.length;
-    const m = normalizedWords.length;
-    const result: Word[] = [];
-    for (let i = 0; i < n; i++) {
-      const startChunk = Math.floor((i / n) * m);
-      const endChunk = Math.floor(((i + 1) / n) * m) - 1;
-      const s = Math.max(0, Math.min(startChunk, m - 1));
-      const e = Math.max(s, Math.min(endChunk, m - 1));
-      result.push({
-        word: originalWords[i],
-        start: normalizedWords[s].start,
-        end: normalizedWords[e].end,
-      });
-    }
-    return result;
-  }, [originalWords, normalizedWords, originalText]);
+  const displayWords = useMemo(() => words as Word[], [words]);
 
   const { handlers, registerCallback, seekToTime, togglePlay } =
     useAudioHighlight(audioRef, displayWords, playIconRef, pauseIconRef);
@@ -462,8 +431,9 @@ export const TextToAudio = () => {
             {displayWords.length > 0 && (
               <div className="px-6 py-6 max-h-64 overflow-y-auto">
                 <WordReader
+                  key={audioUrl}
                   displayWords={displayWords}
-                  sentenceIndices={sentenceIndices}
+                  sentenceIndices={sentenceIndices || []}
                   registerCallback={registerCallback}
                   onWordClick={handleWordClick}
                 />
@@ -498,7 +468,6 @@ export const TextToAudio = () => {
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </button>
-
               <div className="flex-1 flex flex-col gap-1.5">
                 <div
                   className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer group"
@@ -516,7 +485,6 @@ export const TextToAudio = () => {
                 </div>
               </div>
             </div>
-
             <audio
               ref={audioRef}
               src={audioUrl}
