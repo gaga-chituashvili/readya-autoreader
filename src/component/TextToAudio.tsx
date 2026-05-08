@@ -2,28 +2,19 @@ import { ModeSwitcher } from "@/component/common/ModeSwitcher";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/store/useAppStore";
 import { useAuthStore } from "@/store/authStore";
-import { useCallback, useRef, useState, useEffect, useMemo, memo } from "react";
+import { useCallback, useRef, useState, useEffect, useMemo } from "react";
 import { Button } from "@/component/ui/button";
 import { useTTSStore } from "@/store/useTTSStore";
 import ClipLoader from "react-spinners/ClipLoader";
 import { GradientBlob } from "./ui/GradientBlob";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
+import { useAudioHighlight } from "@/hook/useAudioHighlight";
+import { WordReader } from "@/component/player/WordReader";
 
 type Word = { word: string; start: number; end: number };
 
 const SPEED_STEPS = [0.75, 1, 1.25, 1.5, 1.75, 2];
-
-const ACTIVE_WORD_CLASS =
-  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer bg-yellow-300 dark:bg-yellow-400 text-gray-900";
-const SPOKEN_WORD_CLASS =
-  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-800 dark:text-gray-100";
-const UNSPOKEN_WORD_CLASS =
-  "inline rounded-[4px] px-[3px] py-[1px] mr-[2px] cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400";
-
-const ACTIVE_SENTENCE_CLASS =
-  "inline bg-purple-100 dark:bg-purple-900/30 rounded-[6px] px-[2px]";
-const INACTIVE_SENTENCE_CLASS = "inline";
 
 const fmt = (s: number): string => {
   const m = Math.floor(s / 60);
@@ -31,238 +22,6 @@ const fmt = (s: number): string => {
     .toString()
     .padStart(2, "0")}`;
 };
-
-function useAudioHighlight(
-  audioRef: React.RefObject<HTMLAudioElement | null>,
-  words: Word[],
-  playIconRef: React.RefObject<SVGSVGElement | null>,
-  pauseIconRef: React.RefObject<SVGSVGElement | null>,
-) {
-  const isPlayingRef = useRef(false);
-  const rafRef = useRef<number | null>(null);
-  const activeIndexRef = useRef(-1);
-  const wordsRef = useRef(words);
-  const onActiveIndexChangeRef = useRef<((i: number) => void) | null>(null);
-
-  useEffect(() => {
-    wordsRef.current = words;
-  }, [words]);
-
-  const findIndex = useCallback((time: number): number => {
-    const w = wordsRef.current;
-    if (!w.length) return -1;
-    if (time < w[0].start) return -1;
-    if (time >= w[w.length - 1].end) return -1;
-    let lo = 0,
-      hi = w.length - 1;
-    while (lo <= hi) {
-      const mid = (lo + hi) >> 1;
-      if (time < w[mid].start) hi = mid - 1;
-      else if (time >= w[mid].end) lo = mid + 1;
-      else return mid;
-    }
-    return -1;
-  }, []);
-
-  const showPlay = useCallback(() => {
-    if (playIconRef.current) playIconRef.current.style.display = "block";
-    if (pauseIconRef.current) pauseIconRef.current.style.display = "none";
-  }, [playIconRef, pauseIconRef]);
-
-  const showPause = useCallback(() => {
-    if (playIconRef.current) playIconRef.current.style.display = "none";
-    if (pauseIconRef.current) pauseIconRef.current.style.display = "block";
-  }, [playIconRef, pauseIconRef]);
-
-  const handlers = useMemo(() => {
-    const startLoop = () => {
-      const tick = () => {
-        if (!audioRef.current || !isPlayingRef.current) return;
-        const next = findIndex(audioRef.current.currentTime);
-        if (next !== activeIndexRef.current) {
-          activeIndexRef.current = next;
-          onActiveIndexChangeRef.current?.(next);
-        }
-        rafRef.current = requestAnimationFrame(tick);
-      };
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    const stopLoop = () => {
-      if (rafRef.current != null) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
-    };
-    return {
-      onPlay: () => {
-        isPlayingRef.current = true;
-        showPause();
-        startLoop();
-      },
-      onPause: () => {
-        isPlayingRef.current = false;
-        showPlay();
-        stopLoop();
-      },
-      onEnded: () => {
-        isPlayingRef.current = false;
-        showPlay();
-        stopLoop();
-        activeIndexRef.current = -1;
-        onActiveIndexChangeRef.current?.(-1);
-      },
-      onSeeked: () => {
-        if (audioRef.current) {
-          const next = findIndex(audioRef.current.currentTime);
-          activeIndexRef.current = next;
-          onActiveIndexChangeRef.current?.(next);
-        }
-      },
-    };
-  }, [findIndex, audioRef, showPlay, showPause]);
-
-  const seekToTime = useCallback(
-    (t: number) => {
-      const next = findIndex(t);
-      activeIndexRef.current = next;
-      onActiveIndexChangeRef.current?.(next);
-    },
-    [findIndex],
-  );
-
-  const togglePlay = useCallback(() => {
-    if (!audioRef.current) return;
-    if (isPlayingRef.current) audioRef.current.pause();
-    else audioRef.current.play();
-  }, [audioRef]);
-
-  const registerCallback = useCallback((cb: (i: number) => void) => {
-    onActiveIndexChangeRef.current = cb;
-  }, []);
-
-  useEffect(
-    () => () => {
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-    },
-    [],
-  );
-
-  return { handlers, registerCallback, seekToTime, togglePlay };
-}
-
-// ─── WordReader ───────────────────────────────────────────────────────────────
-
-const WordReader = memo(function WordReader({
-  displayWords,
-  sentenceIndices,
-  registerCallback,
-  onWordClick,
-}: {
-  displayWords: Word[];
-  sentenceIndices: number[];
-  registerCallback: (cb: (i: number) => void) => void;
-  onWordClick: (start: number) => void;
-}) {
-  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const sentenceRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const prevActiveRef = useRef(-1);
-  const prevSentenceRef = useRef(-1);
-
-  // წინადადებების დაჯგუფება
-  const sentenceIndicesRef = useRef(sentenceIndices);
-  useEffect(() => {
-    sentenceIndicesRef.current = sentenceIndices;
-  }, [sentenceIndices]);
-
-  const sentences = useMemo(() => {
-    if (!displayWords.length || !sentenceIndices.length) return [];
-    const map = new Map<number, number[]>();
-    sentenceIndices.forEach((sIdx, wIdx) => {
-      if (!map.has(sIdx)) map.set(sIdx, []);
-      map.get(sIdx)!.push(wIdx);
-    });
-    return Array.from(map.entries()).sort(([a], [b]) => a - b);
-  }, [displayWords, sentenceIndices]);
-
-  useEffect(() => {
-    registerCallback((next: number) => {
-      const prev = prevActiveRef.current;
-
-      if (prev >= 0 && wordRefs.current[prev]) {
-        wordRefs.current[prev]!.className = SPOKEN_WORD_CLASS;
-      }
-      if (next > prev) {
-        for (let i = Math.max(0, prev + 1); i < next; i++) {
-          if (wordRefs.current[i])
-            wordRefs.current[i]!.className = SPOKEN_WORD_CLASS;
-        }
-      }
-      if (next >= 0 && wordRefs.current[next]) {
-        wordRefs.current[next]!.className = ACTIVE_WORD_CLASS;
-        wordRefs.current[next]!.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
-      }
-      if (next === -1) {
-        wordRefs.current.forEach((s) => {
-          if (s) s.className = UNSPOKEN_WORD_CLASS;
-        });
-      }
-      prevActiveRef.current = next;
-
-      const currentSentence = next >= 0 ? (sentenceIndices[next] ?? -1) : -1;
-      const prevSentence = prevSentenceRef.current;
-
-      if (currentSentence !== prevSentence) {
-        if (prevSentence >= 0 && sentenceRefs.current[prevSentence]) {
-          sentenceRefs.current[prevSentence]!.className =
-            INACTIVE_SENTENCE_CLASS;
-        }
-        if (currentSentence >= 0 && sentenceRefs.current[currentSentence]) {
-          sentenceRefs.current[currentSentence]!.className =
-            ACTIVE_SENTENCE_CLASS;
-        }
-        prevSentenceRef.current = currentSentence;
-      }
-    });
-  }, [registerCallback, sentenceIndices]);
-
-  return (
-    <div className="font-serif text-[17px] leading-[2.2] select-none">
-      {sentences.map(([sIdx, wordIndices]) => (
-        <span
-          key={sIdx}
-          ref={(el) => {
-            sentenceRefs.current[sIdx] = el;
-          }}
-          className={INACTIVE_SENTENCE_CLASS}
-        >
-          {wordIndices.map((wIdx) => {
-            const w = displayWords[wIdx];
-            if (!w) return null; // ← დაამატე
-            return (
-              <span key={wIdx}>
-                <span
-                  ref={(el) => {
-                    wordRefs.current[wIdx] = el;
-                  }}
-                  onClick={() => onWordClick(w.start)}
-                  className={UNSPOKEN_WORD_CLASS}
-                >
-                  {w.word}
-                </span>{" "}
-              </span>
-            );
-          })}
-        </span>
-      ))}
-    </div>
-  );
-});
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 
 export const TextToAudio = () => {
   const { t } = useTranslation("home");
@@ -275,25 +34,33 @@ export const TextToAudio = () => {
     })),
   );
   const { user } = useAuthStore(useShallow((s) => ({ user: s.user })));
+
   const {
     loading,
-    audioUrl,
     error,
+    currentChunkIndex,
+    totalChunks,
+    audioUrl,
     words,
-    generate,
-    speed,
-
     sentenceIndices,
+    speed,
+    generate,
+    loadNextChunk,
+    goToChunk,
   } = useTTSStore(
     useShallow((s) => ({
       loading: s.loading,
-      audioUrl: s.audioUrl,
       error: s.error,
+      chunks: s.chunks,
+      currentChunkIndex: s.currentChunkIndex,
+      totalChunks: s.totalChunks,
+      audioUrl: s.audioUrl,
       words: s.words,
-      generate: s.generate,
-      speed: s.speed,
-      originalText: s.originalText,
       sentenceIndices: s.sentenceIndices,
+      speed: s.speed,
+      generate: s.generate,
+      loadNextChunk: s.loadNextChunk,
+      goToChunk: s.goToChunk,
     })),
   );
 
@@ -303,13 +70,17 @@ export const TextToAudio = () => {
   const durationRef = useRef<HTMLSpanElement>(null);
   const playIconRef = useRef<SVGSVGElement>(null);
   const pauseIconRef = useRef<SVGSVGElement>(null);
+  const prefetchedRef = useRef(false);
 
   const [playbackRate, setPlaybackRate] = useState(1);
-
   const displayWords = useMemo(() => words as Word[], [words]);
 
   const { handlers, registerCallback, seekToTime, togglePlay } =
     useAudioHighlight(audioRef, displayWords, playIconRef, pauseIconRef);
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.playbackRate = playbackRate;
+  }, [playbackRate]);
 
   useEffect(() => {
     if (audioRef.current)
@@ -317,30 +88,63 @@ export const TextToAudio = () => {
   }, [speed]);
 
   useEffect(() => {
-    if (audioRef.current) audioRef.current.playbackRate = playbackRate;
-  }, [playbackRate]);
-
-  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
     const onTime = () => {
       const t = audio.currentTime;
       const p = audio.duration ? t / audio.duration : 0;
       if (progressBarRef.current)
         progressBarRef.current.style.width = `${p * 100}%`;
       if (timeRef.current) timeRef.current.textContent = fmt(t);
+      if (p >= 0.7 && !prefetchedRef.current) {
+        prefetchedRef.current = true;
+        loadNextChunk();
+      }
     };
+
     const onLoaded = () => {
       if (durationRef.current)
         durationRef.current.textContent = fmt(audio.duration);
     };
+
+    const onEnded = () => {
+      const { chunks, currentChunkIndex, totalChunks } = useTTSStore.getState();
+      const nextIndex = currentChunkIndex + 1;
+      if (nextIndex >= totalChunks) return;
+      const nextChunk = chunks[nextIndex];
+      if (!nextChunk) return;
+
+      prefetchedRef.current = false;
+      useTTSStore.setState({
+        currentChunkIndex: nextIndex,
+        audioUrl: nextChunk.audioUrl,
+        words: nextChunk.words,
+        sentenceIndices: nextChunk.sentenceIndices,
+      });
+
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play();
+        }
+      }, 50);
+    };
+
     audio.addEventListener("timeupdate", onTime);
     audio.addEventListener("loadedmetadata", onLoaded);
+    audio.addEventListener("ended", onEnded);
+
     return () => {
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("loadedmetadata", onLoaded);
+      audio.removeEventListener("ended", onEnded);
     };
-  }, [audioUrl]);
+  }, [audioUrl, loadNextChunk]);
+
+  useEffect(() => {
+    prefetchedRef.current = false;
+  }, [currentChunkIndex]);
 
   const handleGenerate = async () => {
     if (!user) {
@@ -391,11 +195,13 @@ export const TextToAudio = () => {
               {text.length}/5000
             </div>
           </div>
+
           {error && (
             <div className="mt-4 p-3 bg-red-500/10 border border-red-400 rounded-xl">
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}
+
           <div className="flex justify-center mt-6">
             <Button
               onClick={handleGenerate}
@@ -409,23 +215,50 @@ export const TextToAudio = () => {
 
         {audioUrl && (
           <div className="mt-4 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
-            <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80">
-              <span className="text-xs text-gray-400 font-medium">Speed</span>
-              <div className="flex gap-1.5">
-                {SPEED_STEPS.map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => setPlaybackRate(r)}
-                    className={`text-xs font-semibold px-3 py-1 rounded-full transition-all duration-150 ${
-                      playbackRate === r
-                        ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
-                        : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    }`}
-                  >
-                    {r}×
-                  </button>
-                ))}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-400 font-medium">Speed</span>
+                <div className="flex gap-1.5">
+                  {SPEED_STEPS.map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setPlaybackRate(r)}
+                      className={`text-xs font-semibold px-3 py-1 rounded-full transition-all duration-150 ${
+                        playbackRate === r
+                          ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+                          : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      {r}×
+                    </button>
+                  ))}
+                </div>
               </div>
+              {totalChunks > 1 && (
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalChunks }, (_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        goToChunk(i);
+                        setTimeout(() => {
+                          if (audioRef.current) {
+                            audioRef.current.src =
+                              useTTSStore.getState().audioUrl!;
+                            audioRef.current.currentTime = 0;
+                            audioRef.current.play();
+                          }
+                        }, 50);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        i === currentChunkIndex
+                          ? "bg-gray-900 dark:bg-white"
+                          : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-500"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {displayWords.length > 0 && (
@@ -468,6 +301,7 @@ export const TextToAudio = () => {
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </button>
+
               <div className="flex-1 flex flex-col gap-1.5">
                 <div
                   className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer group"
@@ -485,6 +319,7 @@ export const TextToAudio = () => {
                 </div>
               </div>
             </div>
+
             <audio
               ref={audioRef}
               src={audioUrl}
