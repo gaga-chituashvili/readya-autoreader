@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
-import { X } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ClipLoader } from "react-spinners";
 
@@ -7,16 +7,18 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 type Word = { word: string; start: number; end: number };
 
-interface DocumentDetail {
-  stream_url: string | null;
+interface ChunkData {
+  audio_url: string;
   words: Word[];
+  sentence_indices: number[];
+  total_chunks: number;
 }
 
-async function fetchDocumentDetail(docId: string): Promise<DocumentDetail> {
-  const res = await fetch(`${API_URL}/document/${docId}/`, {
+async function fetchChunk(docId: string, index: number): Promise<ChunkData> {
+  const res = await fetch(`${API_URL}/document/${docId}/chunk/${index}/`, {
     credentials: "include",
   });
-  if (!res.ok) throw new Error("Failed to load document");
+  if (!res.ok) throw new Error("Failed to load chunk");
   return res.json();
 }
 
@@ -31,6 +33,9 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [currentChunk, setCurrentChunk] = useState(0);
+  const [totalChunks, setTotalChunks] = useState(1);
+  const [chunks, setChunks] = useState<Record<number, ChunkData>>({});
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,76 +50,132 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
 
   useEffect(() => {
     let cancelled = false;
-
-    fetchDocumentDetail(docId)
-      .then((data) => {
+    const load = async () => {
+      try {
+        const data = await fetchChunk(docId, 0);
         if (cancelled) return;
-        setAudioUrl(data.stream_url);
+        setChunks({ 0: data });
+        setAudioUrl(data.audio_url);
         setWords(data.words ?? []);
-      })
-      .catch((e: Error) => {
+        setTotalChunks(data.total_chunks ?? 1);
+      } catch (e: unknown) {
         if (cancelled) return;
-        setError(e.message);
-      })
-      .finally(() => {
-        if (cancelled) return;
-        setLoading(false);
-      });
-
+        setError((e as Error).message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
     return () => {
       cancelled = true;
     };
   }, [docId]);
 
-  const normalizedWords = useMemo(
-    () =>
-      words.map((w) => ({
-        ...w,
-        start: w.start > 50 ? w.start / 1000 : w.start,
-        end: w.end > 50 ? w.end / 1000 : w.end,
-      })),
-    [words],
+  const prefetchChunk = useCallback(
+    async (index: number) => {
+      if (index >= totalChunks || chunks[index]) return;
+      try {
+        const data = await fetchChunk(docId, index);
+        setChunks((prev) => ({ ...prev, [index]: data }));
+      } catch {
+        /* silent */
+      }
+    },
+    [chunks, docId, totalChunks],
+  );
+
+  const goToChunk = useCallback(
+    (index: number, autoPlay = false) => {
+      const chunk = chunks[index];
+      if (!chunk) return;
+
+      setCurrentChunk(index);
+      setAudioUrl(chunk.audio_url);
+      setWords(chunk.words ?? []);
+      setActiveIndex(-1);
+
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.src = chunk.audio_url;
+          audioRef.current.currentTime = 0;
+          if (autoPlay) audioRef.current.play();
+        }
+      }, 50);
+    },
+    [chunks],
   );
 
   const handleTimeUpdate = useCallback(
     (currentTime: number) => {
-      const OFFSET = 0.12;
-      let left = 0,
-        right = normalizedWords.length - 1,
-        found = -1;
+      const w = words;
+      if (!w.length) return;
 
-      while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        const w = normalizedWords[mid];
-        if (currentTime + OFFSET < w.start) right = mid - 1;
-        else if (currentTime + OFFSET > w.end) left = mid + 1;
-        else {
-          found = mid;
-          break;
+      let found = -1;
+
+      if (currentTime >= w[0].start) {
+        if (currentTime >= w[w.length - 1].end) {
+          found = w.length - 1;
+        } else {
+          let lo = 0,
+            hi = w.length - 1;
+          while (lo <= hi) {
+            const mid = (lo + hi) >> 1;
+            if (currentTime < w[mid].start) hi = mid - 1;
+            else if (currentTime >= w[mid].end) lo = mid + 1;
+            else {
+              found = mid;
+              break;
+            }
+          }
+
+          if (found === -1) found = lo > 0 ? lo - 1 : -1;
         }
       }
 
       if (found !== activeIndex) setActiveIndex(found);
+
+      const audio = audioRef.current;
+      if (audio?.duration) {
+        const p = currentTime / audio.duration;
+        if (p >= 0.7) prefetchChunk(currentChunk + 1);
+      }
     },
-    [normalizedWords, activeIndex],
+    [words, activeIndex, currentChunk, prefetchChunk],
   );
+
+  const handleEnded = useCallback(() => {
+    const nextIndex = currentChunk + 1;
+    if (nextIndex >= totalChunks) return;
+
+    const tryPlay = () => {
+      if (chunks[nextIndex]) {
+        goToChunk(nextIndex, true);
+      } else {
+        setTimeout(tryPlay, 500);
+      }
+    };
+    tryPlay();
+  }, [currentChunk, totalChunks, chunks, goToChunk]);
 
   useEffect(() => {
     if (activeIndex < 0) return;
-    const el = document.getElementById(`word-${activeIndex}`);
+    const el = document.getElementById(`modal-word-${activeIndex}`);
     const container = containerRef.current;
     if (!el || !container) return;
-
     const elRect = el.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
-
-    const targetScroll =
-      container.scrollTop +
-      (elRect.top - containerRect.top) -
-      containerRect.height / 2 +
-      elRect.height / 2;
-
-    container.scrollTo({ top: targetScroll, behavior: "smooth" });
+    const isVisible =
+      elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom;
+    if (!isVisible) {
+      container.scrollTo({
+        top:
+          container.scrollTop +
+          (elRect.top - containerRect.top) -
+          containerRect.height / 2 +
+          elRect.height / 2,
+        behavior: "instant",
+      });
+    }
   }, [activeIndex]);
 
   const handleWordClick = (start: number) => {
@@ -154,9 +215,32 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
             <X size={20} />
           </button>
 
-          <h2 className="text-lg font-semibold text-white mb-5">
-            Audio Reader
-          </h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-lg font-semibold text-white">Audio Reader</h2>
+            {totalChunks > 1 && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => goToChunk(currentChunk - 1, false)}
+                  disabled={currentChunk === 0}
+                  className="text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="text-xs text-gray-400">
+                  {currentChunk + 1} / {totalChunks}
+                </span>
+                <button
+                  onClick={() => goToChunk(currentChunk + 1, false)}
+                  disabled={
+                    currentChunk >= totalChunks - 1 || !chunks[currentChunk + 1]
+                  }
+                  className="text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            )}
+          </div>
 
           {loading && (
             <div className="flex items-center justify-center h-40">
@@ -185,38 +269,35 @@ export function PlayerModal({ docId, onClose }: PlayerModalProps) {
                 onTimeUpdate={(e) =>
                   handleTimeUpdate(e.currentTarget.currentTime)
                 }
+                onEnded={handleEnded}
               >
                 <source src={audioUrl} type="audio/mpeg" />
               </audio>
 
-              {normalizedWords.length > 0 && (
+              {words.length > 0 && (
                 <div
                   ref={containerRef}
                   className="max-h-64 overflow-y-auto rounded-xl p-4 leading-8 text-base bg-gray-800 dark:bg-gray-900 border border-white/10"
                 >
                   <div className="flex flex-wrap gap-x-1 gap-y-2">
-                    {normalizedWords.map((w, i) => (
-                      <motion.span
+                    {words.map((w, i) => (
+                      <span
                         key={i}
-                        id={`word-${i}`}
+                        id={`modal-word-${i}`}
                         role="button"
                         tabIndex={0}
                         onClick={() => handleWordClick(w.start)}
                         onKeyDown={(e) =>
                           e.key === "Enter" && handleWordClick(w.start)
                         }
-                        className={`cursor-pointer px-1 rounded outline-none ${
+                        className={`cursor-pointer px-1 rounded outline-none transition-colors ${
                           i === activeIndex
                             ? "bg-yellow-300 text-black shadow"
                             : "text-gray-100 hover:bg-gray-700 focus-visible:ring-1 focus-visible:ring-yellow-300"
                         }`}
-                        animate={
-                          i === activeIndex ? { scale: 1.05 } : { scale: 1 }
-                        }
-                        transition={{ duration: 0.1 }}
                       >
                         {w.word}
-                      </motion.span>
+                      </span>
                     ))}
                   </div>
                 </div>
