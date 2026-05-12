@@ -61,7 +61,10 @@ export const useTTSStore = create<TTSState>((set, get) => ({
         credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Generation failed");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Generation failed");
+      }
 
       const data = await res.json();
 
